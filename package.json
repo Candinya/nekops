@@ -14,8 +14,6 @@
     "@mantine/core": "^7.2.2",
     "@mantine/hooks": "^7.2.2",
     "@tabler/icons-react": "^2.42.0",
-    "@tanstack/react-query": "^5.8.9",
-    "@tanstack/react-query-devtools": "^5.8.9",
     "@tauri-apps/api": "^2.0.0-alpha.11",
     "@tauri-apps/plugin-shell": "^2.0.0-alpha.3",
     "react": "^18.2.0",
