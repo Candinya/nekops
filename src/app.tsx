@@ -7,7 +7,7 @@ import Footer from "@/components/footer.tsx";
 import NotificationCenter from "@/components/notificationCenter.tsx";
 
 const App = () => {
-  const [isNavOpen, { toggle: toggleNavOpen }] = useDisclosure();
+  const [isNavOpen, { toggle: toggleNavOpen }] = useDisclosure(true);
   const [
     isNotificationCenterOpen,
     { toggle: toggleNotificationCenterOpen, close: closeNotificationCenter },
