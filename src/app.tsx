@@ -25,7 +25,6 @@ const App = () => {
           desktop: !isNavOpen,
         },
       }}
-      padding="md"
     >
       <AppShell.Header>
         <Header
