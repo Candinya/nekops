@@ -14,7 +14,7 @@ const Nav = () => {
       {navs.map((route) =>
         route.subs ? (
           <NavLink
-            id={route.path}
+            key={route.path}
             label={route.label}
             leftSection={<route.icon size="1rem" stroke={1.5} />}
             rightSection={<NavsWithSubsExpandIcon />}
@@ -22,7 +22,7 @@ const Nav = () => {
           >
             {route.subs.map((route) => (
               <NavLink
-                id={route.path}
+                key={route.path}
                 label={route.label}
                 leftSection={<route.icon size="1rem" stroke={1.5} />}
                 component={RouterNavLink}
@@ -33,7 +33,7 @@ const Nav = () => {
           </NavLink>
         ) : (
           <NavLink
-            id={route.path}
+            key={route.path}
             label={route.label}
             leftSection={<route.icon size="1rem" stroke={1.5} />}
             component={RouterNavLink}

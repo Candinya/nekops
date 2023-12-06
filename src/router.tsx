@@ -4,7 +4,7 @@ import { routes } from "@/routes";
 const Router = () => (
   <Routes>
     {routes.map((route) => (
-      <Route id={route.path} path={route.path} element={<route.page />} />
+      <Route key={route.path} path={route.path} element={<route.page />} />
     ))}
   </Routes>
 );
