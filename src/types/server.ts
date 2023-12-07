@@ -3,7 +3,8 @@ export type BaseInfo = {
   name: string;
   note: string; // Applications etc.
   tags: string[];
-  icon?: string;
+  // icon?: string; // TODO
+  color: string;
 };
 
 export type Provider = {

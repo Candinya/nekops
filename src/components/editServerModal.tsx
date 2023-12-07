@@ -1,17 +1,142 @@
-import { Button, Group, Modal, Stepper, Title } from "@mantine/core";
+import {
+  Autocomplete,
+  Button,
+  ColorInput,
+  Fieldset,
+  Grid,
+  Group,
+  Modal,
+  NumberInput,
+  SegmentedControl,
+  Select,
+  Stepper,
+  TagsInput,
+  Text,
+  Textarea,
+  TextInput,
+  Title,
+} from "@mantine/core";
 import type { Server } from "@/types/server.ts";
 import { useState } from "react";
-import { useForm } from "@mantine/form";
+import { useForm, type UseFormReturnType } from "@mantine/form";
 import {
   IconBuildingStore,
   IconCircleCheck,
   IconCpu,
+  IconCurrencyDollar,
   IconKey,
-  IconMapPin,
   IconNetwork,
   IconServerBolt,
 } from "@tabler/icons-react";
 import classes from "./editServerModal.module.css";
+
+interface InputFormProps {
+  form: UseFormReturnType<Server, (values: Server) => Server>;
+}
+
+const BasicInfoForm = ({ form }: InputFormProps) => (
+  <Fieldset legend="Basic Information">
+    <Grid>
+      <Grid.Col span={4}>
+        <TextInput
+          withAsterisk
+          label="ID"
+          placeholder="my.new.server"
+          {...form.getInputProps("id")}
+        />
+      </Grid.Col>
+      <Grid.Col span={8}>
+        <TextInput
+          label="Name"
+          placeholder="My new server"
+          {...form.getInputProps("name")}
+        />
+      </Grid.Col>
+    </Grid>
+    <Grid mt="md">
+      <Grid.Col span={4}>
+        <ColorInput label="Color" {...form.getInputProps("color")} />
+      </Grid.Col>
+      <Grid.Col span={8}>
+        <TagsInput label="Tags" {...form.getInputProps("tags")} />
+      </Grid.Col>
+    </Grid>
+    <Textarea
+      mt="md"
+      label="Note"
+      autosize
+      minRows={6}
+      placeholder="It's blazing fast! Love it."
+      {...form.getInputProps("note")}
+    />
+  </Fieldset>
+);
+
+const ProviderAndLocationForm = ({ form }: InputFormProps) => (
+  <>
+    <Fieldset legend="Provider">
+      <Grid>
+        <Grid.Col span={8}>
+          <Autocomplete
+            label="Provider"
+            placeholder="Pick one or enter new"
+            data={["A", "B"]} // TODO
+            {...form.getInputProps("provider.provider")}
+          />
+        </Grid.Col>
+        <Grid.Col span={2}>
+          <Text size="sm" fw={500} mb={3}>
+            Type
+          </Text>
+          <SegmentedControl
+            data={["VPS", "DS"]}
+            {...form.getInputProps("provider.type")}
+          />
+        </Grid.Col>
+        <Grid.Col span={2}>
+          <NumberInput
+            label="Monthly Price"
+            leftSection={<IconCurrencyDollar />}
+            decimalScale={2}
+            fixedDecimalScale
+            {...form.getInputProps("provider.price")}
+          />
+        </Grid.Col>
+      </Grid>
+      <TextInput
+        mt="md"
+        label="Product"
+        {...form.getInputProps("provider.product")}
+      />
+    </Fieldset>
+
+    <Fieldset mt="lg" legend="Location">
+      <Grid>
+        <Grid.Col span={2}>
+          <Select
+            label="Region"
+            data={["A", "B"]}
+            searchable
+            nothingFoundMessage="No such region"
+            {...form.getInputProps("location.region")}
+          />
+        </Grid.Col>
+        <Grid.Col span={4}>
+          <TextInput
+            label="Datacenter"
+            {...form.getInputProps("location.datacenter")}
+          />
+        </Grid.Col>
+        <Grid.Col span={6}>
+          <TextInput
+            label="Host System"
+            {...form.getInputProps("location.host_system")}
+          />
+        </Grid.Col>
+      </Grid>
+    </Fieldset>
+  </>
+);
 
 interface EditServerModalProps {
   isOpen: boolean;
@@ -24,7 +149,7 @@ const EditServerModal = ({
   close,
   isCreateNew,
 }: EditServerModalProps) => {
-  const StepsCount = 6;
+  const StepsCount = 5;
 
   const [activeStep, setActiveStep] = useState(0);
   const nextStep = () =>
@@ -32,10 +157,75 @@ const EditServerModal = ({
   const prevStep = () =>
     setActiveStep((current) => (current > 0 ? current - 1 : current));
 
-  const form = useForm({
-    initialValues: {},
+  const form = useForm<Server>({
+    initialValues: {
+      id: "",
+      name: "",
+      note: "",
+      tags: [],
+      // icon: "",
+      color: "#62b6e7",
+
+      provider: {
+        provider: "",
+        type: "VPS",
+        product: "",
+        price: 0,
+      },
+
+      location: {
+        region: "",
+        datacenter: "",
+        host_system: "",
+      },
+
+      hardware: {
+        cpu: {
+          manufacturer: "Intel",
+          model: "",
+          count: 1,
+          core_count: 1,
+          thread_count: 1,
+          base_frequency: 1,
+        },
+        memory: {
+          generation: "DDR4",
+          ecc: false,
+          size: 1,
+          frequency: 2400,
+        },
+        disk: [],
+      },
+
+      network: {
+        public: {
+          ipv4: [],
+          ipv6: [],
+        },
+        private: {
+          ip: "",
+        },
+      },
+
+      access: {
+        regular: {
+          port: 22,
+          user: "root",
+          private: false,
+        },
+        emergency: {
+          root_password: "",
+          method: "VNC",
+          address: "",
+          username: "",
+          password: "",
+        },
+      },
+    },
 
     validate: {},
+
+    validateInputOnBlur: true,
   });
 
   return (
@@ -79,18 +269,14 @@ const EditServerModal = ({
               }}
               classNames={{ steps: classes.steps, content: classes.content }}
             >
-              <Stepper.Step label="Basic" icon={<IconServerBolt />}>
-                {Array(300)
-                  .fill("")
-                  .map((_, i) => (
-                    <div key={i}>Basic Information form</div>
-                  ))}
+              <Stepper.Step label="Basic Info" icon={<IconServerBolt />}>
+                <BasicInfoForm form={form} />
               </Stepper.Step>
-              <Stepper.Step label="Provider" icon={<IconBuildingStore />}>
-                Provider form
-              </Stepper.Step>
-              <Stepper.Step label="Location" icon={<IconMapPin />}>
-                Location form
+              <Stepper.Step
+                label="Provider & Location"
+                icon={<IconBuildingStore />}
+              >
+                <ProviderAndLocationForm form={form} />
               </Stepper.Step>
               <Stepper.Step label="Hardware" icon={<IconCpu />}>
                 Hardware form
