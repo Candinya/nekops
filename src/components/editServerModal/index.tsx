@@ -12,6 +12,7 @@ import { useState } from "react";
 import { useForm } from "@mantine/form";
 import {
   IconBuildingStore,
+  IconCheck,
   IconChevronLeft,
   IconChevronRight,
   IconCircleCheck,
@@ -128,7 +129,6 @@ const EditServerModal = ({
             <Group justify="center" mt="xl" pt="lg">
               <ActionIcon.Group>
                 <ActionIcon
-                  variant="filled"
                   size="lg"
                   radius="lg"
                   aria-label="Back"
@@ -138,7 +138,6 @@ const EditServerModal = ({
                   <IconChevronLeft />
                 </ActionIcon>
                 <ActionIcon
-                  variant="filled"
                   size="lg"
                   radius="lg"
                   aria-label="Next"
@@ -148,6 +147,15 @@ const EditServerModal = ({
                   <IconChevronRight />
                 </ActionIcon>
               </ActionIcon.Group>
+              <ActionIcon
+                size="lg"
+                radius="lg"
+                aria-label="Next"
+                onClick={() => setActiveStep(StepsCount)}
+                disabled={activeStep >= StepsCount}
+              >
+                <IconCheck />
+              </ActionIcon>
             </Group>
           </form>
         </Modal.Body>
