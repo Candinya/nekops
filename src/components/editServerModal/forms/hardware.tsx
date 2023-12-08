@@ -203,7 +203,7 @@ const HardwareForm = ({ form }: InputFormProps) => (
                   </Group>
                 </Grid.Col>
                 <Grid.Col span={3}>
-                  <Flex>
+                  <Flex gap="sm">
                     <NumberInput
                       label="Size"
                       allowNegative={false}
