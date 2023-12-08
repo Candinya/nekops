@@ -119,9 +119,6 @@ const EditServerModal = ({
                 All done! Please review your settings:
                 <Center>
                   <Group gap="md">
-                    <Button type="reset" color="red">
-                      Reset
-                    </Button>
                     <Button type="submit">Confirm</Button>
                   </Group>
                 </Center>
