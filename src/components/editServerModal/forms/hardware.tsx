@@ -20,6 +20,106 @@ import { IconPlus, IconTrash, IconX } from "@tabler/icons-react";
 import HDDIcon from "@/assets/hdd.svg";
 import SSDIcon from "@/assets/ssd.svg";
 
+interface DiskItemProps extends InputFormProps {
+  disk: Disk;
+  index: number;
+}
+const DiskItem = ({ disk, index, form }: DiskItemProps) => (
+  <Accordion.Item key={index} value={`disk_${index}`}>
+    <Center>
+      <Accordion.Control
+        icon={
+          <img
+            src={
+              disk.type === "HDD"
+                ? HDDIcon
+                : disk.type === "SSD"
+                  ? SSDIcon
+                  : undefined
+            }
+            alt={disk.type}
+            height={16}
+            width={16}
+          />
+        }
+      >
+        Disk {index + 1}: {disk.count > 1 && `${disk.count} × `} {disk.size}{" "}
+        {disk.size_unit} {disk.type} ({disk.interface})
+      </Accordion.Control>
+      <ActionIcon
+        size="lg"
+        variant={"subtle"}
+        color="red"
+        onClick={() => form.removeListItem("hardware.disk", index)}
+      >
+        <IconTrash />
+      </ActionIcon>
+    </Center>
+    <Accordion.Panel>
+      <Grid grow>
+        <Grid.Col span={2}>
+          <NumberInput
+            label="Count"
+            allowNegative={false}
+            allowDecimal={false}
+            allowLeadingZeros={false}
+            rightSection={<IconX size={16} />}
+            min={1}
+            {...form.getInputProps(`hardware.disk.${index}.count`)}
+          />
+        </Grid.Col>
+        <Grid.Col span={7}>
+          <Group grow gap="md">
+            <Flex direction="column">
+              <Text size="sm" fw={500} mb={2}>
+                Type
+              </Text>
+              <SegmentedControl
+                data={["HDD", "SSD"]}
+                {...form.getInputProps(`hardware.disk.${index}.type`)}
+              />
+            </Flex>
+            <Flex direction="column">
+              <Text size="sm" fw={500} mb={2}>
+                Interface
+              </Text>
+              <SegmentedControl
+                data={["SATA", "SAS", "NVMe"]}
+                {...form.getInputProps(`hardware.disk.${index}.interface`)}
+              />
+            </Flex>
+          </Group>
+        </Grid.Col>
+        <Grid.Col span={3}>
+          <Flex gap="sm">
+            <NumberInput
+              label="Size"
+              allowNegative={false}
+              decimalScale={2}
+              allowLeadingZeros={false}
+              {...form.getInputProps(`hardware.disk.${index}.size`)}
+            />
+            <Flex direction="column">
+              <Text size="sm" fw={500} mb={2}>
+                Unit
+              </Text>
+              <SegmentedControl
+                data={["GB", "TB"]}
+                {...form.getInputProps(`hardware.disk.${index}.size_unit`)}
+              />
+            </Flex>
+          </Flex>
+        </Grid.Col>
+      </Grid>
+      <TextInput
+        mt="md"
+        label="Model"
+        {...form.getInputProps(`hardware.disk.${index}.model`)}
+      />
+    </Accordion.Panel>
+  </Accordion.Item>
+);
+
 const HardwareForm = ({ form }: InputFormProps) => (
   <>
     <Fieldset legend="CPU">
@@ -135,103 +235,7 @@ const HardwareForm = ({ form }: InputFormProps) => (
     <Fieldset mt="md" legend="Disk">
       <Accordion>
         {form.values.hardware.disk.map((disk: Disk, index: number) => (
-          <Accordion.Item key={index} value={`disk_${index}`}>
-            <Center>
-              <Accordion.Control
-                icon={
-                  <img
-                    src={
-                      disk.type === "HDD"
-                        ? HDDIcon
-                        : disk.type === "SSD"
-                          ? SSDIcon
-                          : undefined
-                    }
-                    alt={disk.type}
-                    height={16}
-                    width={16}
-                  />
-                }
-              >
-                Disk {index + 1}: {disk.count > 1 && `${disk.count} × `}{" "}
-                {disk.size} {disk.size_unit} {disk.type} ({disk.interface})
-              </Accordion.Control>
-              <ActionIcon
-                size="lg"
-                variant="subtle"
-                color="red"
-                onClick={() => form.removeListItem("hardware.disk", index)}
-              >
-                <IconTrash />
-              </ActionIcon>
-            </Center>
-            <Accordion.Panel>
-              <Grid grow>
-                <Grid.Col span={2}>
-                  <NumberInput
-                    label="Count"
-                    allowNegative={false}
-                    allowDecimal={false}
-                    allowLeadingZeros={false}
-                    rightSection={<IconX size={16} />}
-                    min={1}
-                    {...form.getInputProps(`hardware.disk.${index}.count`)}
-                  />
-                </Grid.Col>
-                <Grid.Col span={7}>
-                  <Group grow gap="md">
-                    <Flex direction="column">
-                      <Text size="sm" fw={500} mb={2}>
-                        Type
-                      </Text>
-                      <SegmentedControl
-                        data={["HDD", "SSD"]}
-                        {...form.getInputProps(`hardware.disk.${index}.type`)}
-                      />
-                    </Flex>
-                    <Flex direction="column">
-                      <Text size="sm" fw={500} mb={2}>
-                        Interface
-                      </Text>
-                      <SegmentedControl
-                        data={["SATA", "SAS", "NVMe"]}
-                        {...form.getInputProps(
-                          `hardware.disk.${index}.interface`,
-                        )}
-                      />
-                    </Flex>
-                  </Group>
-                </Grid.Col>
-                <Grid.Col span={3}>
-                  <Flex gap="sm">
-                    <NumberInput
-                      label="Size"
-                      allowNegative={false}
-                      decimalScale={2}
-                      allowLeadingZeros={false}
-                      {...form.getInputProps(`hardware.disk.${index}.size`)}
-                    />
-                    <Flex direction="column">
-                      <Text size="sm" fw={500} mb={2}>
-                        Unit
-                      </Text>
-                      <SegmentedControl
-                        data={["GB", "TB"]}
-                        {...form.getInputProps(
-                          `hardware.disk.${index}.size_unit`,
-                        )}
-                      />
-                    </Flex>
-                  </Flex>
-                </Grid.Col>
-              </Grid>
-              <TextInput
-                mt="md"
-                label="Model"
-                {...form.getInputProps(`hardware.disk.${index}.model`)}
-              />
-            </Accordion.Panel>
-          </Accordion.Item>
+          <DiskItem disk={disk} index={index} form={form} />
         ))}
       </Accordion>
       <Center mt="md">
