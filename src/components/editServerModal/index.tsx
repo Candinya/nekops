@@ -1,9 +1,19 @@
-import { Button, Group, Modal, Stepper, Title } from "@mantine/core";
+import {
+  ActionIcon,
+  Button,
+  Center,
+  Group,
+  Modal,
+  Stepper,
+  Title,
+} from "@mantine/core";
 import type { Server } from "@/types/server.ts";
 import { useState } from "react";
 import { useForm } from "@mantine/form";
 import {
   IconBuildingStore,
+  IconChevronLeft,
+  IconChevronRight,
   IconCircleCheck,
   IconCpu,
   IconKey,
@@ -107,23 +117,40 @@ const EditServerModal = ({
               </Stepper.Step>
               <Stepper.Completed>
                 All done! Please review your settings:
+                <Center>
+                  <Group gap="md">
+                    <Button type="reset" color="red">
+                      Reset
+                    </Button>
+                    <Button type="submit">Confirm</Button>
+                  </Group>
+                </Center>
               </Stepper.Completed>
             </Stepper>
 
-            <Group justify="center" mt="xl" pt="1rem">
-              <Button
-                variant="default"
-                onClick={prevStep}
-                disabled={activeStep === 0}
-              >
-                Back
-              </Button>
-              <Button
-                onClick={nextStep}
-                type={activeStep < StepsCount ? "button" : "submit"}
-              >
-                {activeStep < StepsCount ? "Next" : "Confirm"}
-              </Button>
+            <Group justify="center" mt="xl" pt="lg">
+              <ActionIcon.Group>
+                <ActionIcon
+                  variant="filled"
+                  size="lg"
+                  radius="lg"
+                  aria-label="Back"
+                  onClick={prevStep}
+                  disabled={activeStep === 0}
+                >
+                  <IconChevronLeft />
+                </ActionIcon>
+                <ActionIcon
+                  variant="filled"
+                  size="lg"
+                  radius="lg"
+                  aria-label="Next"
+                  onClick={nextStep}
+                  disabled={activeStep >= StepsCount}
+                >
+                  <IconChevronRight />
+                </ActionIcon>
+              </ActionIcon.Group>
             </Group>
           </form>
         </Modal.Body>
