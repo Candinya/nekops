@@ -24,29 +24,36 @@ export type Location = {
   };
 };
 
+export type CPU = {
+  count: number;
+  manufacturer: string;
+  model: string;
+  core_count: number;
+  thread_count: number;
+  base_frequency: number; // GHz
+};
+
+export type Memory = {
+  generation: number;
+  ecc: boolean;
+  size: number; // GB
+  frequency: number; // MHz
+};
+
+export type Disk = {
+  count: number;
+  type: "HDD" | "SSD";
+  interface: "SATA" | "SAS" | "NVMe";
+  size: number;
+  size_unit: "GB" | "TB";
+  model: "";
+};
+
 export type Hardware = {
   hardware: {
-    cpu: {
-      manufacturer: "Intel" | "AMD" | "Other";
-      model: string;
-      count: number;
-      core_count: number;
-      thread_count: number;
-      base_frequency: number; // GHz
-    };
-    memory: {
-      generation: "DDR3" | "DDR4" | "DDR5";
-      ecc: boolean;
-      size: number; // GB
-      frequency: number; // MHz
-    };
-    disk: {
-      type: "HDD" | "SSD";
-      interface: "SATA" | "SAS" | "NVMe";
-      size: number;
-      size_unit: "GB" | "TB";
-      count: number;
-    }[];
+    cpu: CPU;
+    memory: Memory;
+    disk: Disk[];
   };
 };
 

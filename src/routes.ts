@@ -1,10 +1,10 @@
-import Home from "@/pages/home";
+import Home from "@/pages/home.tsx";
 import SSH from "@/pages/ssh.tsx";
-import Multirun from "@/pages/multirun";
-import Rescue from "@/pages/rescue";
-import Servers from "@/pages/servers";
-import Snippets from "@/pages/snippets";
-import Settings from "@/pages/settings";
+import Multirun from "@/pages/multirun.tsx";
+import Rescue from "@/pages/rescue.tsx";
+import Servers from "@/pages/servers.tsx";
+import Snippets from "@/pages/snippets.tsx";
+import Settings from "@/pages/settings.tsx";
 
 import {
   IconCirclesRelation,

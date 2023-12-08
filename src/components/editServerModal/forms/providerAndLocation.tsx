@@ -27,7 +27,7 @@ const ProviderAndLocationForm = ({ form }: InputFormProps) => (
         <Grid.Col span={3}>
           <Flex gap="md">
             <Flex direction="column">
-              <Text size="sm" fw={500} mb={3}>
+              <Text size="sm" fw={500} mb={2}>
                 Type
               </Text>
               <SegmentedControl

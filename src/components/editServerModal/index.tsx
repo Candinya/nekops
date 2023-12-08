@@ -26,6 +26,7 @@ import { serverDefault } from "./serverDefault.ts";
 
 import BasicInfoForm from "./forms/basicInfo";
 import ProviderAndLocationForm from "./forms/providerAndLocation";
+import HardwareForm from "@/components/editServerModal/forms/hardware.tsx";
 
 interface EditServerModalProps {
   isOpen: boolean;
@@ -108,7 +109,7 @@ const EditServerModal = ({
                 <ProviderAndLocationForm form={form} />
               </Stepper.Step>
               <Stepper.Step label="Hardware" icon={<IconCpu />}>
-                Hardware form
+                <HardwareForm form={form} />
               </Stepper.Step>
               <Stepper.Step label="Networks" icon={<IconNetwork />}>
                 Network form
@@ -152,7 +153,7 @@ const EditServerModal = ({
                 radius="lg"
                 aria-label="Next"
                 onClick={() => setActiveStep(StepsCount)}
-                disabled={activeStep >= StepsCount}
+                loading={activeStep >= StepsCount}
               >
                 <IconCheck />
               </ActionIcon>

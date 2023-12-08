@@ -23,15 +23,15 @@ export const serverDefault: Server = {
 
   hardware: {
     cpu: {
-      manufacturer: "Intel",
-      model: "",
       count: 1,
+      manufacturer: "",
+      model: "",
       core_count: 1,
       thread_count: 1,
-      base_frequency: 1,
+      base_frequency: 1.7,
     },
     memory: {
-      generation: "DDR4",
+      generation: 4,
       ecc: false,
       size: 1,
       frequency: 2400,
