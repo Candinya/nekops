@@ -3,6 +3,7 @@ import {
   Button,
   ColorInput,
   Fieldset,
+  Flex,
   Grid,
   Group,
   Modal,
@@ -76,7 +77,7 @@ const ProviderAndLocationForm = ({ form }: InputFormProps) => (
   <>
     <Fieldset legend="Provider">
       <Grid>
-        <Grid.Col span={8}>
+        <Grid.Col span={9}>
           <Autocomplete
             label="Provider"
             placeholder="Pick one or enter new"
@@ -84,23 +85,29 @@ const ProviderAndLocationForm = ({ form }: InputFormProps) => (
             {...form.getInputProps("provider.provider")}
           />
         </Grid.Col>
-        <Grid.Col span={2}>
-          <Text size="sm" fw={500} mb={3}>
-            Type
-          </Text>
-          <SegmentedControl
-            data={["VPS", "DS"]}
-            {...form.getInputProps("provider.type")}
-          />
-        </Grid.Col>
-        <Grid.Col span={2}>
-          <NumberInput
-            label="Monthly Price"
-            leftSection={<IconCurrencyDollar />}
-            decimalScale={2}
-            fixedDecimalScale
-            {...form.getInputProps("provider.price")}
-          />
+        <Grid.Col span={3}>
+          <Flex gap="md">
+            <Flex direction="column">
+              <Text size="sm" fw={500} mb={3}>
+                Type
+              </Text>
+              <SegmentedControl
+                data={["VPS", "DS"]}
+                {...form.getInputProps("provider.type")}
+              />
+            </Flex>
+            <NumberInput
+              label="Monthly Price"
+              leftSection={<IconCurrencyDollar />}
+              decimalScale={2}
+              fixedDecimalScale
+              allowNegative={false}
+              style={{
+                flexGrow: 1,
+              }}
+              {...form.getInputProps("provider.price")}
+            />
+          </Flex>
         </Grid.Col>
       </Grid>
       <TextInput
