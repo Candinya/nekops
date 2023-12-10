@@ -1,10 +1,10 @@
 import { AppShell } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import Router from "@/router.tsx";
-import Header from "@/components/header.tsx";
-import Nav from "@/components/nav.tsx";
-import Footer from "@/components/footer.tsx";
-import NotificationCenter from "@/components/notificationCenter.tsx";
+import Header from "@/components/Header.tsx";
+import Nav from "@/components/Nav.tsx";
+import Footer from "@/components/Footer.tsx";
+import NotificationCenter from "@/components/NotificationCenter.tsx";
 
 const App = () => {
   const [isNavOpen, { toggle: toggleNavOpen }] = useDisclosure(true);

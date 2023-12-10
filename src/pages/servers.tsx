@@ -1,6 +1,6 @@
 import { useDisclosure } from "@mantine/hooks";
 import { Button } from "@mantine/core";
-import EditServerModal from "@/components/editServerModal";
+import EditServerModal from "@/components/EditServerModal";
 import { useRef } from "react";
 import type { Server } from "@/types/server.ts";
 

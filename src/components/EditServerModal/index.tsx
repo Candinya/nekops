@@ -24,10 +24,10 @@ import {
 import stepperClasses from "./stepper.module.css";
 import { serverDefault } from "./serverDefault.ts";
 
-import BasicInfoForm from "./forms/basicInfo.tsx";
-import ProviderAndLocationForm from "./forms/providerAndLocation.tsx";
-import HardwareForm from "./forms/hardware.tsx";
-import NetworksForm from "./forms/networks.tsx";
+import BasicInfoForm from "./forms/BasicInfo.tsx";
+import ProviderAndLocationForm from "./forms/ProviderAndLocation.tsx";
+import HardwareForm from "./forms/Hardware.tsx";
+import NetworksForm from "./forms/Networks.tsx";
 
 interface EditServerModalProps {
   isOpen: boolean;
