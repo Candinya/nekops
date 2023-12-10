@@ -28,6 +28,7 @@ import BasicInfoForm from "./forms/BasicInfo.tsx";
 import ProviderAndLocationForm from "./forms/ProviderAndLocation.tsx";
 import HardwareForm from "./forms/Hardware.tsx";
 import NetworksForm from "./forms/Networks.tsx";
+import AccessForm from "@/components/EditServerModal/forms/Access.tsx";
 
 interface EditServerModalProps {
   isOpen: boolean;
@@ -116,7 +117,7 @@ const EditServerModal = ({
                 <NetworksForm form={form} />
               </Stepper.Step>
               <Stepper.Step label="Access" icon={<IconKey />}>
-                Access form
+                <AccessForm form={form} />
               </Stepper.Step>
               <Stepper.Completed>
                 All done! Please review your settings:
