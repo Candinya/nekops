@@ -24,9 +24,10 @@ import {
 import stepperClasses from "./stepper.module.css";
 import { serverDefault } from "./serverDefault.ts";
 
-import BasicInfoForm from "./forms/basicInfo";
-import ProviderAndLocationForm from "./forms/providerAndLocation";
-import HardwareForm from "@/components/editServerModal/forms/hardware.tsx";
+import BasicInfoForm from "./forms/basicInfo.tsx";
+import ProviderAndLocationForm from "./forms/providerAndLocation.tsx";
+import HardwareForm from "./forms/hardware.tsx";
+import NetworksForm from "./forms/networks.tsx";
 
 interface EditServerModalProps {
   isOpen: boolean;
@@ -112,7 +113,7 @@ const EditServerModal = ({
                 <HardwareForm form={form} />
               </Stepper.Step>
               <Stepper.Step label="Networks" icon={<IconNetwork />}>
-                Network form
+                <NetworksForm form={form} />
               </Stepper.Step>
               <Stepper.Step label="Access" icon={<IconKey />}>
                 Access form

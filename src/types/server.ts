@@ -57,20 +57,17 @@ export type Hardware = {
   };
 };
 
-export type NetworkPublic = {
-  ipv4: string[];
-  ipv6: string[];
-};
-
-export type NetworkPrivate = {
-  ip: string;
-  // groups: string[]; // use BaseInfo.tags
+export type IP = {
+  address: string;
+  cidr_prefix: number;
+  family: "IPv4" | "IPv6";
+  comment: string;
 };
 
 export type Network = {
   network: {
-    public: NetworkPublic;
-    private: NetworkPrivate;
+    public: IP[];
+    private: IP[];
   };
 };
 

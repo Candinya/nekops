@@ -40,13 +40,8 @@ export const serverDefault: Server = {
   },
 
   network: {
-    public: {
-      ipv4: [],
-      ipv6: [],
-    },
-    private: {
-      ip: "",
-    },
+    public: [],
+    private: [],
   },
 
   access: {
