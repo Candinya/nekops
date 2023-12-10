@@ -1,7 +1,6 @@
 import type { InputFormProps } from "../inputFormProps.ts";
 import {
   Accordion,
-  ActionIcon,
   Button,
   Center,
   Fieldset,
@@ -12,8 +11,9 @@ import {
   Text,
   TextInput,
 } from "@mantine/core";
-import { IconPlus, IconSitemap, IconTrash } from "@tabler/icons-react";
+import { IconPlus, IconSitemap } from "@tabler/icons-react";
 import type { IP } from "@/types/server.ts";
+import AccordionDeleteItemButton from "@/components/AccordionDeleteItemButton.tsx";
 
 interface IPItemProps extends InputFormProps {
   ip: IP;
@@ -30,14 +30,9 @@ const IPItem = ({ ip, formListItem, index, form }: IPItemProps) => (
           : `[${ip.address}/${ip.cidr_prefix}]`}{" "}
         - {ip.comment}
       </Accordion.Control>
-      <ActionIcon
-        size="lg"
-        variant={"subtle"}
-        color="red"
+      <AccordionDeleteItemButton
         onClick={() => form.removeListItem(formListItem, index)}
-      >
-        <IconTrash />
-      </ActionIcon>
+      />
     </Center>
     <Accordion.Panel>
       <Group>

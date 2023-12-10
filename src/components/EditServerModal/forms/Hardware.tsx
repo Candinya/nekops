@@ -2,7 +2,6 @@ import type { InputFormProps } from "../inputFormProps.ts";
 import type { Disk } from "@/types/server.ts";
 import {
   Accordion,
-  ActionIcon,
   Autocomplete,
   Button,
   Center,
@@ -16,9 +15,10 @@ import {
   Text,
   TextInput,
 } from "@mantine/core";
-import { IconPlus, IconTrash, IconX } from "@tabler/icons-react";
+import { IconPlus, IconX } from "@tabler/icons-react";
 import HDDIcon from "@/assets/hdd.svg";
 import SSDIcon from "@/assets/ssd.svg";
+import AccordionDeleteItemButton from "@/components/AccordionDeleteItemButton.tsx";
 
 interface DiskItemProps extends InputFormProps {
   disk: Disk;
@@ -46,14 +46,9 @@ const DiskItem = ({ disk, index, form }: DiskItemProps) => (
         Disk {index + 1}: {disk.count > 1 && `${disk.count} × `} {disk.size}{" "}
         {disk.size_unit} {disk.type} ({disk.interface})
       </Accordion.Control>
-      <ActionIcon
-        size="lg"
-        variant={"subtle"}
-        color="red"
+      <AccordionDeleteItemButton
         onClick={() => form.removeListItem("hardware.disk", index)}
-      >
-        <IconTrash />
-      </ActionIcon>
+      />
     </Center>
     <Accordion.Panel>
       <Grid grow>
