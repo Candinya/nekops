@@ -1,10 +1,10 @@
 import {
   ActionIcon,
-  Button,
-  Center,
+  Flex,
   Group,
   Modal,
   Stepper,
+  Text,
   Title,
 } from "@mantine/core";
 import type { Server } from "@/types/server.ts";
@@ -29,6 +29,7 @@ import ProviderAndLocationForm from "./forms/ProviderAndLocation.tsx";
 import HardwareForm from "./forms/Hardware.tsx";
 import NetworksForm from "./forms/Networks.tsx";
 import AccessForm from "@/components/EditServerModal/forms/Access.tsx";
+import ServerCard from "@/components/ServerCard.tsx";
 
 interface EditServerModalProps {
   isOpen: boolean;
@@ -56,6 +57,10 @@ const EditServerModal = ({
 
     validateInputOnBlur: true,
   });
+
+  const saveServer = (serverProps: Server) => {
+    console.log(serverProps);
+  };
 
   return (
     <Modal.Root
@@ -86,7 +91,7 @@ const EditServerModal = ({
               flexDirection: "column",
               height: "100%",
             }}
-            onSubmit={form.onSubmit((values) => console.log(values))}
+            onSubmit={form.onSubmit(saveServer)}
           >
             <Stepper
               active={activeStep}
@@ -120,12 +125,13 @@ const EditServerModal = ({
                 <AccessForm form={form} />
               </Stepper.Step>
               <Stepper.Completed>
-                All done! Please review your settings:
-                <Center>
-                  <Group gap="md">
-                    <Button type="submit">Confirm</Button>
-                  </Group>
-                </Center>
+                <Flex direction="column" gap="md">
+                  <Text>All done! Click below card to confirm</Text>
+                  <ServerCard
+                    server={form.values}
+                    onClick={form.onSubmit(saveServer)}
+                  />
+                </Flex>
               </Stepper.Completed>
             </Stepper>
 
