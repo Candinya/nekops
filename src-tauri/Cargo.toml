@@ -1,7 +1,7 @@
 [package]
 name = "nekops"
 version = "0.0.0"
-description = "A nya-ing tool"
+description = "Nekops"
 authors = ["Nya Candy"]
 license = ""
 repository = ""
