@@ -1,6 +1,6 @@
 import type { Server } from "@/types/server.ts";
-import { Box, Card, Flex, Text, Title } from "@mantine/core";
-import { IconServer } from "@tabler/icons-react";
+import { Box, Card, Flex, Pill, Text, Title } from "@mantine/core";
+import { IconServer, IconTag } from "@tabler/icons-react";
 import { useHover } from "@mantine/hooks";
 
 import CPU from "@/icons/CPU.tsx";
@@ -17,10 +17,10 @@ const ServerCard = ({ server, onClick }: ServerCardProps) => {
       shadow={Boolean(onClick) && hovered ? "lg" : "sm"}
       radius="md"
       withBorder
-      h="12rem"
       style={{
         cursor: Boolean(onClick) ? "pointer" : undefined,
         transition: "all .2s",
+        minHeight: "12rem",
       }}
       onClick={onClick}
       ref={ref}
@@ -49,14 +49,30 @@ const ServerCard = ({ server, onClick }: ServerCardProps) => {
       />
       <Flex
         justify="space-between"
+        gap="xl"
         direction="column"
         h="100%"
         ml=".5rem"
         w="calc(100% - 16rem)"
+        style={{
+          flexGrow: 1,
+        }}
       >
-        <Title order={2} size="h1">
-          {server.name}
-        </Title>
+        <Flex direction="column" gap="xs">
+          <Title order={2} size="h1">
+            {server.name}
+          </Title>
+          <Pill.Group>
+            {server.tags.map((tag) => (
+              <Pill key={tag}>
+                <Flex align="center" gap={6}>
+                  <IconTag size={12} />
+                  <span>{tag}</span>
+                </Flex>
+              </Pill>
+            ))}
+          </Pill.Group>
+        </Flex>
         <Flex direction="column">
           <Flex gap="md" opacity="80%">
             <Flex gap={6}>
@@ -74,7 +90,7 @@ const ServerCard = ({ server, onClick }: ServerCardProps) => {
             </Flex>
             <Flex gap={6}>
               <RAM
-                width={18}
+                width={24}
                 height={24}
                 style={{
                   flexShrink: 0,
@@ -82,15 +98,6 @@ const ServerCard = ({ server, onClick }: ServerCardProps) => {
               />
               <Text>{server.hardware.memory.size}GB</Text>
             </Flex>
-          </Flex>
-          <Flex gap="md">
-            <Text>
-              {server.network.private.length > 0
-                ? server.network.private[0].address
-                : server.network.public.length > 0
-                  ? server.network.public[0].address
-                  : ""}
-            </Text>
           </Flex>
         </Flex>
       </Flex>
