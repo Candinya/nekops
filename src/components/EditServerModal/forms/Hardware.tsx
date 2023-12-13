@@ -25,7 +25,7 @@ interface DiskItemProps extends InputFormProps {
   index: number;
 }
 const DiskItem = ({ disk, index, form }: DiskItemProps) => (
-  <Accordion.Item key={index} value={`disk_${index}`}>
+  <Accordion.Item value={`disk_${index}`}>
     <Center>
       <Accordion.Control
         icon={
@@ -230,7 +230,7 @@ const HardwareForm = ({ form }: InputFormProps) => (
     <Fieldset mt="md" legend="Disk">
       <Accordion>
         {form.values.hardware.disk.map((disk: Disk, index: number) => (
-          <DiskItem disk={disk} index={index} form={form} />
+          <DiskItem key={index} disk={disk} index={index} form={form} />
         ))}
       </Accordion>
       <Center mt="md">

@@ -21,7 +21,7 @@ interface IPItemProps extends InputFormProps {
   index: number;
 }
 const IPItem = ({ ip, formListItem, index, form }: IPItemProps) => (
-  <Accordion.Item key={index} value={`disk_${index}`}>
+  <Accordion.Item value={`disk_${index}`}>
     <Center>
       <Accordion.Control icon={<IconSitemap color="gray" size={16} />}>
         IP {index + 1}:{" "}
@@ -80,6 +80,7 @@ const NetworkIPGroup = ({ isPrivate, mt, form }: NetworkIPGroupProps) => (
       {form.values.network[isPrivate ? "private" : "public"].map(
         (ip: IP, index: number) => (
           <IPItem
+            key={index}
             ip={ip}
             formListItem={`network.${isPrivate ? "private" : "public"}`}
             index={index}
