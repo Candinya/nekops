@@ -1,5 +1,15 @@
 import type { Server } from "@/types/server.ts";
-import { Box, Card, Flex, Pill, Text, Title } from "@mantine/core";
+import {
+  Badge,
+  Box,
+  Card,
+  Flex,
+  Group,
+  Pill,
+  Text,
+  Title,
+  Tooltip,
+} from "@mantine/core";
 import { IconServer, IconTag } from "@tabler/icons-react";
 import { useHover } from "@mantine/hooks";
 
@@ -59,9 +69,14 @@ const ServerCard = ({ server, onClick }: ServerCardProps) => {
         }}
       >
         <Flex direction="column" gap="xs">
-          <Title order={2} size="h1">
-            {server.name}
-          </Title>
+          <Group>
+            <Title order={2} size="h1">
+              {server.name}
+            </Title>
+            <Tooltip label={server.id}>
+              <Badge bg={server.color}>{server.id.split(".")?.[0]}</Badge>
+            </Tooltip>
+          </Group>
           <Pill.Group>
             {server.tags.map((tag) => (
               <Pill key={tag}>
@@ -75,29 +90,46 @@ const ServerCard = ({ server, onClick }: ServerCardProps) => {
         </Flex>
         <Flex direction="column">
           <Flex gap="md" opacity="80%">
-            <Flex gap={6}>
-              <CPU
-                width={24}
-                height={24}
-                style={{
-                  flexShrink: 0,
-                }}
-              />
-              <Text>
-                {server.hardware.cpu.count * server.hardware.cpu.core_count}C
-                {server.hardware.cpu.count * server.hardware.cpu.thread_count}T
-              </Text>
-            </Flex>
-            <Flex gap={6}>
-              <RAM
-                width={24}
-                height={24}
-                style={{
-                  flexShrink: 0,
-                }}
-              />
-              <Text>{server.hardware.memory.size}GB</Text>
-            </Flex>
+            <Tooltip
+              label={`${
+                server.hardware.cpu.count > 1
+                  ? `${server.hardware.cpu.count} × `
+                  : ""
+              }${server.hardware.cpu.manufacturer} ${
+                server.hardware.cpu.model
+              }`}
+            >
+              <Flex gap={6}>
+                <CPU
+                  width={24}
+                  height={24}
+                  style={{
+                    flexShrink: 0,
+                  }}
+                />
+                <Text>
+                  {server.hardware.cpu.count * server.hardware.cpu.core_count}C
+                  {server.hardware.cpu.count * server.hardware.cpu.thread_count}
+                  T
+                </Text>
+              </Flex>
+            </Tooltip>
+            <Tooltip
+              label={`DDR${server.hardware.memory.generation}${
+                server.hardware.memory.ecc ? " ECC" : ""
+              } ${server.hardware.memory.frequency}MHz`}
+            >
+              <Flex gap={6}>
+                <RAM
+                  width={24}
+                  height={24}
+                  style={{
+                    flexShrink: 0,
+                  }}
+                />
+                <Text>{server.hardware.memory.size}GB</Text>
+              </Flex>
+            </Tooltip>
           </Flex>
         </Flex>
       </Flex>
