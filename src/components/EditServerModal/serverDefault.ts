@@ -24,11 +24,11 @@ export const serverDefault: Server = {
   hardware: {
     cpu: {
       count: 1,
-      manufacturer: "",
-      model: "",
+      manufacturer: "Unknown",
+      model: "Generic processor",
       core_count: 1,
       thread_count: 1,
-      base_frequency: 1.7,
+      base_frequency: 1,
     },
     memory: {
       generation: 4,
