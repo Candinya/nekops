@@ -6,6 +6,7 @@ import {
   Flex,
   Group,
   Pill,
+  rem,
   Text,
   Title,
   Tooltip,
@@ -30,7 +31,7 @@ const ServerCard = ({ server, onClick }: ServerCardProps) => {
       style={{
         cursor: Boolean(onClick) ? "pointer" : undefined,
         transition: "all .2s",
-        minHeight: "12rem",
+        minHeight: rem(12 * 16),
       }}
       onClick={onClick}
       ref={ref}
@@ -38,23 +39,24 @@ const ServerCard = ({ server, onClick }: ServerCardProps) => {
       <Box
         bg={server.color}
         style={{
-          height: "24rem",
-          width: "24rem",
-          borderRadius: "24rem",
+          height: rem(24 * 16),
+          width: rem(24 * 16),
+          borderRadius: rem(24 * 16),
           justifyContent: "center",
           position: "absolute",
-          right: "-9rem",
-          bottom: "-9rem",
+          right: rem(-9 * 16),
+          bottom: rem(-9 * 16),
         }}
       />
       <IconServer
-        size="10rem"
         color="white"
         opacity="30%"
         style={{
+          width: rem(10 * 16),
+          height: rem(10 * 16),
           position: "absolute",
-          bottom: "-0.5rem",
-          right: "0rem",
+          bottom: rem(-0.5 * 16),
+          right: 0,
         }}
       />
       <Flex
@@ -62,8 +64,8 @@ const ServerCard = ({ server, onClick }: ServerCardProps) => {
         gap="xl"
         direction="column"
         h="100%"
-        ml=".5rem"
-        w="calc(100% - 16rem)"
+        ml={rem(0.5 * 16)}
+        w={`calc(100% - ${rem(16 * 16)})`}
         style={{
           flexGrow: 1,
         }}
