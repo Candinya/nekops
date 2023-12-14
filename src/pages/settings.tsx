@@ -82,7 +82,9 @@ const Settings = () => {
         </Flex>
 
         <ButtonGroup mt="lg">
-          <Button type="submit">Save</Button>
+          <Button type="submit" disabled={!form.isDirty()}>
+            Save
+          </Button>
         </ButtonGroup>
       </form>
     </Box>
