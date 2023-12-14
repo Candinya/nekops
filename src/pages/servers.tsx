@@ -148,7 +148,7 @@ const ServerCardModal = ({
   </Modal>
 );
 
-const Servers = () => {
+const ServersPage = () => {
   const [
     isEditServerModalOpen,
     { open: openEditServerModal, close: closeEditServerModal },
@@ -250,4 +250,4 @@ const Servers = () => {
   );
 };
 
-export default Servers;
+export default ServersPage;

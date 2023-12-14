@@ -1,4 +1,4 @@
-import type { Settings } from "@/types/settings.ts";
+import { defaultSettings, type Settings } from "@/types/settings.ts";
 import { useForm } from "@mantine/form";
 import {
   Box,
@@ -40,12 +40,9 @@ const colorSchemeData = [
   value: item.value,
 }));
 
-const Settings = () => {
+const SettingsPage = () => {
   const form = useForm<Settings>({
-    initialValues: {
-      data_dir: "~/.nekops/",
-      color_scheme: "auto",
-    },
+    initialValues: defaultSettings,
 
     validate: {},
 
@@ -92,4 +89,4 @@ const Settings = () => {
   );
 };
 
-export default Settings;
+export default SettingsPage;

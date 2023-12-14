@@ -9,7 +9,7 @@ import {
   Text,
   Title,
 } from "@mantine/core";
-import type { Server } from "@/types/server.ts";
+import { defaultServer, type Server } from "@/types/server.ts";
 import { useEffect, useState } from "react";
 import { useForm } from "@mantine/form";
 import {
@@ -24,7 +24,6 @@ import {
   IconServerBolt,
 } from "@tabler/icons-react";
 import stepperClasses from "./stepper.module.css";
-import { serverDefault } from "./serverDefault.ts";
 
 import BasicInfoForm from "./forms/BasicInfo.tsx";
 import ProviderAndLocationForm from "./forms/ProviderAndLocation.tsx";
@@ -53,7 +52,7 @@ const EditServerModal = ({
     setActiveStep((current) => (current > 0 ? current - 1 : current));
 
   const form = useForm<Server>({
-    initialValues: serverDefault,
+    initialValues: defaultServer,
 
     validate: {
       id: (value) => !value, // Not empty
@@ -72,7 +71,7 @@ const EditServerModal = ({
       if (!!serverInfo) {
         form.setInitialValues(serverInfo);
       } else {
-        form.setInitialValues(serverDefault);
+        form.setInitialValues(defaultServer);
       }
       form.reset();
       setActiveStep(0);

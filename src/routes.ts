@@ -1,9 +1,9 @@
-import Home from "@/pages/home.tsx";
+import HomePage from "@/pages/home.tsx";
 import SSH from "@/pages/ssh.tsx";
-import Multirun from "@/pages/multirun.tsx";
-import Rescue from "@/pages/rescue.tsx";
-import Servers from "@/pages/servers.tsx";
-import Snippets from "@/pages/snippets.tsx";
+import MultirunPage from "@/pages/multirun.tsx";
+import RescuePage from "@/pages/rescue.tsx";
+import ServersPage from "@/pages/servers.tsx";
+import SnippetsPage from "@/pages/snippets.tsx";
 import Settings from "@/pages/settings.tsx";
 
 import {
@@ -21,7 +21,7 @@ import {
 export const routes = [
   {
     path: "/",
-    page: Home,
+    page: HomePage,
   },
   {
     path: "/ssh",
@@ -29,19 +29,19 @@ export const routes = [
   },
   {
     path: "/multirun",
-    page: Multirun,
+    page: MultirunPage,
   },
   {
     path: "/rescue",
-    page: Rescue,
+    page: RescuePage,
   },
   {
     path: "/servers",
-    page: Servers,
+    page: ServersPage,
   },
   {
     path: "/snippets",
-    page: Snippets,
+    page: SnippetsPage,
   },
   {
     path: "/settings",

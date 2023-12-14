@@ -111,7 +111,7 @@ const SnippetTable = ({ snippets, copy, edit, del }: SnippetTableProps) => (
   </Table>
 );
 
-const Snippets = () => {
+const SnippetsPage = () => {
   const [
     isEditSnippetModalOpen,
     { open: openEditSnippetModal, close: closeEditSnippetModal },
@@ -221,4 +221,4 @@ const Snippets = () => {
   );
 };
 
-export default Snippets;
+export default SnippetsPage;

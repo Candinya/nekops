@@ -1,3 +1,3 @@
-const Multirun = () => <h1>Multirun</h1>;
+const MultirunPage = () => <h1>Multirun</h1>;
 
-export default Multirun;
+export default MultirunPage;

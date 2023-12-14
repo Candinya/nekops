@@ -1,12 +1,7 @@
 import { Button, Modal, Textarea, TextInput } from "@mantine/core";
-import type { Snippet } from "@/types/snippet.ts";
+import { defaultSnippet, type Snippet } from "@/types/snippet.ts";
 import { useForm } from "@mantine/form";
 import { useEffect } from "react";
-
-const snippetDefault = {
-  name: "",
-  code: "",
-};
 
 interface EditSnippetModalProps {
   isOpen: boolean;
@@ -21,7 +16,7 @@ const EditSnippetModal = ({
   save,
 }: EditSnippetModalProps) => {
   const form = useForm<Snippet>({
-    initialValues: snippetDefault,
+    initialValues: defaultSnippet,
     validate: {
       name: (value) => !value, // Not empty
       code: (value) => !value,
@@ -37,7 +32,7 @@ const EditSnippetModal = ({
       if (!!snippetInfo) {
         form.setInitialValues(snippetInfo);
       } else {
-        form.setInitialValues(snippetDefault);
+        form.setInitialValues(defaultSnippet);
       }
       form.reset();
     }
