@@ -14,6 +14,32 @@ import {
 } from "@mantine/core";
 import { IconBolt, IconMoon, IconSun } from "@tabler/icons-react";
 
+const colorSchemeData = [
+  {
+    icon: IconBolt,
+    text: "Auto",
+    value: "auto",
+  },
+  {
+    icon: IconSun,
+    text: "Light",
+    value: "light",
+  },
+  {
+    icon: IconMoon,
+    text: "Dark",
+    value: "dark",
+  },
+].map((item) => ({
+  label: (
+    <Center style={{ gap: 10 }}>
+      <item.icon style={{ width: rem(16), height: rem(16) }} />
+      <span>{item.text}</span>
+    </Center>
+  ),
+  value: item.value,
+}));
+
 const Settings = () => {
   const form = useForm<Settings>({
     initialValues: {
@@ -29,8 +55,11 @@ const Settings = () => {
   const { setColorScheme } = useMantineColorScheme();
 
   const saveSettings = (settings: Settings) => {
-    console.log(settings);
+    console.log(settings); // TODO: Save settings
+    // Apply
     setColorScheme(settings.color_scheme);
+    // Update settings
+    form.setInitialValues(settings);
   };
 
   return (
@@ -47,35 +76,7 @@ const Settings = () => {
               Color Scheme
             </Text>
             <SegmentedControl
-              data={[
-                {
-                  label: (
-                    <Center style={{ gap: 10 }}>
-                      <IconBolt style={{ width: rem(16), height: rem(16) }} />
-                      <span>Auto</span>
-                    </Center>
-                  ),
-                  value: "auto",
-                },
-                {
-                  label: (
-                    <Center style={{ gap: 10 }}>
-                      <IconSun style={{ width: rem(16), height: rem(16) }} />
-                      <span>Light</span>
-                    </Center>
-                  ),
-                  value: "light",
-                },
-                {
-                  label: (
-                    <Center style={{ gap: 10 }}>
-                      <IconMoon style={{ width: rem(16), height: rem(16) }} />
-                      <span>Dark</span>
-                    </Center>
-                  ),
-                  value: "dark",
-                },
-              ]}
+              data={colorSchemeData}
               {...form.getInputProps("color_scheme")}
             />
           </Flex>
