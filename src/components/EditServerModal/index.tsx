@@ -1,5 +1,7 @@
 import {
   ActionIcon,
+  Button,
+  Center,
   Flex,
   Group,
   Modal,
@@ -8,7 +10,7 @@ import {
   Title,
 } from "@mantine/core";
 import type { Server } from "@/types/server.ts";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "@mantine/form";
 import {
   IconBuildingStore,
@@ -29,18 +31,18 @@ import ProviderAndLocationForm from "./forms/ProviderAndLocation.tsx";
 import HardwareForm from "./forms/Hardware.tsx";
 import NetworksForm from "./forms/Networks.tsx";
 import AccessForm from "@/components/EditServerModal/forms/Access.tsx";
-import ServerCard from "@/components/ServerCard.tsx";
 
 interface EditServerModalProps {
   isOpen: boolean;
   close: () => void;
-  isCreateNew: boolean;
+  serverInfo?: Server;
   save: (info: Server) => void;
 }
 const EditServerModal = ({
   isOpen,
   close,
-  isCreateNew,
+  serverInfo,
+  save,
 }: EditServerModalProps) => {
   const StepsCount = 5;
 
@@ -59,8 +61,21 @@ const EditServerModal = ({
   });
 
   const saveServer = (serverProps: Server) => {
-    console.log(serverProps);
+    save(serverProps);
+    close();
   };
+
+  useEffect(() => {
+    if (isOpen) {
+      if (!!serverInfo) {
+        form.setInitialValues(serverInfo);
+      } else {
+        form.setInitialValues(serverDefault);
+      }
+      form.reset();
+      setActiveStep(0);
+    }
+  }, [isOpen]);
 
   return (
     <Modal.Root
@@ -80,7 +95,7 @@ const EditServerModal = ({
       >
         <Modal.Header>
           <Title order={1} size="h3">
-            {isCreateNew ? "Add new server" : "Edit server"}
+            {serverInfo ? `Edit ${serverInfo.id}` : "Add new server"}
           </Title>
           <Modal.CloseButton />
         </Modal.Header>
@@ -126,11 +141,10 @@ const EditServerModal = ({
               </Stepper.Step>
               <Stepper.Completed>
                 <Flex direction="column" gap="md">
-                  <Text>All done! Click below card to confirm</Text>
-                  <ServerCard
-                    server={form.values}
-                    onClick={form.onSubmit(saveServer)}
-                  />
+                  <Text>All done!</Text>
+                  <Center>
+                    <Button type="submit">Save</Button>
+                  </Center>
                 </Flex>
               </Stepper.Completed>
             </Stepper>

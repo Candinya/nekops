@@ -76,7 +76,7 @@ const ServerCard = ({ server, onClick }: ServerCardProps) => {
               {server.name}
             </Title>
             <Tooltip label={server.id}>
-              <Badge bg={server.color}>{server.id.split(".")?.[0]}</Badge>
+              <Badge color={server.color}>{server.id.split(".")?.[0]}</Badge>
             </Tooltip>
           </Group>
           <Pill.Group>

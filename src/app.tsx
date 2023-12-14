@@ -39,7 +39,7 @@ const App = () => {
         <Nav />
       </AppShell.Navbar>
 
-      <AppShell.Main>
+      <AppShell.Main h={"100dvh"}>
         <Router />
 
         <NotificationCenter
