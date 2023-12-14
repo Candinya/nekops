@@ -1,4 +1,4 @@
-import { Button, Modal, TextInput } from "@mantine/core";
+import { Button, Modal, Textarea, TextInput } from "@mantine/core";
 import type { Snippet } from "@/types/snippet.ts";
 import { useForm } from "@mantine/form";
 import { useEffect } from "react";
@@ -24,6 +24,7 @@ const EditSnippetModal = ({
     initialValues: snippetDefault,
     validate: {
       name: (value) => !value, // Not empty
+      code: (value) => !value,
     },
   });
   const saveSnippet = (snippetInfo: Snippet) => {
@@ -53,6 +54,14 @@ const EditSnippetModal = ({
     >
       <form onSubmit={form.onSubmit(saveSnippet)}>
         <TextInput label="Name" withAsterisk {...form.getInputProps("name")} />
+
+        <Textarea
+          label="Code"
+          withAsterisk
+          autosize
+          minRows={8}
+          {...form.getInputProps("code")}
+        />
 
         <Button mt="lg" type="submit">
           Save

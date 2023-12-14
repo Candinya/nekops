@@ -109,7 +109,7 @@ const ServerTable = ({ servers, show, edit, del }: ServerTableProps) => (
     <Table.Caption>
       {servers.length > 0
         ? `Total ${servers.length} servers.`
-        : "Time to add first server!"}
+        : "Let's add first server!"}
     </Table.Caption>
   </Table>
 );
@@ -185,6 +185,7 @@ const Servers = () => {
           <Flex direction="row" justify="space-between" gap="lg">
             <TextInput
               leftSection={<IconSearch />}
+              placeholder="Search servers"
               style={{
                 flexGrow: 1,
               }}

@@ -30,7 +30,7 @@ const actionRowStyle = {
 const SnippetTableHead = () => (
   <Table.Tr>
     <Table.Th>#</Table.Th>
-    <Table.Th>Name</Table.Th>
+    <Table.Th>Snippet Name</Table.Th>
     <Table.Th style={actionRowStyle}>Actions</Table.Th>
   </Table.Tr>
 );
@@ -104,7 +104,7 @@ const SnippetTable = ({ snippets, copy, edit, del }: SnippetTableProps) => (
     <Table.Caption>
       {snippets.length > 0
         ? `Total ${snippets.length} snippets.`
-        : "Time to add first snippet!"}
+        : "Let's add first snippet!"}
     </Table.Caption>
   </Table>
 );
@@ -146,6 +146,7 @@ const Snippets = () => {
           <Flex direction="row" justify="space-between" gap="lg">
             <TextInput
               leftSection={<IconSearch />}
+              placeholder="Search snippets"
               style={{
                 flexGrow: 1,
               }}
