@@ -1,10 +1,12 @@
 import {
   ActionIcon,
   Box,
+  Code,
   Flex,
   Group,
   ScrollArea,
   Table,
+  Text,
   TextInput,
   Tooltip,
 } from "@mantine/core";
@@ -177,8 +179,13 @@ const Snippets = () => {
 
                 notifications.show({
                   color: "green",
-                  title: "Copy successfully!",
-                  message: `Feel free to paste this snippet ${snippets[index].name} anywhere 😉`,
+                  title: "Copied successfully!",
+                  message: (
+                    <Text>
+                      Feel free to paste this snippet{" "}
+                      <Code>{snippets[index].name}</Code> anywhere
+                    </Text>
+                  ),
                 });
               } catch (e) {
                 notifications.show({
