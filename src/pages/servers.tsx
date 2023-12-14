@@ -10,6 +10,7 @@ import {
   Table,
   Text,
   TextInput,
+  Tooltip,
 } from "@mantine/core";
 import EditServerModal from "@/components/EditServerModal";
 import { useState } from "react";
@@ -23,12 +24,18 @@ import {
 } from "@tabler/icons-react";
 import ServerCard from "@/components/ServerCard.tsx";
 
+const actionIconStyle = { width: "70%", height: "70%" };
+
+const actionRowStyle = {
+  width: "calc(8rem * var(--mantine-scale))",
+};
+
 const ServerTableHead = () => (
   <Table.Tr>
     <Table.Th>#</Table.Th>
     <Table.Th>Server Name</Table.Th>
     <Table.Th>Server ID</Table.Th>
-    <Table.Th>Actions</Table.Th>
+    <Table.Th style={actionRowStyle}>Actions</Table.Th>
   </Table.Tr>
 );
 
@@ -50,21 +57,23 @@ const ServerTableRow = ({
     <Table.Td>{no}</Table.Td>
     <Table.Td>{server.name}</Table.Td>
     <Table.Td>{server.id}</Table.Td>
-    <Table.Td
-      style={{
-        width: "calc(8rem * var(--mantine-scale))",
-      }}
-    >
+    <Table.Td style={actionRowStyle}>
       <Group gap="xs">
-        <ActionIcon color={server.color} onClick={show}>
-          <IconId style={actionIconStyle} />
-        </ActionIcon>
-        <ActionIcon onClick={edit}>
-          <IconPencil style={actionIconStyle} />
-        </ActionIcon>
-        <ActionIcon color="red" onClick={del}>
-          <IconTrash style={actionIconStyle} />
-        </ActionIcon>
+        <Tooltip label={"Show"} openDelay={500}>
+          <ActionIcon color={server.color} onClick={show}>
+            <IconId style={actionIconStyle} />
+          </ActionIcon>
+        </Tooltip>
+        <Tooltip label={"Edit"} openDelay={500}>
+          <ActionIcon onClick={edit}>
+            <IconPencil style={actionIconStyle} />
+          </ActionIcon>
+        </Tooltip>
+        <Tooltip label={"Delete"} openDelay={500}>
+          <ActionIcon color="red" onClick={del}>
+            <IconTrash style={actionIconStyle} />
+          </ActionIcon>
+        </Tooltip>
       </Group>
     </Table.Td>
   </Table.Tr>
@@ -105,7 +114,39 @@ const ServerTable = ({ servers, show, edit, del }: ServerTableProps) => (
   </Table>
 );
 
-const actionIconStyle = { width: "70%", height: "70%" };
+interface ServerCardModalProps {
+  isOpen: boolean;
+  close: () => void;
+  serverInfo?: Server;
+}
+const ServerCardModal = ({
+  isOpen,
+  close,
+  serverInfo,
+}: ServerCardModalProps) => (
+  <Modal
+    title="Server Card"
+    size="lg"
+    radius="md"
+    opened={isOpen}
+    onClose={close}
+    centered
+    scrollAreaComponent={ScrollArea.Autosize}
+  >
+    {serverInfo && <ServerCard server={serverInfo} />}
+    {serverInfo?.note && (
+      <Paper mt="md" shadow="xs" p="xl" radius="md" withBorder>
+        <Text
+          style={{
+            whiteSpace: "pre-wrap",
+          }}
+        >
+          {serverInfo.note}
+        </Text>
+      </Paper>
+    )}
+  </Modal>
+);
 
 const Servers = () => {
   const [
@@ -118,18 +159,17 @@ const Servers = () => {
     { open: openServerCardModal, close: closeServerCardModal },
   ] = useDisclosure(false);
 
-  const [serverInfo, setServerInfo] = useState<Server | undefined>(undefined);
+  const [activeServerIndex, setActiveServerIndex] = useState<number>(-1);
 
   const [servers, setServers] = useState<Server[]>([]);
 
   const save = (newServerInfo: Server) => {
-    if (!!serverInfo) {
+    if (activeServerIndex !== -1) {
       // Edit
-      const index = servers.findIndex((server) => server.id === serverInfo.id);
       setServers([
-        ...servers.slice(0, index),
+        ...servers.slice(0, activeServerIndex),
         newServerInfo,
-        ...servers.slice(index + 1),
+        ...servers.slice(activeServerIndex + 1),
       ]);
     } else {
       // Create
@@ -155,7 +195,7 @@ const Servers = () => {
                 size="lg"
                 color="green"
                 onClick={() => {
-                  setServerInfo(undefined);
+                  setActiveServerIndex(-1);
                   openEditServerModal();
                 }}
               >
@@ -170,11 +210,11 @@ const Servers = () => {
           <ServerTable
             servers={servers}
             show={(index) => {
-              setServerInfo(servers[index]);
+              setActiveServerIndex(index);
               openServerCardModal();
             }}
             edit={(index) => {
-              setServerInfo(servers[index]);
+              setActiveServerIndex(index);
               openEditServerModal();
             }}
             del={(index) => {
@@ -191,33 +231,20 @@ const Servers = () => {
       <EditServerModal
         isOpen={isEditServerModalOpen}
         close={closeEditServerModal}
-        serverInfo={serverInfo}
+        serverInfo={
+          activeServerIndex === -1 ? undefined : servers[activeServerIndex]
+        }
         save={save}
       />
 
       {/*Server Card Modal*/}
-      <Modal
-        title="Server Card"
-        size="lg"
-        radius="md"
-        opened={isServerCardModalOpen}
-        onClose={closeServerCardModal}
-        centered
-        scrollAreaComponent={ScrollArea.Autosize}
-      >
-        <ServerCard server={serverInfo!} />
-        {serverInfo?.note && (
-          <Paper mt="md" shadow="xs" p="xl" radius="md" withBorder>
-            <Text
-              style={{
-                whiteSpace: "pre-wrap",
-              }}
-            >
-              {serverInfo.note}
-            </Text>
-          </Paper>
-        )}
-      </Modal>
+      <ServerCardModal
+        isOpen={isServerCardModalOpen}
+        close={closeServerCardModal}
+        serverInfo={
+          activeServerIndex === -1 ? undefined : servers[activeServerIndex]
+        }
+      />
     </>
   );
 };

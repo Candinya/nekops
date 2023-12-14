@@ -55,7 +55,9 @@ const EditServerModal = ({
   const form = useForm<Server>({
     initialValues: serverDefault,
 
-    validate: {},
+    validate: {
+      id: (value) => !value, // Not empty
+    },
 
     validateInputOnBlur: true,
   });
@@ -95,7 +97,7 @@ const EditServerModal = ({
       >
         <Modal.Header>
           <Title order={1} size="h3">
-            {serverInfo ? `Edit ${serverInfo.id}` : "Add new server"}
+            {serverInfo ? `Edit server ${serverInfo.id}` : "Add new server"}
           </Title>
           <Modal.CloseButton />
         </Modal.Header>

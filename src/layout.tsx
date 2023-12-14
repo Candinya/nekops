@@ -1,7 +1,9 @@
 import "@mantine/core/styles.css";
+import "@mantine/notifications/styles.css";
 
 import { createTheme, MantineProvider } from "@mantine/core";
 import { BrowserRouter } from "react-router-dom";
+import { Notifications } from "@mantine/notifications";
 
 import App from "@/app.tsx";
 
@@ -12,6 +14,7 @@ const theme = createTheme({
 const Layout = () => (
   <MantineProvider theme={theme}>
     <BrowserRouter>
+      <Notifications />
       <App />
     </BrowserRouter>
   </MantineProvider>
