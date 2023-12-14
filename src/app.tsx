@@ -4,14 +4,9 @@ import Router from "@/router.tsx";
 import Header from "@/components/Header.tsx";
 import Nav from "@/components/Nav.tsx";
 import Footer from "@/components/Footer.tsx";
-import NotificationCenter from "@/components/NotificationCenter.tsx";
 
 const App = () => {
   const [isNavOpen, { toggle: toggleNavOpen }] = useDisclosure(true);
-  const [
-    isNotificationCenterOpen,
-    { toggle: toggleNotificationCenterOpen, close: closeNotificationCenter },
-  ] = useDisclosure();
 
   return (
     <AppShell
@@ -27,12 +22,7 @@ const App = () => {
       }}
     >
       <AppShell.Header>
-        <Header
-          isNavOpen={isNavOpen}
-          toggleNavOpen={toggleNavOpen}
-          isNotificationCenterOpen={isNotificationCenterOpen}
-          toggleNotificationCenterOpen={toggleNotificationCenterOpen}
-        />
+        <Header isNavOpen={isNavOpen} toggleNavOpen={toggleNavOpen} />
       </AppShell.Header>
 
       <AppShell.Navbar>
@@ -41,11 +31,6 @@ const App = () => {
 
       <AppShell.Main h={"100dvh"}>
         <Router />
-
-        <NotificationCenter
-          isNotificationCenterOpen={isNotificationCenterOpen}
-          closeNotificationCenter={closeNotificationCenter}
-        />
       </AppShell.Main>
 
       <AppShell.Footer p="xs">

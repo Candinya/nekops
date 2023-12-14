@@ -1,19 +1,12 @@
 import { ActionIcon, Burger, Group, Title } from "@mantine/core";
 import type { MouseEventHandler } from "react";
-import { IconBell } from "@tabler/icons-react";
+import { IconHeart } from "@tabler/icons-react";
 
 interface HeaderProps {
   isNavOpen: boolean;
   toggleNavOpen: MouseEventHandler<HTMLButtonElement>;
-  isNotificationCenterOpen: boolean;
-  toggleNotificationCenterOpen: MouseEventHandler<HTMLButtonElement>;
 }
-const Header = ({
-  isNavOpen,
-  toggleNavOpen,
-  isNotificationCenterOpen,
-  toggleNotificationCenterOpen,
-}: HeaderProps) => (
+const Header = ({ isNavOpen, toggleNavOpen }: HeaderProps) => (
   <Group h="100%" px="md">
     <Burger opened={isNavOpen} onClick={toggleNavOpen} size="sm" />
     <Group justify="space-between" style={{ flex: 1 }}>
@@ -25,12 +18,8 @@ const Header = ({
       </Group>
 
       <Group ml="xl" gap={0}>
-        <ActionIcon
-          variant={isNotificationCenterOpen ? "filled" : "default"}
-          onClick={toggleNotificationCenterOpen}
-          aria-label="Settings"
-        >
-          <IconBell style={{ width: "70%", height: "70%" }} stroke={1.5} />
+        <ActionIcon color="pink" variant="light">
+          <IconHeart style={{ width: "70%", height: "70%" }} stroke={1.5} />
         </ActionIcon>
       </Group>
     </Group>
