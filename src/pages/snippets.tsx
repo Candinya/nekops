@@ -1,27 +1,30 @@
 import {
   ActionIcon,
   Box,
+  CloseButton,
   Code,
   Flex,
   Group,
+  Loader,
   ScrollArea,
   Table,
   Text,
   TextInput,
   Tooltip,
 } from "@mantine/core";
+import { useDebouncedValue, useDisclosure } from "@mantine/hooks";
+import { notifications } from "@mantine/notifications";
 import {
   IconClipboardCopy,
   IconPencil,
   IconPlus,
   IconSearch,
 } from "@tabler/icons-react";
-import { useDisclosure } from "@mantine/hooks";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
 import type { Snippet } from "@/types/snippet.ts";
 import EditSnippetModal from "@/components/EditSnippetModal.tsx";
-import { notifications } from "@mantine/notifications";
-import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/store.ts";
 import {
   addSnippet,
@@ -89,8 +92,15 @@ interface SnippetTableProps {
   copy: (index: number) => void;
   edit: (index: number) => void;
   del: (index: number) => void;
+  isSearching: boolean;
 }
-const SnippetTable = ({ snippets, copy, edit, del }: SnippetTableProps) => (
+const SnippetTable = ({
+  snippets,
+  copy,
+  edit,
+  del,
+  isSearching,
+}: SnippetTableProps) => (
   <Table stickyHeader stickyHeaderOffset={0} highlightOnHover>
     <Table.Thead
       style={{
@@ -114,7 +124,9 @@ const SnippetTable = ({ snippets, copy, edit, del }: SnippetTableProps) => (
     <Table.Caption>
       {snippets.length > 0
         ? `Total ${snippets.length} snippets.`
-        : "Let's add first snippet!"}
+        : isSearching
+          ? "No matching results."
+          : "Let's add first snippet!"}
     </Table.Caption>
   </Table>
 );
@@ -175,6 +187,9 @@ const SnippetsPage = () => {
     dispatch(saveSnippets());
   };
 
+  const [searchKey, setSearchKey] = useState("");
+  const [debouncedSearchKey] = useDebouncedValue(searchKey, 500);
+
   return (
     <>
       <Flex direction="column" h="100%">
@@ -182,11 +197,21 @@ const SnippetsPage = () => {
           {/*Search and Create*/}
           <Flex direction="row" justify="space-between" gap="lg">
             <TextInput
-              leftSection={<IconSearch />}
+              leftSection={<IconSearch size={18} />}
+              rightSection={
+                searchKey !== "" &&
+                (debouncedSearchKey !== searchKey ? (
+                  <Loader size="xs" />
+                ) : (
+                  <CloseButton onClick={() => setSearchKey("")} />
+                ))
+              }
               placeholder="Search snippets"
               style={{
                 flexGrow: 1,
               }}
+              value={searchKey}
+              onChange={(ev) => setSearchKey(ev.currentTarget.value)}
             />
 
             <Group gap="xs">
@@ -207,13 +232,22 @@ const SnippetsPage = () => {
         {/*Snippet Table*/}
         <ScrollArea>
           <SnippetTable
-            snippets={snippets}
+            snippets={
+              debouncedSearchKey === ""
+                ? snippets
+                : snippets.filter(
+                    (snippet) =>
+                      snippet.name.includes(debouncedSearchKey) ||
+                      snippet.code.includes(debouncedSearchKey),
+                  )
+            }
             copy={copy}
             edit={(index) => {
               setActiveSnippetIndex(index);
               openEditSnippetModal();
             }}
             del={del}
+            isSearching={debouncedSearchKey !== ""}
           />
         </ScrollArea>
       </Flex>

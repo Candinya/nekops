@@ -1,9 +1,10 @@
-import { useDisclosure } from "@mantine/hooks";
 import {
   ActionIcon,
   Box,
+  CloseButton,
   Flex,
   Group,
+  Loader,
   Modal,
   Paper,
   ScrollArea,
@@ -12,12 +13,14 @@ import {
   TextInput,
   Tooltip,
 } from "@mantine/core";
-import EditServerModal from "@/components/EditServerModal";
-import { useState } from "react";
-import type { Server } from "@/types/server.ts";
+import { useDebouncedValue, useDisclosure } from "@mantine/hooks";
 import { IconId, IconPencil, IconPlus, IconSearch } from "@tabler/icons-react";
-import ServerCard from "@/components/ServerCard.tsx";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+
+import type { Server } from "@/types/server.ts";
+import EditServerModal from "@/components/EditServerModal";
+import ServerCard from "@/components/ServerCard.tsx";
 import type { AppDispatch, RootState } from "@/store.ts";
 import {
   addServer,
@@ -87,8 +90,15 @@ interface ServerTableProps {
   show: (index: number) => void;
   edit: (index: number) => void;
   del: (index: number) => void;
+  isSearching: boolean;
 }
-const ServerTable = ({ servers, show, edit, del }: ServerTableProps) => (
+const ServerTable = ({
+  servers,
+  show,
+  edit,
+  del,
+  isSearching,
+}: ServerTableProps) => (
   <Table stickyHeader stickyHeaderOffset={0} highlightOnHover>
     <Table.Thead
       style={{
@@ -112,7 +122,9 @@ const ServerTable = ({ servers, show, edit, del }: ServerTableProps) => (
     <Table.Caption>
       {servers.length > 0
         ? `Total ${servers.length} servers.`
-        : "Let's add first server!"}
+        : isSearching
+          ? "No matching results."
+          : "Let's add first server!"}
     </Table.Caption>
   </Table>
 );
@@ -188,6 +200,9 @@ const ServersPage = () => {
     dispatch(saveServers());
   };
 
+  const [searchKey, setSearchKey] = useState("");
+  const [debouncedSearchKey] = useDebouncedValue(searchKey, 500);
+
   return (
     <>
       <Flex direction="column" h="100%">
@@ -195,11 +210,21 @@ const ServersPage = () => {
           {/*Search and Create*/}
           <Flex direction="row" justify="space-between" gap="lg">
             <TextInput
-              leftSection={<IconSearch />}
+              leftSection={<IconSearch size={18} />}
+              rightSection={
+                searchKey !== "" &&
+                (debouncedSearchKey !== searchKey ? (
+                  <Loader size="xs" />
+                ) : (
+                  <CloseButton onClick={() => setSearchKey("")} />
+                ))
+              }
               placeholder="Search servers"
               style={{
                 flexGrow: 1,
               }}
+              value={searchKey}
+              onChange={(ev) => setSearchKey(ev.currentTarget.value)}
             />
 
             <Group gap="xs">
@@ -220,7 +245,16 @@ const ServersPage = () => {
         {/*Server Table*/}
         <ScrollArea>
           <ServerTable
-            servers={servers}
+            servers={
+              debouncedSearchKey === ""
+                ? servers
+                : servers.filter(
+                    (server) =>
+                      server.id.includes(debouncedSearchKey) ||
+                      server.name.includes(debouncedSearchKey) ||
+                      server.note.includes(debouncedSearchKey),
+                  )
+            }
             show={(index) => {
               setActiveServerIndex(index);
               openServerCardModal();
@@ -230,6 +264,7 @@ const ServersPage = () => {
               openEditServerModal();
             }}
             del={del}
+            isSearching={debouncedSearchKey !== ""}
           />
         </ScrollArea>
       </Flex>
