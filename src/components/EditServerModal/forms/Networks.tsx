@@ -21,7 +21,7 @@ interface IPItemProps extends InputFormProps {
   index: number;
 }
 const IPItem = ({ ip, formListItem, index, form }: IPItemProps) => (
-  <Accordion.Item value={`disk_${index}`}>
+  <Accordion.Item value={`ip_${index}`}>
     <Center>
       <Accordion.Control icon={<IconSitemap color="gray" size={16} />}>
         IP {index + 1}:{" "}
