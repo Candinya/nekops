@@ -4,9 +4,20 @@ import Router from "@/router.tsx";
 import Header from "@/components/Header.tsx";
 import Nav from "@/components/Nav.tsx";
 import Footer from "@/components/Footer.tsx";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { readSettings } from "@/slices/settingsSlice.ts";
+import type { AppDispatch } from "@/store.ts";
 
 const App = () => {
   const [isNavOpen, { toggle: toggleNavOpen }] = useDisclosure(true);
+  const dispatch = useDispatch<AppDispatch>();
+
+  // Initialize
+  useEffect(() => {
+    // Read settings
+    dispatch(readSettings());
+  }, []);
 
   return (
     <AppShell

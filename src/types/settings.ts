@@ -4,6 +4,6 @@ export type Settings = {
 };
 
 export const defaultSettings: Settings = {
-  data_dir: "~/.nekops/",
+  data_dir: "nekops_data/",
   color_scheme: "auto",
 };

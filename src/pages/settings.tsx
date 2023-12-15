@@ -1,4 +1,4 @@
-import { defaultSettings, type Settings } from "@/types/settings.ts";
+import { type Settings } from "@/types/settings.ts";
 import { useForm } from "@mantine/form";
 import {
   Box,
@@ -13,6 +13,10 @@ import {
   useMantineColorScheme,
 } from "@mantine/core";
 import { IconBolt, IconMoon, IconSun } from "@tabler/icons-react";
+
+import { saveSettings as saveSettingsToFileSystem } from "@/slices/settingsSlice.ts";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "@/store.ts";
 
 const colorSchemeData = [
   {
@@ -41,22 +45,32 @@ const colorSchemeData = [
 }));
 
 const SettingsPage = () => {
+  // Redux related
+  const settings = useSelector((state: RootState) => state.settings);
+  const dispatch = useDispatch<AppDispatch>();
+
   const form = useForm<Settings>({
-    initialValues: defaultSettings,
+    initialValues: {
+      ...settings,
+    },
 
-    validate: {},
-
-    validateInputOnBlur: true,
+    validate: {
+      data_dir: (value) => !value, // Not empty
+    },
   });
 
   const { setColorScheme } = useMantineColorScheme();
 
-  const saveSettings = (settings: Settings) => {
-    console.log(settings); // TODO: Save settings
+  const saveSettings = (newSettings: Settings) => {
+    dispatch(
+      saveSettingsToFileSystem({
+        ...newSettings, // Prevent state binding caused lock
+      }),
+    );
     // Apply
-    setColorScheme(settings.color_scheme);
+    setColorScheme(newSettings.color_scheme);
     // Update settings
-    form.setInitialValues(settings);
+    form.setInitialValues(newSettings);
   };
 
   return (

@@ -38,6 +38,13 @@
   "plugins": {
     "shell": {
       "open": true
+    },
+    "fs": {
+      "scope": {
+        "allow": [
+          "**"
+        ]
+      }
     }
   }
 }
