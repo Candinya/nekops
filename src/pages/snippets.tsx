@@ -22,6 +22,14 @@ import { useState } from "react";
 import type { Snippet } from "@/types/snippet.ts";
 import EditSnippetModal from "@/components/EditSnippetModal.tsx";
 import { notifications } from "@mantine/notifications";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "@/store.ts";
+import {
+  addSnippet,
+  removeSnippetByIndex,
+  saveSnippets,
+  updateSnippetByIndex,
+} from "@/slices/snippetsSlice.ts";
 
 const actionIconStyle = { width: "70%", height: "70%" };
 
@@ -112,32 +120,59 @@ const SnippetTable = ({ snippets, copy, edit, del }: SnippetTableProps) => (
 );
 
 const SnippetsPage = () => {
+  const snippets = useSelector((state: RootState) => state.snippets);
+  const dispatch = useDispatch<AppDispatch>();
+
   const [
     isEditSnippetModalOpen,
     { open: openEditSnippetModal, close: closeEditSnippetModal },
   ] = useDisclosure(false);
 
-  const [snippetInfo, setSnippetInfo] = useState<Snippet | undefined>(
-    undefined,
-  );
+  const [activeSnippetIndex, setActiveSnippetIndex] = useState<number>(-1);
 
-  const [snippets, setSnippets] = useState<Snippet[]>([]);
+  const copy = (index: number) => {
+    try {
+      navigator.clipboard.writeText(snippets[index].code).then(() => {
+        notifications.show({
+          color: "green",
+          title: "Copied successfully!",
+          message: (
+            <Text>
+              Feel free to paste this snippet{" "}
+              <Code>{snippets[index].name}</Code> anywhere
+            </Text>
+          ),
+        });
+      });
+    } catch (e) {
+      notifications.show({
+        color: "yellow",
+        title: "Copy failed...",
+        message:
+          "You may need to copy this snippet from edit form manually. Sorry for the inconvenience.",
+      });
+    }
+  };
 
   const save = (newSnippetInfo: Snippet) => {
-    if (!!snippetInfo) {
+    if (activeSnippetIndex !== -1) {
       // Edit
-      const index = snippets.findIndex(
-        (snippet) => snippet.name === snippetInfo.name,
+      dispatch(
+        updateSnippetByIndex({
+          index: activeSnippetIndex,
+          snippet: newSnippetInfo,
+        }),
       );
-      setSnippets([
-        ...snippets.slice(0, index),
-        newSnippetInfo,
-        ...snippets.slice(index + 1),
-      ]);
     } else {
       // Create
-      setSnippets([...snippets, newSnippetInfo]);
+      dispatch(addSnippet(newSnippetInfo));
     }
+    dispatch(saveSnippets());
+  };
+
+  const del = (index: number) => {
+    dispatch(removeSnippetByIndex(index));
+    dispatch(saveSnippets());
   };
 
   return (
@@ -159,7 +194,7 @@ const SnippetsPage = () => {
                 size="lg"
                 color="green"
                 onClick={() => {
-                  setSnippetInfo(undefined);
+                  setActiveSnippetIndex(-1);
                   openEditSnippetModal();
                 }}
               >
@@ -173,39 +208,12 @@ const SnippetsPage = () => {
         <ScrollArea>
           <SnippetTable
             snippets={snippets}
-            copy={(index) => {
-              try {
-                navigator.clipboard.writeText(snippets[index].code);
-
-                notifications.show({
-                  color: "green",
-                  title: "Copied successfully!",
-                  message: (
-                    <Text>
-                      Feel free to paste this snippet{" "}
-                      <Code>{snippets[index].name}</Code> anywhere
-                    </Text>
-                  ),
-                });
-              } catch (e) {
-                notifications.show({
-                  color: "yellow",
-                  title: "Copy failed...",
-                  message:
-                    "You may need to copy this snippet from edit form manually. Sorry for the inconvenience.",
-                });
-              }
-            }}
+            copy={copy}
             edit={(index) => {
-              setSnippetInfo(snippets[index]);
+              setActiveSnippetIndex(index);
               openEditSnippetModal();
             }}
-            del={(index) => {
-              setSnippets([
-                ...snippets.slice(0, index),
-                ...snippets.slice(index + 1),
-              ]);
-            }}
+            del={del}
           />
         </ScrollArea>
       </Flex>
@@ -214,7 +222,9 @@ const SnippetsPage = () => {
       <EditSnippetModal
         isOpen={isEditSnippetModalOpen}
         close={closeEditSnippetModal}
-        snippetInfo={snippetInfo}
+        snippetInfo={
+          activeSnippetIndex === -1 ? undefined : snippets[activeSnippetIndex]
+        }
         save={save}
       />
     </>
