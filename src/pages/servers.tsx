@@ -23,6 +23,14 @@ import {
   IconTrash,
 } from "@tabler/icons-react";
 import ServerCard from "@/components/ServerCard.tsx";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "@/store.ts";
+import {
+  addServer,
+  removeServerByIndex,
+  saveServers,
+  updateServerByIndex,
+} from "@/slices/serversSlice.ts";
 
 const actionIconStyle = { width: "70%", height: "70%" };
 
@@ -149,6 +157,9 @@ const ServerCardModal = ({
 );
 
 const ServersPage = () => {
+  const servers = useSelector((state: RootState) => state.servers);
+  const dispatch = useDispatch<AppDispatch>();
+
   const [
     isEditServerModalOpen,
     { open: openEditServerModal, close: closeEditServerModal },
@@ -161,20 +172,25 @@ const ServersPage = () => {
 
   const [activeServerIndex, setActiveServerIndex] = useState<number>(-1);
 
-  const [servers, setServers] = useState<Server[]>([]);
-
-  const save = (newServerInfo: Server) => {
+  const confirm = (newServerInfo: Server) => {
     if (activeServerIndex !== -1) {
       // Edit
-      setServers([
-        ...servers.slice(0, activeServerIndex),
-        newServerInfo,
-        ...servers.slice(activeServerIndex + 1),
-      ]);
+      dispatch(
+        updateServerByIndex({
+          index: activeServerIndex,
+          server: newServerInfo,
+        }),
+      );
     } else {
       // Create
-      setServers([...servers, newServerInfo]);
+      dispatch(addServer(newServerInfo));
     }
+    dispatch(saveServers());
+  };
+
+  const del = (index: number) => {
+    dispatch(removeServerByIndex(index));
+    dispatch(saveServers());
   };
 
   return (
@@ -218,12 +234,7 @@ const ServersPage = () => {
               setActiveServerIndex(index);
               openEditServerModal();
             }}
-            del={(index) => {
-              setServers([
-                ...servers.slice(0, index),
-                ...servers.slice(index + 1),
-              ]);
-            }}
+            del={del}
           />
         </ScrollArea>
       </Flex>
@@ -235,7 +246,7 @@ const ServersPage = () => {
         serverInfo={
           activeServerIndex === -1 ? undefined : servers[activeServerIndex]
         }
-        save={save}
+        save={confirm}
       />
 
       {/*Server Card Modal*/}

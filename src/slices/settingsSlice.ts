@@ -7,11 +7,12 @@ import {
   writeTextFile,
 } from "@tauri-apps/plugin-fs";
 
-const SettingsFileName = defaultSettings.data_dir + "settings.json";
+const BaseDir = defaultSettings.data_dir;
+const SettingsFileName = BaseDir + "settings.json";
 
 const checkParentDir = async () => {
-  if (!(await exists(defaultSettings.data_dir))) {
-    await createDir(defaultSettings.data_dir);
+  if (!(await exists(BaseDir))) {
+    await createDir(BaseDir);
   }
 };
 

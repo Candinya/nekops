@@ -6,8 +6,9 @@ import Nav from "@/components/Nav.tsx";
 import Footer from "@/components/Footer.tsx";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { readSettings } from "@/slices/settingsSlice.ts";
 import type { AppDispatch } from "@/store.ts";
+import { readSettings } from "@/slices/settingsSlice.ts";
+import { readServers } from "@/slices/serversSlice.ts";
 
 const App = () => {
   const [isNavOpen, { toggle: toggleNavOpen }] = useDisclosure(true);
@@ -15,8 +16,9 @@ const App = () => {
 
   // Initialize
   useEffect(() => {
-    // Read settings
-    dispatch(readSettings());
+    dispatch(readSettings()).then(() => {
+      dispatch(readServers());
+    });
   }, []);
 
   return (
