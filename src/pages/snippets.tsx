@@ -15,7 +15,6 @@ import {
   IconPencil,
   IconPlus,
   IconSearch,
-  IconTrash,
 } from "@tabler/icons-react";
 import { useDisclosure } from "@mantine/hooks";
 import { useState } from "react";
@@ -30,6 +29,7 @@ import {
   saveSnippets,
   updateSnippetByIndex,
 } from "@/slices/snippetsSlice.ts";
+import DeleteItemButton from "@/components/DeleteItemButton.tsx";
 
 const actionIconStyle = { width: "70%", height: "70%" };
 
@@ -74,11 +74,11 @@ const SnippetTableRow = ({
             <IconPencil style={actionIconStyle} />
           </ActionIcon>
         </Tooltip>
-        <Tooltip label={"Delete"} openDelay={500}>
-          <ActionIcon color="red" onClick={del}>
-            <IconTrash style={actionIconStyle} />
-          </ActionIcon>
-        </Tooltip>
+        <DeleteItemButton
+          itemName={`Snippet ${snippet.name}`}
+          iconStyle={actionIconStyle}
+          onClick={del}
+        />
       </Group>
     </Table.Td>
   </Table.Tr>

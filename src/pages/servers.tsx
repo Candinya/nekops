@@ -15,13 +15,7 @@ import {
 import EditServerModal from "@/components/EditServerModal";
 import { useState } from "react";
 import type { Server } from "@/types/server.ts";
-import {
-  IconId,
-  IconPencil,
-  IconPlus,
-  IconSearch,
-  IconTrash,
-} from "@tabler/icons-react";
+import { IconId, IconPencil, IconPlus, IconSearch } from "@tabler/icons-react";
 import ServerCard from "@/components/ServerCard.tsx";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/store.ts";
@@ -31,6 +25,7 @@ import {
   saveServers,
   updateServerByIndex,
 } from "@/slices/serversSlice.ts";
+import DeleteItemButton from "@/components/DeleteItemButton.tsx";
 
 const actionIconStyle = { width: "70%", height: "70%" };
 
@@ -77,11 +72,11 @@ const ServerTableRow = ({
             <IconPencil style={actionIconStyle} />
           </ActionIcon>
         </Tooltip>
-        <Tooltip label={"Delete"} openDelay={500}>
-          <ActionIcon color="red" onClick={del}>
-            <IconTrash style={actionIconStyle} />
-          </ActionIcon>
-        </Tooltip>
+        <DeleteItemButton
+          itemName={`Server ${server.name}`}
+          iconStyle={actionIconStyle}
+          onClick={del}
+        />
       </Group>
     </Table.Td>
   </Table.Tr>

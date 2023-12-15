@@ -18,102 +18,110 @@ import {
 import { IconPlus, IconX } from "@tabler/icons-react";
 import HDDIcon from "@/assets/hdd.svg";
 import SSDIcon from "@/assets/ssd.svg";
-import AccordionDeleteItemButton from "@/components/AccordionDeleteItemButton.tsx";
+import DeleteItemButton from "@/components/DeleteItemButton.tsx";
 
 interface DiskItemProps extends InputFormProps {
   disk: Disk;
   index: number;
 }
-const DiskItem = ({ disk, index, form }: DiskItemProps) => (
-  <Accordion.Item value={`disk_${index}`}>
-    <Center>
-      <Accordion.Control
-        icon={
-          <img
-            src={
-              disk.type === "HDD"
-                ? HDDIcon
-                : disk.type === "SSD"
-                  ? SSDIcon
-                  : undefined
-            }
-            alt={disk.type}
-            height={16}
-            width={16}
-          />
-        }
-      >
-        Disk {index + 1}: {disk.count > 1 && `${disk.count} × `} {disk.size}{" "}
-        {disk.size_unit} {disk.type} ({disk.interface})
-      </Accordion.Control>
-      <AccordionDeleteItemButton
-        onClick={() => form.removeListItem("hardware.disk", index)}
-      />
-    </Center>
-    <Accordion.Panel>
-      <Grid grow>
-        <Grid.Col span={2}>
-          <NumberInput
-            label="Count"
-            allowNegative={false}
-            allowDecimal={false}
-            allowLeadingZeros={false}
-            rightSection={<IconX size={16} />}
-            min={1}
-            {...form.getInputProps(`hardware.disk.${index}.count`)}
-          />
-        </Grid.Col>
-        <Grid.Col span={7}>
-          <Group grow gap="md">
-            <Flex direction="column">
-              <Text size="sm" fw={500} mb={2}>
-                Type
-              </Text>
-              <SegmentedControl
-                data={["HDD", "SSD"]}
-                {...form.getInputProps(`hardware.disk.${index}.type`)}
-              />
-            </Flex>
-            <Flex direction="column">
-              <Text size="sm" fw={500} mb={2}>
-                Interface
-              </Text>
-              <SegmentedControl
-                data={["SATA", "SAS", "NVMe"]}
-                {...form.getInputProps(`hardware.disk.${index}.interface`)}
-              />
-            </Flex>
-          </Group>
-        </Grid.Col>
-        <Grid.Col span={3}>
-          <Flex gap="sm">
-            <NumberInput
-              label="Size"
-              allowNegative={false}
-              decimalScale={2}
-              allowLeadingZeros={false}
-              {...form.getInputProps(`hardware.disk.${index}.size`)}
+const DiskItem = ({ disk, index, form }: DiskItemProps) => {
+  const itemName =
+    `Disk ${index + 1}: ` +
+    (disk.count > 1 ? `${disk.count} × ` : "") +
+    `${disk.size} ${disk.size_unit} ${disk.type} (${disk.interface})`;
+  return (
+    <Accordion.Item value={`disk_${index}`}>
+      <Center>
+        <Accordion.Control
+          icon={
+            <img
+              src={
+                disk.type === "HDD"
+                  ? HDDIcon
+                  : disk.type === "SSD"
+                    ? SSDIcon
+                    : undefined
+              }
+              alt={disk.type}
+              height={16}
+              width={16}
             />
-            <Flex direction="column">
-              <Text size="sm" fw={500} mb={2}>
-                Unit
-              </Text>
-              <SegmentedControl
-                data={["GB", "TB"]}
-                {...form.getInputProps(`hardware.disk.${index}.size_unit`)}
+          }
+        >
+          {itemName}
+        </Accordion.Control>
+        <DeleteItemButton
+          size={"lg"}
+          variant={"subtle"}
+          itemName={itemName}
+          onClick={() => form.removeListItem("hardware.disk", index)}
+        />
+      </Center>
+      <Accordion.Panel>
+        <Grid grow>
+          <Grid.Col span={2}>
+            <NumberInput
+              label="Count"
+              allowNegative={false}
+              allowDecimal={false}
+              allowLeadingZeros={false}
+              rightSection={<IconX size={16} />}
+              min={1}
+              {...form.getInputProps(`hardware.disk.${index}.count`)}
+            />
+          </Grid.Col>
+          <Grid.Col span={7}>
+            <Group grow gap="md">
+              <Flex direction="column">
+                <Text size="sm" fw={500} mb={2}>
+                  Type
+                </Text>
+                <SegmentedControl
+                  data={["HDD", "SSD"]}
+                  {...form.getInputProps(`hardware.disk.${index}.type`)}
+                />
+              </Flex>
+              <Flex direction="column">
+                <Text size="sm" fw={500} mb={2}>
+                  Interface
+                </Text>
+                <SegmentedControl
+                  data={["SATA", "SAS", "NVMe"]}
+                  {...form.getInputProps(`hardware.disk.${index}.interface`)}
+                />
+              </Flex>
+            </Group>
+          </Grid.Col>
+          <Grid.Col span={3}>
+            <Flex gap="sm">
+              <NumberInput
+                label="Size"
+                allowNegative={false}
+                decimalScale={2}
+                allowLeadingZeros={false}
+                {...form.getInputProps(`hardware.disk.${index}.size`)}
               />
+              <Flex direction="column">
+                <Text size="sm" fw={500} mb={2}>
+                  Unit
+                </Text>
+                <SegmentedControl
+                  data={["GB", "TB"]}
+                  {...form.getInputProps(`hardware.disk.${index}.size_unit`)}
+                />
+              </Flex>
             </Flex>
-          </Flex>
-        </Grid.Col>
-      </Grid>
-      <TextInput
-        mt="md"
-        label="Model"
-        {...form.getInputProps(`hardware.disk.${index}.model`)}
-      />
-    </Accordion.Panel>
-  </Accordion.Item>
-);
+          </Grid.Col>
+        </Grid>
+        <TextInput
+          mt="md"
+          label="Model"
+          {...form.getInputProps(`hardware.disk.${index}.model`)}
+        />
+      </Accordion.Panel>
+    </Accordion.Item>
+  );
+};
 
 const HardwareForm = ({ form }: InputFormProps) => (
   <>
