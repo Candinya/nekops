@@ -50,7 +50,7 @@ const AccessForm = ({ form }: InputFormProps) => (
       <Group mt="md">
         <Flex direction="column">
           <Text size="sm" fw={500} mb={2}>
-            Family
+            Type
           </Text>
           <SegmentedControl
             data={["VNC", "IPMI", "Other"]}
