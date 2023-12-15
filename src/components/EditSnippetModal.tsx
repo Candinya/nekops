@@ -30,7 +30,10 @@ const EditSnippetModal = ({
   useEffect(() => {
     if (isOpen) {
       if (!!snippetInfo) {
-        form.setInitialValues(snippetInfo);
+        form.setInitialValues(
+          // Deep clone
+          JSON.parse(JSON.stringify(snippetInfo)),
+        );
       } else {
         form.setInitialValues(defaultSnippet);
       }

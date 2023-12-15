@@ -69,7 +69,10 @@ const EditServerModal = ({
   useEffect(() => {
     if (isOpen) {
       if (!!serverInfo) {
-        form.setInitialValues(serverInfo);
+        form.setInitialValues(
+          // Deep clone
+          JSON.parse(JSON.stringify(serverInfo)),
+        );
       } else {
         form.setInitialValues(defaultServer);
       }
