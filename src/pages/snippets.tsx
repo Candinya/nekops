@@ -235,11 +235,18 @@ const SnippetsPage = () => {
             snippets={
               debouncedSearchKey === ""
                 ? snippets
-                : snippets.filter(
-                    (snippet) =>
-                      snippet.name.includes(debouncedSearchKey) ||
-                      snippet.code.includes(debouncedSearchKey),
-                  )
+                : snippets.filter((snippet) => {
+                    for (const key of debouncedSearchKey.split(/\s+/)) {
+                      if (
+                        key.length > 0 &&
+                        (snippet.name.includes(key) ||
+                          snippet.code.includes(key))
+                      ) {
+                        return true;
+                      }
+                    }
+                    return false;
+                  })
             }
             copy={copy}
             edit={(index) => {

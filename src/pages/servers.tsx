@@ -248,12 +248,19 @@ const ServersPage = () => {
             servers={
               debouncedSearchKey === ""
                 ? servers
-                : servers.filter(
-                    (server) =>
-                      server.id.includes(debouncedSearchKey) ||
-                      server.name.includes(debouncedSearchKey) ||
-                      server.note.includes(debouncedSearchKey),
-                  )
+                : servers.filter((server) => {
+                    for (const key of debouncedSearchKey.split(/\s+/)) {
+                      if (
+                        key.length > 0 &&
+                        (server.id.includes(key) ||
+                          server.name.includes(key) ||
+                          server.note.includes(key))
+                      ) {
+                        return true;
+                      }
+                    }
+                    return false;
+                  })
             }
             show={(index) => {
               setActiveServerIndex(index);
