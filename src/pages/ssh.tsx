@@ -6,9 +6,19 @@ import SearchBar from "@/components/SearchBar.tsx";
 import { useState } from "react";
 import { useDebouncedValue } from "@mantine/hooks";
 import { searchServers } from "@/search/servers.ts";
+import type { Server } from "@/types/server.ts";
 
 const SSHPage = () => {
   const servers = useSelector((state: RootState) => state.servers);
+
+  const startSSH = (server: Server) => {
+    let command = `ssh ${server.access.regular.user}@${server.access.regular.address}`;
+    if (server.access.regular.port !== 22) {
+      // Is not default SSH port
+      command += ` -p ${server.access.regular.port}`;
+    }
+    console.log(command);
+  };
 
   // Search related
   const [searchInput, setSearchInput] = useState("");
@@ -30,14 +40,7 @@ const SSHPage = () => {
             <ServerCard
               key={server.id}
               server={server}
-              onClick={() => {
-                let command = `ssh ${server.access.regular.user}@${server.access.regular.address}`;
-                if (server.access.regular.port !== 22) {
-                  // Is not default SSH port
-                  command += ` -p ${server.access.regular.port}`;
-                }
-                console.log(command);
-              }}
+              onClick={() => startSSH(server)}
             />
           ))}
         </Flex>

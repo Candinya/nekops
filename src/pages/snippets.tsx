@@ -27,12 +27,7 @@ import {
 import DeleteItemButton from "@/components/DeleteItemButton.tsx";
 import { searchSnippets } from "@/search/snippets.ts";
 import SearchBar from "@/components/SearchBar.tsx";
-
-const actionIconStyle = { width: "70%", height: "70%" };
-
-const actionRowStyle = {
-  width: "calc(8rem * var(--mantine-scale))",
-};
+import { actionIconStyle, actionRowStyle } from "@/common/actionStyles.ts";
 
 const SnippetTableHead = () => (
   <Table.Tr>

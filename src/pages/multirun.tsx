@@ -18,12 +18,7 @@ import type { RootState } from "@/store.ts";
 import ServerCardModal from "@/components/ServerCardModal.tsx";
 import { searchServers } from "@/search/servers.ts";
 import SearchBar from "@/components/SearchBar.tsx";
-
-const actionIconStyle = { width: "70%", height: "70%" };
-
-const actionRowStyle = {
-  width: "calc(8rem * var(--mantine-scale))",
-};
+import { actionIconStyle, actionRowStyle } from "@/common/actionStyles.ts";
 
 interface ServerTableHeadProps {
   selectedState: "all" | "partial" | "none";
