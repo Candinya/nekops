@@ -9,7 +9,7 @@ export type BaseInfo = {
 
 export type Provider = {
   provider: {
-    provider: string;
+    name: string;
     type: "VPS" | "DS";
     product: string;
     price: number; // $/mo
@@ -109,7 +109,7 @@ export const defaultServer: Server = {
   color: "#62b6e7",
 
   provider: {
-    provider: "",
+    name: "",
     type: "VPS",
     product: "",
     price: 0,

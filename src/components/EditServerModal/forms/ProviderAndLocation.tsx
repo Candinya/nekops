@@ -6,13 +6,20 @@ import {
   Grid,
   NumberInput,
   SegmentedControl,
-  Select,
   Text,
   TextInput,
 } from "@mantine/core";
 import { IconCurrencyDollar } from "@tabler/icons-react";
 
-const ProviderAndLocationForm = ({ form }: InputFormProps) => (
+interface ProviderAndLocationFormProps extends InputFormProps {
+  knownProviders: string[];
+  knownRegions: string[];
+}
+const ProviderAndLocationForm = ({
+  form,
+  knownProviders,
+  knownRegions,
+}: ProviderAndLocationFormProps) => (
   <>
     <Fieldset legend="Provider">
       <Grid>
@@ -20,8 +27,8 @@ const ProviderAndLocationForm = ({ form }: InputFormProps) => (
           <Autocomplete
             label="Provider"
             placeholder="Pick one or enter new"
-            data={["A", "B"]} // TODO
-            {...form.getInputProps("provider.provider")}
+            data={knownProviders}
+            {...form.getInputProps("provider.name")}
           />
         </Grid.Col>
         <Grid.Col span={3}>
@@ -59,11 +66,10 @@ const ProviderAndLocationForm = ({ form }: InputFormProps) => (
     <Fieldset mt="lg" legend="Location">
       <Grid>
         <Grid.Col span={2}>
-          <Select
+          <Autocomplete
             label="Region"
-            data={["A", "B"]}
-            searchable
-            nothingFoundMessage="No such region"
+            placeholder="Pick one or enter new"
+            data={knownRegions}
             {...form.getInputProps("location.region")}
           />
         </Grid.Col>

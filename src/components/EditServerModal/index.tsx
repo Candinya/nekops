@@ -36,12 +36,16 @@ interface EditServerModalProps {
   close: () => void;
   serverInfo?: Server;
   save: (info: Server) => void;
+  knownProviders: string[];
+  knownRegions: string[];
 }
 const EditServerModal = ({
   isOpen,
   close,
   serverInfo,
   save,
+  knownProviders,
+  knownRegions,
 }: EditServerModalProps) => {
   const StepsCount = 5;
 
@@ -132,7 +136,11 @@ const EditServerModal = ({
                 label="Provider & Location"
                 icon={<IconBuildingStore />}
               >
-                <ProviderAndLocationForm form={form} />
+                <ProviderAndLocationForm
+                  form={form}
+                  knownProviders={knownProviders}
+                  knownRegions={knownRegions}
+                />
               </Stepper.Step>
               <Stepper.Step label="Hardware" icon={<IconCpu />}>
                 <HardwareForm form={form} />

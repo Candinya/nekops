@@ -9,7 +9,7 @@ import {
 } from "@mantine/core";
 import { useDebouncedValue, useDisclosure } from "@mantine/hooks";
 import { IconId, IconPencil, IconPlus } from "@tabler/icons-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import type { Server } from "@/types/server.ts";
@@ -141,6 +141,7 @@ const ServersPage = () => {
 
   const [activeServerIndex, setActiveServerIndex] = useState<number>(-1);
 
+  // Edit actions
   const confirm = (newServerInfo: Server) => {
     if (activeServerIndex !== -1) {
       // Edit
@@ -162,8 +163,30 @@ const ServersPage = () => {
     dispatch(saveServers());
   };
 
+  // Search related
   const [searchInput, setSearchInput] = useState("");
   const [debouncedSearchInput] = useDebouncedValue(searchInput, 500);
+
+  // Autofill related
+  const knownProviders = useRef<string[]>([]);
+  const knownRegions = useRef<string[]>([]);
+
+  useEffect(() => {
+    for (const server of servers) {
+      if (
+        server.provider.name !== "" &&
+        !knownProviders.current.includes(server.provider.name)
+      ) {
+        knownProviders.current.push(server.provider.name);
+      }
+      if (
+        server.location.region !== "" &&
+        !knownRegions.current.includes(server.location.region)
+      ) {
+        knownRegions.current.push(server.location.region);
+      }
+    }
+  }, [servers]);
 
   return (
     <>
@@ -219,6 +242,8 @@ const ServersPage = () => {
           activeServerIndex === -1 ? undefined : servers[activeServerIndex]
         }
         save={confirm}
+        knownProviders={knownProviders.current}
+        knownRegions={knownRegions.current}
       />
 
       {/*Server Card Modal*/}
