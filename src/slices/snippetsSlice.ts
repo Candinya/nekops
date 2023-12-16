@@ -1,20 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import {
-  createDir,
-  exists,
-  readTextFile,
-  writeTextFile,
-} from "@tauri-apps/plugin-fs";
+import { exists, readTextFile, writeTextFile } from "@tauri-apps/plugin-fs";
 import type { Snippet } from "@/types/snippet.ts";
 import type { RootState } from "@/store.ts";
+import { checkParentDir } from "@/slices/common.ts";
 
 const SnippetsFileName = "snippets.json";
-
-const checkParentDir = async (dirname: string) => {
-  if (!(await exists(dirname))) {
-    await createDir(dirname);
-  }
-};
 
 export const readSnippets = createAsyncThunk(
   "snippets/read",
