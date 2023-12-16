@@ -84,7 +84,10 @@ const DeleteItemButton = ({
         open={isConfirmModalOpen}
         onClose={closeConfirmModal}
         itemName={itemName}
-        confirm={onClick}
+        confirm={() => {
+          closeConfirmModal();
+          onClick();
+        }}
       />
     </>
   );

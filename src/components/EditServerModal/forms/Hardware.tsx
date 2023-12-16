@@ -1,5 +1,5 @@
 import type { InputFormProps } from "../inputFormProps.ts";
-import type { Disk } from "@/types/server.ts";
+import { defaultDisk, Disk } from "@/types/server.ts";
 import {
   Accordion,
   Autocomplete,
@@ -244,16 +244,7 @@ const HardwareForm = ({ form }: InputFormProps) => (
       <Center mt="md">
         <Button
           leftSection={<IconPlus size={16} />}
-          onClick={() =>
-            form.insertListItem("hardware.disk", {
-              count: 1,
-              type: "SSD",
-              interface: "NVMe",
-              size: 256,
-              size_unit: "GB",
-              model: "Generic disk",
-            })
-          }
+          onClick={() => form.insertListItem("hardware.disk", defaultDisk)}
         >
           Add
         </Button>

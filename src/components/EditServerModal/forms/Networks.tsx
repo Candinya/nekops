@@ -12,7 +12,7 @@ import {
   TextInput,
 } from "@mantine/core";
 import { IconPlus, IconSitemap } from "@tabler/icons-react";
-import type { IP } from "@/types/server.ts";
+import { defaultIP, IP } from "@/types/server.ts";
 import DeleteItemButton from "@/components/DeleteItemButton.tsx";
 
 interface IPItemProps extends InputFormProps {
@@ -67,6 +67,11 @@ const IPItem = ({ ip, formListItem, index, form }: IPItemProps) => {
           </Flex>
         </Group>
         <TextInput
+          label="Alias (rDNS)"
+          mt="md"
+          {...form.getInputProps(`${formListItem}.${index}.alias`)}
+        />
+        <TextInput
           label="Comment"
           mt="md"
           {...form.getInputProps(`${formListItem}.${index}.comment`)}
@@ -100,10 +105,10 @@ const NetworkIPGroup = ({ isPrivate, mt, form }: NetworkIPGroupProps) => (
         leftSection={<IconPlus size={16} />}
         onClick={() =>
           form.insertListItem(`network.${isPrivate ? "private" : "public"}`, {
-            address: "0.0.0.0",
-            cidr_prefix: 32,
-            family: "IPv4",
-            comment: "Change me",
+            ...defaultIP,
+            alias: `${
+              form.values.network[isPrivate ? "private" : "public"].length + 1
+            }.${isPrivate ? "private" : "public"}`, // prevent duplicate alias
           })
         }
       >

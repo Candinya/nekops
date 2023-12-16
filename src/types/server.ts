@@ -46,7 +46,7 @@ export type Disk = {
   interface: "SATA" | "SAS" | "NVMe";
   size: number;
   size_unit: "GB" | "TB";
-  model: "";
+  model: string;
 };
 
 export type Hardware = {
@@ -62,6 +62,7 @@ export type IP = {
   cidr_prefix: number;
   family: "IPv4" | "IPv6";
   comment: string;
+  alias: string; // rDNS etc.
 };
 
 export type Network = {
@@ -73,9 +74,9 @@ export type Network = {
 
 export type AccessRegular = {
   // SSH
+  address: string;
   port: number;
   user: string;
-  private: boolean; // Only allow access from private network
 };
 
 export type AccessEmergency = {
@@ -99,6 +100,23 @@ export type Server = BaseInfo &
   Hardware &
   Network &
   Access;
+
+export const defaultDisk: Disk = {
+  count: 1,
+  type: "SSD",
+  interface: "NVMe",
+  size: 256,
+  size_unit: "GB",
+  model: "Generic disk",
+};
+
+export const defaultIP: IP = {
+  address: "127.0.0.1",
+  cidr_prefix: 32,
+  family: "IPv4",
+  comment: "Change me",
+  alias: "",
+};
 
 export const defaultServer: Server = {
   id: "",
@@ -146,9 +164,9 @@ export const defaultServer: Server = {
 
   access: {
     regular: {
+      address: "",
       port: 22,
       user: "root",
-      private: false,
     },
     emergency: {
       root_password: "",
