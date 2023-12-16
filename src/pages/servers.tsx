@@ -60,7 +60,7 @@ const ServerTableRow = ({
     <Table.Td>{server.name}</Table.Td>
     <Table.Td>{server.id}</Table.Td>
     <Table.Td style={actionRowStyle}>
-      <Group gap="xs" justify="end">
+      <Group gap="xs" justify="center">
         <Tooltip label={"Show"} openDelay={500}>
           <ActionIcon color={server.color} onClick={show}>
             <IconId style={actionIconStyle} />

@@ -60,7 +60,7 @@ const SnippetTableRow = ({
     <Table.Td>{no}</Table.Td>
     <Table.Td>{snippet.name}</Table.Td>
     <Table.Td style={actionRowStyle}>
-      <Group gap="xs" justify="end">
+      <Group gap="xs" justify="center">
         <Tooltip label={"Copy"} openDelay={500}>
           <ActionIcon color="green" onClick={copy}>
             <IconClipboardCopy style={actionIconStyle} />
