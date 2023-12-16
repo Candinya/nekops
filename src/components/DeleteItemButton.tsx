@@ -9,6 +9,7 @@ import {
   Modal,
   Text,
   Title,
+  Tooltip,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { CSSProperties } from "react";
@@ -69,14 +70,16 @@ const DeleteItemButton = ({
 
   return (
     <>
-      <ActionIcon
-        size={size}
-        variant={variant}
-        color="red"
-        onClick={openConfirmModal}
-      >
-        <IconTrash style={iconStyle} />
-      </ActionIcon>
+      <Tooltip label={"Delete"} openDelay={500}>
+        <ActionIcon
+          size={size}
+          variant={variant}
+          color="red"
+          onClick={openConfirmModal}
+        >
+          <IconTrash style={iconStyle} />
+        </ActionIcon>
+      </Tooltip>
       <ConfirmDeleteModal
         open={isConfirmModalOpen}
         onClose={closeConfirmModal}
