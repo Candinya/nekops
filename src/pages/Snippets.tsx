@@ -14,6 +14,7 @@ import { notifications } from "@mantine/notifications";
 import { IconClipboardCopy, IconPencil, IconPlus } from "@tabler/icons-react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { writeText } from "@tauri-apps/plugin-clipboard-manager";
 
 import type { Snippet } from "@/types/snippet.ts";
 import EditSnippetModal from "@/components/EditSnippetModal.tsx";
@@ -133,7 +134,7 @@ const SnippetsPage = () => {
 
   const copy = (index: number) => {
     try {
-      navigator.clipboard.writeText(snippets[index].code).then(() => {
+      writeText(snippets[index].code).then(() => {
         notifications.show({
           color: "green",
           title: "Copied successfully!",
@@ -149,8 +150,12 @@ const SnippetsPage = () => {
       notifications.show({
         color: "yellow",
         title: "Copy failed...",
-        message:
-          "You may need to copy this snippet from edit form manually. Sorry for the inconvenience.",
+        message: (
+          <Text>
+            You may need to copy this snippet from <Code>Edit</Code> form{" "}
+            manually. Sorry for the inconvenience.
+          </Text>
+        ),
       });
     }
   };
