@@ -32,6 +32,10 @@ const ServerCard = ({ server, onClick }: ServerCardProps) => {
         cursor: Boolean(onClick) ? "pointer" : undefined,
         transition: "all .2s",
         minHeight: rem(12 * 16),
+        borderColor:
+          Boolean(onClick) && hovered
+            ? "var(--mantine-color-blue-outline)"
+            : undefined,
       }}
       onClick={onClick}
       ref={ref}
