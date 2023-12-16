@@ -7,7 +7,7 @@ import { useState } from "react";
 import { useDebouncedValue } from "@mantine/hooks";
 import { searchServers } from "@/search/servers.ts";
 
-const SSH = () => {
+const SSHPage = () => {
   const servers = useSelector((state: RootState) => state.servers);
 
   // Search related
@@ -46,4 +46,4 @@ const SSH = () => {
   );
 };
 
-export default SSH;
+export default SSHPage;

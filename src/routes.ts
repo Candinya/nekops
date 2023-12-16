@@ -1,5 +1,5 @@
 import HomePage from "@/pages/home.tsx";
-import SSH from "@/pages/ssh.tsx";
+import SSHPage from "@/pages/ssh.tsx";
 import MultirunPage from "@/pages/multirun.tsx";
 import RescuePage from "@/pages/rescue.tsx";
 import ServersPage from "@/pages/servers.tsx";
@@ -25,7 +25,7 @@ export const routes = [
   },
   {
     path: "/ssh",
-    page: SSH,
+    page: SSHPage,
   },
   {
     path: "/multirun",
