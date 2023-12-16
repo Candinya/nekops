@@ -1,26 +1,19 @@
 import {
   ActionIcon,
   Box,
-  CloseButton,
   Flex,
   Group,
-  Loader,
-  Modal,
-  Paper,
   ScrollArea,
   Table,
-  Text,
-  TextInput,
   Tooltip,
 } from "@mantine/core";
 import { useDebouncedValue, useDisclosure } from "@mantine/hooks";
-import { IconId, IconPencil, IconPlus, IconSearch } from "@tabler/icons-react";
+import { IconId, IconPencil, IconPlus } from "@tabler/icons-react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import type { Server } from "@/types/server.ts";
 import EditServerModal from "@/components/EditServerModal";
-import ServerCard from "@/components/ServerCard.tsx";
 import type { AppDispatch, RootState } from "@/store.ts";
 import {
   addServer,
@@ -29,6 +22,9 @@ import {
   updateServerByIndex,
 } from "@/slices/serversSlice.ts";
 import DeleteItemButton from "@/components/DeleteItemButton.tsx";
+import ServerCardModal from "@/components/ServerCardModal.tsx";
+import { searchServers } from "@/search/servers.ts";
+import SearchBar from "@/components/SearchBar.tsx";
 
 const actionIconStyle = { width: "70%", height: "70%" };
 
@@ -64,7 +60,7 @@ const ServerTableRow = ({
     <Table.Td>{server.name}</Table.Td>
     <Table.Td>{server.id}</Table.Td>
     <Table.Td style={actionRowStyle}>
-      <Group gap="xs">
+      <Group gap="xs" justify="end">
         <Tooltip label={"Show"} openDelay={500}>
           <ActionIcon color={server.color} onClick={show}>
             <IconId style={actionIconStyle} />
@@ -129,40 +125,6 @@ const ServerTable = ({
   </Table>
 );
 
-interface ServerCardModalProps {
-  isOpen: boolean;
-  close: () => void;
-  serverInfo?: Server;
-}
-const ServerCardModal = ({
-  isOpen,
-  close,
-  serverInfo,
-}: ServerCardModalProps) => (
-  <Modal
-    title="Server Card"
-    size="lg"
-    radius="md"
-    opened={isOpen}
-    onClose={close}
-    centered
-    scrollAreaComponent={ScrollArea.Autosize}
-  >
-    {serverInfo && <ServerCard server={serverInfo} />}
-    {serverInfo?.note && (
-      <Paper mt="md" shadow="xs" p="xl" radius="md" withBorder>
-        <Text
-          style={{
-            whiteSpace: "pre-wrap",
-          }}
-        >
-          {serverInfo.note}
-        </Text>
-      </Paper>
-    )}
-  </Modal>
-);
-
 const ServersPage = () => {
   const servers = useSelector((state: RootState) => state.servers);
   const dispatch = useDispatch<AppDispatch>();
@@ -200,8 +162,8 @@ const ServersPage = () => {
     dispatch(saveServers());
   };
 
-  const [searchKey, setSearchKey] = useState("");
-  const [debouncedSearchKey] = useDebouncedValue(searchKey, 500);
+  const [searchInput, setSearchInput] = useState("");
+  const [debouncedSearchInput] = useDebouncedValue(searchInput, 500);
 
   return (
     <>
@@ -209,22 +171,11 @@ const ServersPage = () => {
         <Box p="md">
           {/*Search and Create*/}
           <Flex direction="row" justify="space-between" gap="lg">
-            <TextInput
-              leftSection={<IconSearch size={18} />}
-              rightSection={
-                searchKey !== "" &&
-                (debouncedSearchKey !== searchKey ? (
-                  <Loader size="xs" />
-                ) : (
-                  <CloseButton onClick={() => setSearchKey("")} />
-                ))
-              }
+            <SearchBar
               placeholder="Search servers"
-              style={{
-                flexGrow: 1,
-              }}
-              value={searchKey}
-              onChange={(ev) => setSearchKey(ev.currentTarget.value)}
+              searchInput={searchInput}
+              setSearchInput={setSearchInput}
+              debouncedSearchInput={debouncedSearchInput}
             />
 
             <Group gap="xs">
@@ -245,24 +196,7 @@ const ServersPage = () => {
         {/*Server Table*/}
         <ScrollArea>
           <ServerTable
-            servers={
-              debouncedSearchKey === ""
-                ? servers
-                : servers.filter((server) => {
-                    for (const key of debouncedSearchKey.split(/\s+/)) {
-                      if (
-                        key.length > 0 &&
-                        (server.id.includes(key) ||
-                          server.name.includes(key) ||
-                          server.note.includes(key) ||
-                          server.tags.includes(key)) // Tag full match
-                      ) {
-                        return true;
-                      }
-                    }
-                    return false;
-                  })
-            }
+            servers={searchServers(debouncedSearchInput, servers)}
             show={(index) => {
               setActiveServerIndex(index);
               openServerCardModal();
@@ -272,7 +206,7 @@ const ServersPage = () => {
               openEditServerModal();
             }}
             del={del}
-            isSearching={debouncedSearchKey !== ""}
+            isSearching={debouncedSearchInput !== ""}
           />
         </ScrollArea>
       </Flex>

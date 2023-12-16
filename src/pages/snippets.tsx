@@ -1,25 +1,17 @@
 import {
   ActionIcon,
   Box,
-  CloseButton,
   Code,
   Flex,
   Group,
-  Loader,
   ScrollArea,
   Table,
   Text,
-  TextInput,
   Tooltip,
 } from "@mantine/core";
 import { useDebouncedValue, useDisclosure } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
-import {
-  IconClipboardCopy,
-  IconPencil,
-  IconPlus,
-  IconSearch,
-} from "@tabler/icons-react";
+import { IconClipboardCopy, IconPencil, IconPlus } from "@tabler/icons-react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -33,6 +25,8 @@ import {
   updateSnippetByIndex,
 } from "@/slices/snippetsSlice.ts";
 import DeleteItemButton from "@/components/DeleteItemButton.tsx";
+import { searchSnippets } from "@/search/snippets.ts";
+import SearchBar from "@/components/SearchBar.tsx";
 
 const actionIconStyle = { width: "70%", height: "70%" };
 
@@ -66,7 +60,7 @@ const SnippetTableRow = ({
     <Table.Td>{no}</Table.Td>
     <Table.Td>{snippet.name}</Table.Td>
     <Table.Td style={actionRowStyle}>
-      <Group gap="xs">
+      <Group gap="xs" justify="end">
         <Tooltip label={"Copy"} openDelay={500}>
           <ActionIcon color="green" onClick={copy}>
             <IconClipboardCopy style={actionIconStyle} />
@@ -187,8 +181,8 @@ const SnippetsPage = () => {
     dispatch(saveSnippets());
   };
 
-  const [searchKey, setSearchKey] = useState("");
-  const [debouncedSearchKey] = useDebouncedValue(searchKey, 500);
+  const [searchInput, setSearchInput] = useState("");
+  const [debouncedSearchInput] = useDebouncedValue(searchInput, 500);
 
   return (
     <>
@@ -196,22 +190,11 @@ const SnippetsPage = () => {
         <Box p="md">
           {/*Search and Create*/}
           <Flex direction="row" justify="space-between" gap="lg">
-            <TextInput
-              leftSection={<IconSearch size={18} />}
-              rightSection={
-                searchKey !== "" &&
-                (debouncedSearchKey !== searchKey ? (
-                  <Loader size="xs" />
-                ) : (
-                  <CloseButton onClick={() => setSearchKey("")} />
-                ))
-              }
+            <SearchBar
               placeholder="Search snippets"
-              style={{
-                flexGrow: 1,
-              }}
-              value={searchKey}
-              onChange={(ev) => setSearchKey(ev.currentTarget.value)}
+              searchInput={searchInput}
+              setSearchInput={setSearchInput}
+              debouncedSearchInput={debouncedSearchInput}
             />
 
             <Group gap="xs">
@@ -232,29 +215,14 @@ const SnippetsPage = () => {
         {/*Snippet Table*/}
         <ScrollArea>
           <SnippetTable
-            snippets={
-              debouncedSearchKey === ""
-                ? snippets
-                : snippets.filter((snippet) => {
-                    for (const key of debouncedSearchKey.split(/\s+/)) {
-                      if (
-                        key.length > 0 &&
-                        (snippet.name.includes(key) ||
-                          snippet.code.includes(key))
-                      ) {
-                        return true;
-                      }
-                    }
-                    return false;
-                  })
-            }
+            snippets={searchSnippets(debouncedSearchInput, snippets)}
             copy={copy}
             edit={(index) => {
               setActiveSnippetIndex(index);
               openEditSnippetModal();
             }}
             del={del}
-            isSearching={debouncedSearchKey !== ""}
+            isSearching={debouncedSearchInput !== ""}
           />
         </ScrollArea>
       </Flex>
