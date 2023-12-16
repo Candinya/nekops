@@ -1,10 +1,10 @@
-import HomePage from "@/pages/home.tsx";
-import SSHPage from "@/pages/ssh.tsx";
-import MultirunPage from "@/pages/multirun.tsx";
-import RescuePage from "@/pages/rescue.tsx";
-import ServersPage from "@/pages/servers.tsx";
-import SnippetsPage from "@/pages/snippets.tsx";
-import Settings from "@/pages/settings.tsx";
+import HomePage from "@/pages/Home.tsx";
+import SSHPage from "@/pages/SSH.tsx";
+import MultirunPage from "@/pages/Multirun.tsx";
+import RescuePage from "@/pages/Rescue.tsx";
+import ServersPage from "@/pages/Servers.tsx";
+import SnippetsPage from "@/pages/Snippets.tsx";
+import Settings from "@/pages/Settings.tsx";
 
 import {
   IconCirclesRelation,
