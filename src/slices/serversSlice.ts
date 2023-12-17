@@ -51,6 +51,10 @@ export const serversSlice = createSlice({
     removeServerByIndex: (state, action) => {
       state.splice(action.payload, 1);
     },
+    reorderServer: (state, action) => {
+      const moved = state.splice(action.payload.sourceIndex, 1);
+      state.splice(action.payload.destinationIndex, 0, ...moved);
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(readServers.fulfilled, (_, action) => action.payload);
@@ -58,7 +62,11 @@ export const serversSlice = createSlice({
   },
 });
 
-export const { addServer, updateServerByIndex, removeServerByIndex } =
-  serversSlice.actions;
+export const {
+  addServer,
+  updateServerByIndex,
+  removeServerByIndex,
+  reorderServer,
+} = serversSlice.actions;
 
 export default serversSlice.reducer;

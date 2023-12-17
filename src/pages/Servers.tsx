@@ -3,12 +3,18 @@ import {
   Box,
   Flex,
   Group,
+  rem,
   ScrollArea,
   Table,
   Tooltip,
 } from "@mantine/core";
 import { useDebouncedValue, useDisclosure } from "@mantine/hooks";
-import { IconId, IconPencil, IconPlus } from "@tabler/icons-react";
+import {
+  IconGripVertical,
+  IconId,
+  IconPencil,
+  IconPlus,
+} from "@tabler/icons-react";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -18,6 +24,7 @@ import type { AppDispatch, RootState } from "@/store.ts";
 import {
   addServer,
   removeServerByIndex,
+  reorderServer,
   saveServers,
   updateServerByIndex,
 } from "@/slices/serversSlice.ts";
@@ -27,10 +34,11 @@ import { searchServers } from "@/search/servers.ts";
 import SearchBar from "@/components/SearchBar.tsx";
 import { actionIconStyle, actionRowStyle } from "@/common/actionStyles.ts";
 import { encryptServer } from "@/slices/encryptionSlice.ts";
+import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
 
 const ServerTableHead = () => (
   <Table.Tr>
-    <Table.Th>#</Table.Th>
+    <Table.Th style={{ width: rem(40) }} />
     <Table.Th>Server Name</Table.Th>
     <Table.Th>Server ID</Table.Th>
     <Table.Th style={actionRowStyle}>Actions</Table.Th>
@@ -38,48 +46,64 @@ const ServerTableHead = () => (
 );
 
 interface ServerTableRowProps {
-  no: number;
+  index: number;
   server: Server;
   show: () => void;
   edit: () => void;
   del: () => void;
 }
 const ServerTableRow = ({
-  no,
+  index,
   server,
   show,
   edit,
   del,
 }: ServerTableRowProps) => (
-  <Table.Tr>
-    <Table.Td>{no}</Table.Td>
-    <Table.Td>{server.name}</Table.Td>
-    <Table.Td>{server.id}</Table.Td>
-    <Table.Td style={actionRowStyle}>
-      <Group gap="xs" justify="center">
-        {/*Show Card*/}
-        <Tooltip label={"Show"} openDelay={500}>
-          <ActionIcon color={server.color} onClick={show}>
-            <IconId style={actionIconStyle} />
-          </ActionIcon>
-        </Tooltip>
+  <Draggable draggableId={server.id} index={index}>
+    {(provided) => (
+      <Table.Tr ref={provided.innerRef} {...provided.draggableProps}>
+        <Table.Td>
+          <Flex
+            style={{
+              cursor: "grab",
+            }}
+            {...provided.dragHandleProps}
+          >
+            <IconGripVertical
+              style={{ width: rem(18), height: rem(18) }}
+              stroke={1.5}
+            />
+          </Flex>
+        </Table.Td>
+        <Table.Td>{server.name}</Table.Td>
+        <Table.Td>{server.id}</Table.Td>
+        <Table.Td style={actionRowStyle}>
+          <Group gap="xs" justify="center">
+            {/*Show Card*/}
+            <Tooltip label={"Show"} openDelay={500}>
+              <ActionIcon color={server.color} onClick={show}>
+                <IconId style={actionIconStyle} />
+              </ActionIcon>
+            </Tooltip>
 
-        {/*Edit*/}
-        <Tooltip label={"Edit"} openDelay={500}>
-          <ActionIcon onClick={edit}>
-            <IconPencil style={actionIconStyle} />
-          </ActionIcon>
-        </Tooltip>
+            {/*Edit*/}
+            <Tooltip label={"Edit"} openDelay={500}>
+              <ActionIcon onClick={edit}>
+                <IconPencil style={actionIconStyle} />
+              </ActionIcon>
+            </Tooltip>
 
-        {/*Delete*/}
-        <DeleteItemButton
-          itemName={`Server ${server.name}`}
-          iconStyle={actionIconStyle}
-          onClick={del}
-        />
-      </Group>
-    </Table.Td>
-  </Table.Tr>
+            {/*Delete*/}
+            <DeleteItemButton
+              itemName={`Server ${server.name}`}
+              iconStyle={actionIconStyle}
+              onClick={del}
+            />
+          </Group>
+        </Table.Td>
+      </Table.Tr>
+    )}
+  </Draggable>
 );
 
 interface ServerTableProps {
@@ -87,6 +111,7 @@ interface ServerTableProps {
   show: (index: number) => void;
   edit: (index: number) => void;
   del: (index: number) => void;
+  reorder: (sourceIndex: number, destinationIndex: number) => void;
   isSearching: boolean;
 }
 const ServerTable = ({
@@ -94,36 +119,48 @@ const ServerTable = ({
   show,
   edit,
   del,
+  reorder,
   isSearching,
 }: ServerTableProps) => (
-  <Table stickyHeader stickyHeaderOffset={0} highlightOnHover>
-    <Table.Thead
-      style={{
-        zIndex: 1,
-      }}
-    >
-      <ServerTableHead />
-    </Table.Thead>
-    <Table.Tbody>
-      {servers.map((server, index) => (
-        <ServerTableRow
-          key={server.id}
-          no={index + 1}
-          server={server}
-          show={() => show(index)}
-          edit={() => edit(index)}
-          del={() => del(index)}
-        />
-      ))}
-    </Table.Tbody>
-    <Table.Caption>
-      {servers.length > 0
-        ? `Total ${servers.length} servers.`
-        : isSearching
-          ? "No matching results."
-          : "Let's add first server!"}
-    </Table.Caption>
-  </Table>
+  <DragDropContext
+    onDragEnd={({ destination, source }) => {
+      reorder(source.index, destination?.index || 0);
+    }}
+  >
+    <Table stickyHeader stickyHeaderOffset={0} highlightOnHover>
+      <Table.Thead
+        style={{
+          zIndex: 1,
+        }}
+      >
+        <ServerTableHead />
+      </Table.Thead>
+      <Droppable droppableId="servers-list" direction="vertical">
+        {(provided) => (
+          <Table.Tbody ref={provided.innerRef} {...provided.droppableProps}>
+            {servers.map((server, index) => (
+              <ServerTableRow
+                key={server.id}
+                index={index}
+                server={server}
+                show={() => show(index)}
+                edit={() => edit(index)}
+                del={() => del(index)}
+              />
+            ))}
+            {provided.placeholder}
+          </Table.Tbody>
+        )}
+      </Droppable>
+      <Table.Caption>
+        {servers.length > 0
+          ? `Total ${servers.length} servers.`
+          : isSearching
+            ? "No matching results."
+            : "Let's add first server!"}
+      </Table.Caption>
+    </Table>
+  </DragDropContext>
 );
 
 // const passwordUnchanged = "keep-unchanged";
@@ -171,6 +208,18 @@ const ServersPage = () => {
   const del = (index: number) => {
     dispatch(removeServerByIndex(index));
     dispatch(saveServers());
+  };
+
+  const reorder = (sourceIndex: number, destinationIndex: number) => {
+    if (sourceIndex !== destinationIndex) {
+      dispatch(
+        reorderServer({
+          sourceIndex,
+          destinationIndex,
+        }),
+      );
+      dispatch(saveServers());
+    }
   };
 
   // Search related
@@ -239,6 +288,7 @@ const ServersPage = () => {
               openEditServerModal();
             }}
             del={del}
+            reorder={reorder}
             isSearching={debouncedSearchInput !== ""}
           />
         </ScrollArea>

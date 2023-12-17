@@ -51,6 +51,10 @@ export const snippetsSlice = createSlice({
     removeSnippetByIndex: (state, action) => {
       state.splice(action.payload, 1);
     },
+    reorderSnippet: (state, action) => {
+      const moved = state.splice(action.payload.sourceIndex, 1);
+      state.splice(action.payload.destinationIndex, 0, ...moved);
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(readSnippets.fulfilled, (_, action) => action.payload);
@@ -58,7 +62,11 @@ export const snippetsSlice = createSlice({
   },
 });
 
-export const { addSnippet, updateSnippetByIndex, removeSnippetByIndex } =
-  snippetsSlice.actions;
+export const {
+  addSnippet,
+  updateSnippetByIndex,
+  removeSnippetByIndex,
+  reorderSnippet,
+} = snippetsSlice.actions;
 
 export default snippetsSlice.reducer;
