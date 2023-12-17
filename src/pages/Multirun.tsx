@@ -176,7 +176,7 @@ const MultirunPage = () => {
               debouncedSearchInput={debouncedSearchInput}
             />
 
-            <Group gap="xs">
+            <Tooltip label="Start" openDelay={500}>
               <ActionIcon
                 size="lg"
                 color="green"
@@ -187,7 +187,7 @@ const MultirunPage = () => {
               >
                 <IconPlayerPlay style={actionIconStyle} />
               </ActionIcon>
-            </Group>
+            </Tooltip>
           </Flex>
         </Box>
 

@@ -199,7 +199,7 @@ const ServersPage = () => {
               debouncedSearchInput={debouncedSearchInput}
             />
 
-            <Group gap="xs">
+            <Tooltip label="New server" openDelay={500}>
               <ActionIcon
                 size="lg"
                 color="green"
@@ -210,7 +210,7 @@ const ServersPage = () => {
               >
                 <IconPlus style={actionIconStyle} />
               </ActionIcon>
-            </Group>
+            </Tooltip>
           </Flex>
         </Box>
 
