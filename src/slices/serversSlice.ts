@@ -6,11 +6,13 @@ import { checkParentDir } from "@/slices/common.ts";
 
 const ServersFileName = "servers.json";
 
+const noServer: Server[] = [];
+
 export const readServers = createAsyncThunk(
   "servers/read",
   async (_, { getState }): Promise<Server[]> => {
     // read from local file
-    const state: any = getState() as RootState;
+    const state = getState() as RootState;
     if (await exists(state.settings.data_dir + ServersFileName)) {
       // Read and parse
       const serversFile = await readTextFile(
@@ -18,7 +20,7 @@ export const readServers = createAsyncThunk(
       );
       return JSON.parse(serversFile);
     } else {
-      return [];
+      return noServer;
     }
   },
 );
@@ -36,7 +38,6 @@ export const saveServers = createAsyncThunk(
   },
 );
 
-const noServer: Server[] = [];
 export const serversSlice = createSlice({
   name: "servers",
   initialState: noServer,
@@ -52,9 +53,7 @@ export const serversSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(readServers.fulfilled, (_, action) => {
-      return action.payload;
-    });
+    builder.addCase(readServers.fulfilled, (_, action) => action.payload);
     builder.addCase(saveServers.fulfilled, () => {});
   },
 });

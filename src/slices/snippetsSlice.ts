@@ -6,11 +6,13 @@ import { checkParentDir } from "@/slices/common.ts";
 
 const SnippetsFileName = "snippets.json";
 
+const noSnippet: Snippet[] = [];
+
 export const readSnippets = createAsyncThunk(
   "snippets/read",
   async (_, { getState }): Promise<Snippet[]> => {
     // read from local file
-    const state: any = getState() as RootState;
+    const state = getState() as RootState;
     if (await exists(state.settings.data_dir + SnippetsFileName)) {
       // Read and parse
       const snippetsFile = await readTextFile(
@@ -18,7 +20,7 @@ export const readSnippets = createAsyncThunk(
       );
       return JSON.parse(snippetsFile);
     } else {
-      return [];
+      return noSnippet;
     }
   },
 );
@@ -36,7 +38,6 @@ export const saveSnippets = createAsyncThunk(
   },
 );
 
-const noSnippet: Snippet[] = [];
 export const snippetsSlice = createSlice({
   name: "snippets",
   initialState: noSnippet,
@@ -52,9 +53,7 @@ export const snippetsSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(readSnippets.fulfilled, (_, action) => {
-      return action.payload;
-    });
+    builder.addCase(readSnippets.fulfilled, (_, action) => action.payload);
     builder.addCase(saveSnippets.fulfilled, () => {});
   },
 });
