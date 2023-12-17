@@ -9,7 +9,7 @@ export const searchServers = (searchInput: string, allServers: Server[]) =>
             key.length > 0 &&
             (server.id.includes(key) ||
               server.name.includes(key) ||
-              server.note.includes(key) ||
+              server.comment.includes(key) ||
               server.tags.includes(key)) // Tag full match
           ) {
             return true;

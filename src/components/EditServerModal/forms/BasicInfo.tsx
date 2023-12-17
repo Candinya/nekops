@@ -56,11 +56,11 @@ const BasicInfoForm = ({ form }: InputFormProps) => (
     </Grid>
     <Textarea
       mt="md"
-      label="Note"
+      label="Comment"
       autosize
       minRows={6}
       placeholder="It's blazing fast! Love it."
-      {...form.getInputProps("note")}
+      {...form.getInputProps("comment")}
     />
   </Fieldset>
 );

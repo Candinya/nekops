@@ -14,7 +14,7 @@ const theme = createTheme({
 const Layout = () => (
   <MantineProvider theme={theme}>
     <BrowserRouter>
-      <Notifications />
+      <Notifications zIndex={1001} />
       <App />
     </BrowserRouter>
   </MantineProvider>

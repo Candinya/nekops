@@ -10,6 +10,7 @@ import type { AppDispatch } from "@/store.ts";
 import { readSettings } from "@/slices/settingsSlice.ts";
 import { readServers } from "@/slices/serversSlice.ts";
 import { readSnippets } from "@/slices/snippetsSlice.ts";
+import { readEncryption } from "@/slices/encryptionSlice.ts";
 
 const App = () => {
   const [isNavOpen, { toggle: toggleNavOpen }] = useDisclosure(true);
@@ -20,6 +21,7 @@ const App = () => {
     dispatch(readSettings()).then(() => {
       dispatch(readServers());
       dispatch(readSnippets());
+      dispatch(readEncryption());
     });
   }, []);
 

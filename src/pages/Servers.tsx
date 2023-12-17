@@ -26,6 +26,7 @@ import ServerCardModal from "@/components/ServerCardModal.tsx";
 import { searchServers } from "@/search/servers.ts";
 import SearchBar from "@/components/SearchBar.tsx";
 import { actionIconStyle, actionRowStyle } from "@/common/actionStyles.ts";
+import { encryptServer } from "@/slices/encryptionSlice.ts";
 
 const ServerTableHead = () => (
   <Table.Tr>
@@ -120,10 +121,12 @@ const ServerTable = ({
   </Table>
 );
 
+// const passwordUnchanged = "keep-unchanged";
 const emptyIndex = -1;
 
 const ServersPage = () => {
   const servers = useSelector((state: RootState) => state.servers);
+  const encryption = useSelector((state: RootState) => state.encryption);
   const dispatch = useDispatch<AppDispatch>();
 
   const [
@@ -146,12 +149,16 @@ const ServersPage = () => {
       dispatch(
         updateServerByIndex({
           index: activeServerIndex,
-          server: newServerInfo,
+          server: encryptServer(
+            encryption,
+            newServerInfo,
+            servers[activeServerIndex],
+          ),
         }),
       );
     } else {
       // Create
-      dispatch(addServer(newServerInfo));
+      dispatch(addServer(encryptServer(encryption, newServerInfo)));
     }
     dispatch(saveServers());
   };

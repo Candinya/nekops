@@ -2,6 +2,7 @@ import { Button, Modal, Textarea, TextInput } from "@mantine/core";
 import { defaultSnippet, type Snippet } from "@/types/snippet.ts";
 import { useForm } from "@mantine/form";
 import { useEffect } from "react";
+import { deepClone } from "@/utils/deepClone.ts";
 
 interface EditSnippetModalProps {
   isOpen: boolean;
@@ -30,10 +31,7 @@ const EditSnippetModal = ({
   useEffect(() => {
     if (isOpen) {
       if (!!snippetInfo) {
-        form.setInitialValues(
-          // Deep clone
-          JSON.parse(JSON.stringify(snippetInfo)),
-        );
+        form.setInitialValues(deepClone(snippetInfo));
       } else {
         form.setInitialValues(defaultSnippet);
       }

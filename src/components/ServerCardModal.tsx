@@ -22,14 +22,14 @@ const ServerCardModal = ({
     scrollAreaComponent={ScrollArea.Autosize}
   >
     {serverInfo && <ServerCard server={serverInfo} />}
-    {serverInfo?.note && (
+    {serverInfo?.comment && (
       <Paper mt="md" shadow="xs" p="xl" radius="md" withBorder>
         <Text
           style={{
             whiteSpace: "pre-wrap",
           }}
         >
-          {serverInfo.note}
+          {serverInfo.comment}
         </Text>
       </Paper>
     )}

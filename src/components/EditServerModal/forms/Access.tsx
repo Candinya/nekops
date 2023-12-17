@@ -8,6 +8,7 @@ import {
   PasswordInput,
   SegmentedControl,
   Text,
+  Textarea,
   TextInput,
 } from "@mantine/core";
 
@@ -81,7 +82,6 @@ const AccessForm = ({ form }: InputFormProps) => (
       <Group mt="md" grow>
         <TextInput
           label="Username"
-          disabled={form.values.access.emergency.method === "VNC"}
           {...form.getInputProps("access.emergency.username")}
         />
         <PasswordInput
@@ -89,6 +89,14 @@ const AccessForm = ({ form }: InputFormProps) => (
           {...form.getInputProps("access.emergency.password")}
         />
       </Group>
+      <Textarea
+        mt="md"
+        label="Comment"
+        autosize
+        minRows={4}
+        placeholder="Don't forget to backup before reboot!"
+        {...form.getInputProps("access.emergency.comment")}
+      />
     </Fieldset>
   </>
 );

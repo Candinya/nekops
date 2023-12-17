@@ -30,6 +30,7 @@ import ProviderAndLocationForm from "./forms/ProviderAndLocation.tsx";
 import HardwareForm from "./forms/Hardware.tsx";
 import NetworksForm from "./forms/Networks.tsx";
 import AccessForm from "@/components/EditServerModal/forms/Access.tsx";
+import { deepClone } from "@/utils/deepClone.ts";
 
 interface EditServerModalProps {
   isOpen: boolean;
@@ -73,10 +74,7 @@ const EditServerModal = ({
   useEffect(() => {
     if (isOpen) {
       if (!!serverInfo) {
-        form.setInitialValues(
-          // Deep clone
-          JSON.parse(JSON.stringify(serverInfo)),
-        );
+        form.setInitialValues(deepClone(serverInfo));
       } else {
         form.setInitialValues(defaultServer);
       }

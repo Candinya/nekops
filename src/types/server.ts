@@ -1,9 +1,8 @@
 export type BaseInfo = {
   id: string;
   name: string;
-  note: string; // Applications etc.
+  comment: string; // Applications etc.
   tags: string[];
-  // icon?: string; // TODO
   color: string;
 };
 
@@ -84,7 +83,8 @@ export type AccessEmergency = {
   method: "VNC" | "IPMI" | "Other";
   address: string;
   username?: string;
-  password: string;
+  password: string; // Method password
+  comment: string;
 };
 
 export type Access = {
@@ -121,7 +121,7 @@ export const defaultIP: IP = {
 export const defaultServer: Server = {
   id: "",
   name: "",
-  note: "",
+  comment: "",
   tags: [],
   // icon: "",
   color: "#62b6e7",
@@ -174,6 +174,7 @@ export const defaultServer: Server = {
       address: "",
       username: "",
       password: "",
+      comment: "",
     },
   },
 };
