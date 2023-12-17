@@ -120,6 +120,8 @@ const ServerTable = ({
   </Table>
 );
 
+const emptyIndex = -1;
+
 const ServersPage = () => {
   const servers = useSelector((state: RootState) => state.servers);
   const dispatch = useDispatch<AppDispatch>();
@@ -134,11 +136,12 @@ const ServersPage = () => {
     { open: openServerCardModal, close: closeServerCardModal },
   ] = useDisclosure(false);
 
-  const [activeServerIndex, setActiveServerIndex] = useState<number>(-1);
+  const [activeServerIndex, setActiveServerIndex] =
+    useState<number>(emptyIndex);
 
   // Edit actions
   const confirm = (newServerInfo: Server) => {
-    if (activeServerIndex !== -1) {
+    if (activeServerIndex !== emptyIndex) {
       // Edit
       dispatch(
         updateServerByIndex({
@@ -201,7 +204,7 @@ const ServersPage = () => {
                 size="lg"
                 color="green"
                 onClick={() => {
-                  setActiveServerIndex(-1);
+                  setActiveServerIndex(emptyIndex);
                   openEditServerModal();
                 }}
               >
@@ -234,7 +237,9 @@ const ServersPage = () => {
         isOpen={isEditServerModalOpen}
         close={closeEditServerModal}
         serverInfo={
-          activeServerIndex === -1 ? undefined : servers[activeServerIndex]
+          activeServerIndex === emptyIndex
+            ? undefined
+            : servers[activeServerIndex]
         }
         save={confirm}
         knownProviders={knownProviders.current}
@@ -246,7 +251,9 @@ const ServersPage = () => {
         isOpen={isServerCardModalOpen}
         close={closeServerCardModal}
         serverInfo={
-          activeServerIndex === -1 ? undefined : servers[activeServerIndex]
+          activeServerIndex === emptyIndex
+            ? undefined
+            : servers[activeServerIndex]
         }
       />
     </>
