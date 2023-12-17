@@ -1,20 +1,21 @@
 import {
   ActionIcon,
   Box,
-  Code,
   Flex,
   Group,
   ScrollArea,
   Table,
-  Text,
   Tooltip,
 } from "@mantine/core";
 import { useDebouncedValue, useDisclosure } from "@mantine/hooks";
-import { notifications } from "@mantine/notifications";
-import { IconClipboardCopy, IconPencil, IconPlus } from "@tabler/icons-react";
+import {
+  IconClipboardCheck,
+  IconClipboardCopy,
+  IconPencil,
+  IconPlus,
+} from "@tabler/icons-react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { writeText } from "@tauri-apps/plugin-clipboard-manager";
 
 import type { Snippet } from "@/types/snippet.ts";
 import EditSnippetModal from "@/components/EditSnippetModal.tsx";
@@ -29,6 +30,7 @@ import DeleteItemButton from "@/components/DeleteItemButton.tsx";
 import { searchSnippets } from "@/search/snippets.ts";
 import SearchBar from "@/components/SearchBar.tsx";
 import { actionIconStyle, actionRowStyle } from "@/common/actionStyles.ts";
+import CopyButton from "@/components/CopyButton.tsx";
 
 const SnippetTableHead = () => (
   <Table.Tr>
@@ -41,32 +43,38 @@ const SnippetTableHead = () => (
 interface SnippetTableRowProps {
   no: number;
   snippet: Snippet;
-  copy: () => void;
   edit: () => void;
   del: () => void;
 }
-const SnippetTableRow = ({
-  no,
-  snippet,
-  copy,
-  edit,
-  del,
-}: SnippetTableRowProps) => (
+const SnippetTableRow = ({ no, snippet, edit, del }: SnippetTableRowProps) => (
   <Table.Tr>
     <Table.Td>{no}</Table.Td>
     <Table.Td>{snippet.name}</Table.Td>
     <Table.Td style={actionRowStyle}>
       <Group gap="xs" justify="center">
-        <Tooltip label={"Copy"} openDelay={500}>
-          <ActionIcon color="green" onClick={copy}>
-            <IconClipboardCopy style={actionIconStyle} />
-          </ActionIcon>
-        </Tooltip>
+        {/*Copy*/}
+        <CopyButton value={snippet.code}>
+          {({ copied, copy }) => (
+            <Tooltip label={copied ? "Copied!" : "Copy"} openDelay={500}>
+              <ActionIcon color={copied ? "teal" : "green"} onClick={copy}>
+                {copied ? (
+                  <IconClipboardCheck style={actionIconStyle} />
+                ) : (
+                  <IconClipboardCopy style={actionIconStyle} />
+                )}
+              </ActionIcon>
+            </Tooltip>
+          )}
+        </CopyButton>
+
+        {/*Edit*/}
         <Tooltip label={"Edit"} openDelay={500}>
           <ActionIcon onClick={edit}>
             <IconPencil style={actionIconStyle} />
           </ActionIcon>
         </Tooltip>
+
+        {/*Delete*/}
         <DeleteItemButton
           itemName={`Snippet ${snippet.name}`}
           iconStyle={actionIconStyle}
@@ -79,14 +87,12 @@ const SnippetTableRow = ({
 
 interface SnippetTableProps {
   snippets: Snippet[];
-  copy: (index: number) => void;
   edit: (index: number) => void;
   del: (index: number) => void;
   isSearching: boolean;
 }
 const SnippetTable = ({
   snippets,
-  copy,
   edit,
   del,
   isSearching,
@@ -105,7 +111,6 @@ const SnippetTable = ({
           key={snippet.name}
           no={index + 1}
           snippet={snippet}
-          copy={() => copy(index)}
           edit={() => edit(index)}
           del={() => del(index)}
         />
@@ -131,34 +136,6 @@ const SnippetsPage = () => {
   ] = useDisclosure(false);
 
   const [activeSnippetIndex, setActiveSnippetIndex] = useState<number>(-1);
-
-  const copy = (index: number) => {
-    try {
-      writeText(snippets[index].code).then(() => {
-        notifications.show({
-          color: "green",
-          title: "Copied successfully!",
-          message: (
-            <Text>
-              Feel free to paste this snippet{" "}
-              <Code>{snippets[index].name}</Code> anywhere
-            </Text>
-          ),
-        });
-      });
-    } catch (e) {
-      notifications.show({
-        color: "yellow",
-        title: "Copy failed...",
-        message: (
-          <Text>
-            You may need to copy this snippet from <Code>Edit</Code> form{" "}
-            manually. Sorry for the inconvenience.
-          </Text>
-        ),
-      });
-    }
-  };
 
   const save = (newSnippetInfo: Snippet) => {
     if (activeSnippetIndex !== -1) {
@@ -216,7 +193,6 @@ const SnippetsPage = () => {
         <ScrollArea>
           <SnippetTable
             snippets={searchSnippets(debouncedSearchInput, snippets)}
-            copy={copy}
             edit={(index) => {
               setActiveSnippetIndex(index);
               openEditSnippetModal();

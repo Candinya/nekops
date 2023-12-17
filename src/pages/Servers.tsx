@@ -57,16 +57,21 @@ const ServerTableRow = ({
     <Table.Td>{server.id}</Table.Td>
     <Table.Td style={actionRowStyle}>
       <Group gap="xs" justify="center">
+        {/*Show Card*/}
         <Tooltip label={"Show"} openDelay={500}>
           <ActionIcon color={server.color} onClick={show}>
             <IconId style={actionIconStyle} />
           </ActionIcon>
         </Tooltip>
+
+        {/*Edit*/}
         <Tooltip label={"Edit"} openDelay={500}>
           <ActionIcon onClick={edit}>
             <IconPencil style={actionIconStyle} />
           </ActionIcon>
         </Tooltip>
+
+        {/*Delete*/}
         <DeleteItemButton
           itemName={`Server ${server.name}`}
           iconStyle={actionIconStyle}
