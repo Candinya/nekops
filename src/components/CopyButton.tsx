@@ -4,6 +4,7 @@
 import { ReactNode, useState } from "react";
 import { useProps } from "@mantine/core";
 import { writeText } from "@tauri-apps/plugin-clipboard-manager";
+import { notifications } from "@mantine/notifications";
 
 interface CopyButtonProps {
   /** Children callback, provides current status and copy function as an argument */
@@ -28,11 +29,22 @@ const CopyButton = (props: CopyButtonProps) => {
   );
   const [copied, setCopied] = useState(false);
   const copy = async () => {
-    await writeText(value);
-    setCopied(true);
-    setTimeout(() => {
-      setCopied(false);
-    }, timeout);
+    try {
+      await writeText(value);
+      setCopied(true);
+      setTimeout(() => {
+        setCopied(false);
+      }, timeout);
+      notifications.show({
+        color: "green",
+        message: "Copied successfully",
+      });
+    } catch (e) {
+      notifications.show({
+        color: "red",
+        message: "Copy failed...",
+      });
+    }
   };
   return <>{children({ copy, copied, ...others })}</>;
 };
