@@ -4,6 +4,7 @@ import {
   Checkbox,
   Flex,
   Group,
+  rem,
   ScrollArea,
   Table,
   Tooltip,
@@ -30,7 +31,7 @@ const ServerTableHead = ({
 }: ServerTableHeadProps) => {
   return (
     <Table.Tr>
-      <Table.Th>
+      <Table.Th style={{ width: rem(40) }}>
         <Checkbox
           checked={selectedState === "all"}
           indeterminate={selectedState === "partial"}
