@@ -31,7 +31,7 @@ const App = () => {
       footer={{ height: 48 }}
       navbar={{
         width: 200,
-        breakpoint: "xs",
+        breakpoint: "sm",
         collapsed: {
           mobile: !isNavOpen,
           desktop: !isNavOpen,
