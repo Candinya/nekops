@@ -56,7 +56,7 @@ const SnippetTableRow = ({ no, snippet, edit, del }: SnippetTableRowProps) => (
         <CopyButton value={snippet.code}>
           {({ copied, copy }) => (
             <Tooltip label={copied ? "Copied!" : "Copy"} openDelay={500}>
-              <ActionIcon color={copied ? "teal" : "green"} onClick={copy}>
+              <ActionIcon color={copied ? "cyan" : "green"} onClick={copy}>
                 {copied ? (
                   <IconClipboardCheck style={actionIconStyle} />
                 ) : (
