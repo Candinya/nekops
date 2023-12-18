@@ -1,7 +1,6 @@
 import {
-  Box,
+  Badge,
   Center,
-  Code,
   Divider,
   Flex,
   Image,
@@ -10,9 +9,10 @@ import {
   Text,
   Title,
 } from "@mantine/core";
-import { getTauriVersion, getVersion } from "@tauri-apps/api/app";
+import { getVersion } from "@tauri-apps/api/app";
 import { useEffect, useState } from "react";
 import { IconHeartFilled } from "@tabler/icons-react";
+import { notifications } from "@mantine/notifications";
 
 interface AboutModalProps {
   isOpen: boolean;
@@ -20,12 +20,18 @@ interface AboutModalProps {
 }
 const AboutModal = ({ isOpen, close }: AboutModalProps) => {
   const [version, setVersion] = useState("Loading...");
-  const [tauriVersion, setTauriVersion] = useState("Loading...");
+
+  const checkNewVersion = () => {
+    notifications.show({
+      color: "green",
+      title: "Already latest version!",
+      message: "Don't hesitate to enjoy~",
+    });
+  };
 
   useEffect(() => {
     (async () => {
       setVersion(await getVersion());
-      setTauriVersion(await getTauriVersion());
     })();
   }, []);
 
@@ -38,11 +44,24 @@ const AboutModal = ({ isOpen, close }: AboutModalProps) => {
             alt="Nekops"
             w={rem(128)}
             h={rem(128)}
-            radius="lg"
+            radius={rem(128)}
+            style={{
+              outline: "2px solid #62b6e7",
+              outlineOffset: "4px",
+            }}
           />
           <Flex direction="column" mb="md" align="center">
             <Title order={1}>Nekops</Title>
             <Text>Ops now nyaing</Text>
+            <Badge
+              mt={rem(4)}
+              style={{
+                cursor: "pointer",
+              }}
+              onClick={checkNewVersion}
+            >
+              {version}
+            </Badge>
           </Flex>
         </Flex>
         <Divider my="lg" variant="dotted" label="About" />
@@ -59,19 +78,6 @@ const AboutModal = ({ isOpen, close }: AboutModalProps) => {
         <Center>
           <Text>Commands all Nyawork servers</Text>
         </Center>
-        <Divider my="lg" variant="dotted" label="Version info" />
-        <Box>
-          <Center>
-            <Text>
-              Version <Code>{version}</Code>
-            </Text>
-          </Center>
-          <Center>
-            <Text>
-              Tauri Version <Code>{tauriVersion}</Code>
-            </Text>
-          </Center>
-        </Box>
       </Flex>
     </Modal>
   );
