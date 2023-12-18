@@ -11,9 +11,13 @@ import { readSettings } from "@/slices/settingsSlice.ts";
 import { readServers } from "@/slices/serversSlice.ts";
 import { readSnippets } from "@/slices/snippetsSlice.ts";
 import { readEncryption } from "@/slices/encryptionSlice.ts";
+import AboutModal from "@/components/AboutModal.tsx";
 
 const App = () => {
-  const [isNavOpen, { toggle: toggleNavOpen }] = useDisclosure(true);
+  const [isNavOpen, { toggle: toggleNav }] = useDisclosure(true);
+  const [isAboutModalOpen, { open: openAboutModal, close: closeAboutModal }] =
+    useDisclosure(false);
+
   const dispatch = useDispatch<AppDispatch>();
 
   // Initialize
@@ -26,34 +30,42 @@ const App = () => {
   }, []);
 
   return (
-    <AppShell
-      header={{ height: 60 }}
-      footer={{ height: 48 }}
-      navbar={{
-        width: 200,
-        breakpoint: "sm",
-        collapsed: {
-          mobile: !isNavOpen,
-          desktop: !isNavOpen,
-        },
-      }}
-    >
-      <AppShell.Header>
-        <Header isNavOpen={isNavOpen} toggleNavOpen={toggleNavOpen} />
-      </AppShell.Header>
+    <>
+      <AppShell
+        header={{ height: 60 }}
+        footer={{ height: 48 }}
+        navbar={{
+          width: 200,
+          breakpoint: "sm",
+          collapsed: {
+            mobile: !isNavOpen,
+            desktop: !isNavOpen,
+          },
+        }}
+      >
+        <AppShell.Header>
+          <Header
+            isNavOpen={isNavOpen}
+            toggleNav={toggleNav}
+            openAboutModal={openAboutModal}
+          />
+        </AppShell.Header>
 
-      <AppShell.Navbar>
-        <Nav />
-      </AppShell.Navbar>
+        <AppShell.Navbar>
+          <Nav />
+        </AppShell.Navbar>
 
-      <AppShell.Main h={"100dvh"}>
-        <Router />
-      </AppShell.Main>
+        <AppShell.Main h={"100dvh"}>
+          <Router />
+        </AppShell.Main>
 
-      <AppShell.Footer p="xs">
-        <Footer />
-      </AppShell.Footer>
-    </AppShell>
+        <AppShell.Footer p="xs">
+          <Footer />
+        </AppShell.Footer>
+      </AppShell>
+
+      <AboutModal isOpen={isAboutModalOpen} close={closeAboutModal} />
+    </>
   );
 };
 
