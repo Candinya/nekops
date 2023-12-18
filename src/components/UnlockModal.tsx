@@ -51,7 +51,6 @@ const UnlockModal = ({ isOpen, close, successMessage }: UnlockModalProps) => {
       size="lg"
       radius="md"
       centered
-      zIndex={1000}
     >
       <form onSubmit={form.onSubmit(unlockFromSubmit)}>
         <PasswordInput label="Password" {...form.getInputProps("password")} />

@@ -235,6 +235,7 @@ const RescuePage = () => {
                 </Flex>
               ),
             }}
+            zIndex={1}
           />
           <Flex px="md" pb="md" direction="column" gap="md">
             {searchServers(debouncedSearchInput, servers).map((server) => (
