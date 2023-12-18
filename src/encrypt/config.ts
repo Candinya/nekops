@@ -17,26 +17,25 @@ export const keySalt = encoder.encode("Welcome to Nekops 🥰");
  *          tweetnacl.js built-in key          *
  *                                             *
  ***********************************************/
-// I have no fucking idea why the fuck tweetnacl.js requires 2 pairs of key,
-// and cannot simply implement a x25519 single key pair encryption / decryption algo.
-// Anyway, here's a fucking pair of built-in key.
-
-// let builtInKey: BoxKeyPair;
-// (async () => {
+// A pair of built-in key
+//   2023-12-01: The project's initialize date
+//   75f8e...33: The project's initialize commit hash
+// using setTimeout to prevent access imported functions before initialization
+// setTimeout(async () => {
 //   const km = await getKeyMaterial(
-//     "Nekops: what's tweetnacl's fucking problem?",
+//     "Nekops: tweetnacl built-in key @ Nya Candy + 2023-12-01 #75f8e333610f96b4ca9cf407f47132b9c237f133",
 //   );
 //   const pb = await getPrivateBits(km);
-//   builtInKey = box.keyPair.fromSecretKey(new Uint8Array(pb));
+//   const builtInKey = box.keyPair.fromSecretKey(new Uint8Array(pb));
 //   console.log(
 //     "Built-in key:",
 //     arrayBufferToBase64(builtInKey.publicKey),
 //     arrayBufferToBase64(builtInKey.secretKey),
 //   );
-// })();
+// }, 1000);
 
 // Since it's just a built-in constant, using a constant here.
 export const builtInKey: BoxKeyPair = {
-  publicKey: base64ToUint8Array("H64dcb8Qf05Fj5aZWCH/legQYAFkLhdgv0h1SK6lWDk="),
-  secretKey: base64ToUint8Array("/J7QfKTMszFS/V3qWViyrNonEeLvX2tlc0aMqqMVRMc="),
+  publicKey: base64ToUint8Array("i0oxBNRKEG4f2dJ1jjLbpXGstkukCRhHTmfkMx+6kC8="),
+  secretKey: base64ToUint8Array("5gnKfcAX2ewYcDiUNQ0+zu3o2rU1ymiaKtn0XQATtlM="),
 };
