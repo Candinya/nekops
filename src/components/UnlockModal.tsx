@@ -53,7 +53,11 @@ const UnlockModal = ({ isOpen, close, successMessage }: UnlockModalProps) => {
       centered
     >
       <form onSubmit={form.onSubmit(unlockFromSubmit)}>
-        <PasswordInput label="Password" {...form.getInputProps("password")} />
+        <PasswordInput
+          label="Password"
+          data-autofocus
+          {...form.getInputProps("password")}
+        />
 
         <Center mt="lg">
           <Button type="submit" leftSection={<IconLock />}>

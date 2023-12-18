@@ -16,6 +16,7 @@ const BasicInfoForm = ({ form }: InputFormProps) => (
           withAsterisk
           label="ID"
           placeholder="my.new.server"
+          data-autofocus
           {...form.getInputProps("id")}
         />
       </Grid.Col>

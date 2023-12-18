@@ -49,7 +49,12 @@ const EditSnippetModal = ({
       size="lg"
     >
       <form onSubmit={form.onSubmit(saveSnippet)}>
-        <TextInput label="Name" withAsterisk {...form.getInputProps("name")} />
+        <TextInput
+          label="Name"
+          withAsterisk
+          data-autofocus
+          {...form.getInputProps("name")}
+        />
 
         <Textarea
           label="Code"
