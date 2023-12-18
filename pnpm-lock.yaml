@@ -27,8 +27,8 @@ dependencies:
     specifier: ^2.44.0
     version: 2.44.0(react@18.2.0)
   '@tauri-apps/api':
-    specifier: 1.5.2
-    version: 1.5.2
+    specifier: ^2.0.0-alpha.12
+    version: 2.0.0-alpha.12
   '@tauri-apps/plugin-clipboard-manager':
     specifier: 2.0.0-alpha.4
     version: 2.0.0-alpha.4
@@ -844,11 +844,6 @@ packages:
 
   /@tabler/icons@2.44.0:
     resolution: {integrity: sha512-WPPtihDcAwEm1QZM9MXQw6+r/R2/qx7KMU1eegsi9DsqBLAb0W2kbt6e/syvd6j9c+6XNpRVBW1ziGqSWQAWOg==}
-    dev: false
-
-  /@tauri-apps/api@1.5.2:
-    resolution: {integrity: sha512-tZK3XJiIUnUdHN7rGqA+j57dvT3/7z2bEiPfWmO3uAymv2JMBJrfGwbyDWLjGue37UVhh0gLYSkA9wV+/bASwA==}
-    engines: {node: '>= 14.6.0', npm: '>= 6.6.0', yarn: '>= 1.19.1'}
     dev: false
 
   /@tauri-apps/api@2.0.0-alpha.12:
