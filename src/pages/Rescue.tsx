@@ -236,6 +236,10 @@ const RescuePage = () => {
               ),
             }}
             zIndex={1}
+            style={{
+              cursor: "pointer",
+            }}
+            onClick={openUnlockModal}
           />
           <Flex px="md" pb="md" direction="column" gap="md">
             {searchServers(debouncedSearchInput, servers).map((server) => (
