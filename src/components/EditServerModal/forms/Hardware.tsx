@@ -16,8 +16,8 @@ import {
   TextInput,
 } from "@mantine/core";
 import { IconPlus, IconX } from "@tabler/icons-react";
-import HDDIcon from "@/assets/hdd.svg";
-import SSDIcon from "@/assets/ssd.svg";
+import HDDIcon from "@/assets/icons/hdd.svg";
+import SSDIcon from "@/assets/icons/ssd.svg";
 import DeleteItemButton from "@/components/DeleteItemButton.tsx";
 
 interface DiskItemProps extends InputFormProps {
