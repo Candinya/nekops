@@ -3,7 +3,6 @@ import { useDisclosure } from "@mantine/hooks";
 import Router from "@/router.tsx";
 import Header from "@/components/Header.tsx";
 import Nav from "@/components/Nav.tsx";
-import Footer from "@/components/Footer.tsx";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/store.ts";
@@ -33,7 +32,6 @@ const App = () => {
     <>
       <AppShell
         header={{ height: 60 }}
-        footer={{ height: 48 }}
         navbar={{
           width: 200,
           breakpoint: "sm",
@@ -61,10 +59,6 @@ const App = () => {
         <AppShell.Main h={"100dvh"}>
           <Router />
         </AppShell.Main>
-
-        <AppShell.Footer p="xs">
-          <Footer />
-        </AppShell.Footer>
       </AppShell>
 
       <AboutModal isOpen={isAboutModalOpen} close={closeAboutModal} />
