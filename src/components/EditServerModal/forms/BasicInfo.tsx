@@ -8,7 +8,10 @@ import {
   TextInput,
 } from "@mantine/core";
 
-const BasicInfoForm = ({ form }: InputFormProps) => (
+interface BasicInfoFormProps extends InputFormProps {
+  knownTags: string[];
+}
+const BasicInfoForm = ({ form, knownTags }: BasicInfoFormProps) => (
   <Fieldset legend="Basic Information">
     <Grid>
       <Grid.Col span={4}>
@@ -52,7 +55,12 @@ const BasicInfoForm = ({ form }: InputFormProps) => (
         />
       </Grid.Col>
       <Grid.Col span={8}>
-        <TagsInput label="Tags" clearable {...form.getInputProps("tags")} />
+        <TagsInput
+          label="Tags"
+          clearable
+          data={knownTags}
+          {...form.getInputProps("tags")}
+        />
       </Grid.Col>
     </Grid>
     <Textarea

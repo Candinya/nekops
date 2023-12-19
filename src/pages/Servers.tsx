@@ -265,12 +265,18 @@ const ServersPage = () => {
   const [debouncedSearchInput] = useDebouncedValue(searchInput, 500);
 
   // Autofill related
+  const knownTags = useRef<string[]>([]);
   const knownProviders = useRef<string[]>([]);
   const knownRegions = useRef<string[]>([]);
   const knownSSHUsers = useRef<string[]>([]);
 
   useEffect(() => {
     for (const server of servers) {
+      for (const tag of server.tags) {
+        if (!knownTags.current.includes(tag)) {
+          knownTags.current.push(tag);
+        }
+      }
       if (
         server.provider.name !== "" &&
         !knownProviders.current.includes(server.provider.name)
@@ -349,6 +355,7 @@ const ServersPage = () => {
             : servers[activeServerIndex]
         }
         save={confirm}
+        knownTags={knownTags.current}
         knownProviders={knownProviders.current}
         knownRegions={knownRegions.current}
         knownSSHUsers={knownSSHUsers.current}

@@ -37,6 +37,7 @@ interface EditServerModalProps {
   close: () => void;
   serverInfo?: Server;
   save: (info: Server) => boolean;
+  knownTags: string[];
   knownProviders: string[];
   knownRegions: string[];
   knownSSHUsers: string[];
@@ -46,6 +47,7 @@ const EditServerModal = ({
   close,
   serverInfo,
   save,
+  knownTags,
   knownProviders,
   knownRegions,
   knownSSHUsers,
@@ -131,7 +133,7 @@ const EditServerModal = ({
               }}
             >
               <Stepper.Step label="Basic Info" icon={<IconServerBolt />}>
-                <BasicInfoForm form={form} />
+                <BasicInfoForm form={form} knownTags={knownTags} />
               </Stepper.Step>
               <Stepper.Step label="Product" icon={<IconBuildingStore />}>
                 <ProductForm
