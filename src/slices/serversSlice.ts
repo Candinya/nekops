@@ -4,21 +4,33 @@ import type { Server } from "@/types/server.ts";
 import type { RootState } from "@/store.ts";
 import { checkParentDir } from "@/slices/common.ts";
 
-const ServersFileName = "servers.json";
+const ServersIndexFileName = "servers.json";
+const ServersBaseDir = "servers/";
 
 const noServer: Server[] = [];
 
 export const readServers = createAsyncThunk(
   "servers/read",
   async (_, { getState }): Promise<Server[]> => {
-    // read from local file
     const state = getState() as RootState;
-    if (await exists(state.settings.data_dir + ServersFileName)) {
-      // Read and parse
-      const serversFile = await readTextFile(
-        state.settings.data_dir + ServersFileName,
+    if (await exists(state.settings.data_dir + ServersIndexFileName)) {
+      // Read index file
+      const serversIndexFile = await readTextFile(
+        state.settings.data_dir + ServersIndexFileName,
       );
-      return JSON.parse(serversFile);
+      const serversIndex = JSON.parse(serversIndexFile);
+      // Read detailed server configurations
+      const servers: Server[] = [];
+      for (const serverConfigFileName of serversIndex) {
+        const serverConfigFileNameFull =
+          state.settings.data_dir + ServersBaseDir + serverConfigFileName;
+        if (await exists(serverConfigFileNameFull)) {
+          servers.push(
+            JSON.parse(await readTextFile(serverConfigFileNameFull)),
+          );
+        }
+      }
+      return servers;
     } else {
       return noServer;
     }
@@ -28,12 +40,22 @@ export const readServers = createAsyncThunk(
 export const saveServers = createAsyncThunk(
   "servers/save",
   async (_, { getState }) => {
-    // save to local file
     const state: any = getState() as RootState;
-    await checkParentDir(state.settings.data_dir);
+    await checkParentDir(state.settings.data_dir + ServersBaseDir);
+    // Write detailed server configurations
+    const serversIndex: string[] = [];
+    for (const server of state.servers) {
+      const serverConfigFileName = server.id + ".json";
+      await writeTextFile(
+        state.settings.data_dir + ServersBaseDir + serverConfigFileName,
+        JSON.stringify(server, null, 2),
+      );
+      serversIndex.push(serverConfigFileName);
+    }
+    // Write index file
     await writeTextFile(
-      state.settings.data_dir + ServersFileName,
-      JSON.stringify(state.servers, null, 2),
+      state.settings.data_dir + ServersIndexFileName,
+      JSON.stringify(serversIndex, null, 2),
     );
   },
 );
