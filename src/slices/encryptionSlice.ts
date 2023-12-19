@@ -164,24 +164,52 @@ export const encryptServer = (
   const encryptedServerInfo = deepClone(newServerInfo);
   // Encrypt sensitive fields:
   //   - access.emergency.root_password
+  //   - access.emergency.address
+  //   - access.emergency.username
   //   - access.emergency.password
+
+  //// access.emergency.root_password
   if (
     newServerInfo.access.emergency.root_password !== "" &&
     newServerInfo.access.emergency.root_password !==
       oldServerInfo?.access.emergency.root_password
   ) {
-    // Changed, need encryption update
     encryptedServerInfo.access.emergency.root_password = encrypt(
       state,
       newServerInfo.access.emergency.root_password,
     );
   }
+
+  //// access.emergency.address
+  if (
+    newServerInfo.access.emergency.address !== "" &&
+    newServerInfo.access.emergency.address !==
+      oldServerInfo?.access.emergency.address
+  ) {
+    encryptedServerInfo.access.emergency.address = encrypt(
+      state,
+      newServerInfo.access.emergency.address,
+    );
+  }
+
+  //// access.emergency.username
+  if (
+    newServerInfo.access.emergency.username !== "" &&
+    newServerInfo.access.emergency.username !==
+      oldServerInfo?.access.emergency.username
+  ) {
+    encryptedServerInfo.access.emergency.username = encrypt(
+      state,
+      newServerInfo.access.emergency.username,
+    );
+  }
+
+  //// access.emergency.password
   if (
     newServerInfo.access.emergency.password !== "" &&
     newServerInfo.access.emergency.password !==
       oldServerInfo?.access.emergency.password
   ) {
-    // Changed, need encryption update
     encryptedServerInfo.access.emergency.password = encrypt(
       state,
       newServerInfo.access.emergency.password,
@@ -201,14 +229,24 @@ export const decryptServer = (
 
   const serverInfo = deepClone(encryptedServerInfo);
   if (encryptedServerInfo.access.emergency.root_password !== "") {
-    // Encrypted, requires decrypt
     serverInfo.access.emergency.root_password = decrypt(
       state,
       encryptedServerInfo.access.emergency.root_password,
     );
   }
+  if (encryptedServerInfo.access.emergency.address !== "") {
+    serverInfo.access.emergency.address = decrypt(
+      state,
+      encryptedServerInfo.access.emergency.address,
+    );
+  }
+  if (encryptedServerInfo.access.emergency.username !== "") {
+    serverInfo.access.emergency.username = decrypt(
+      state,
+      encryptedServerInfo.access.emergency.username,
+    );
+  }
   if (encryptedServerInfo.access.emergency.password !== "") {
-    // Encrypted, requires decrypt
     serverInfo.access.emergency.password = decrypt(
       state,
       encryptedServerInfo.access.emergency.password,

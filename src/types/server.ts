@@ -90,7 +90,7 @@ export type AccessEmergency = {
   root_password: string;
   method: "VNC" | "IPMI" | "Other";
   address: string;
-  username?: string;
+  username: string;
   password: string; // Method password
   comment: string;
 };

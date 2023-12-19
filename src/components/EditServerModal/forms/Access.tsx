@@ -9,13 +9,17 @@ import {
   SegmentedControl,
   Text,
   Textarea,
-  TextInput,
 } from "@mantine/core";
 
 interface AccessFormProps extends InputFormProps {
   knownSSHUsers: string[];
+  isCreatingNew: boolean;
 }
-const AccessForm = ({ form, knownSSHUsers }: AccessFormProps) => {
+const AccessForm = ({
+  form,
+  knownSSHUsers,
+  isCreatingNew,
+}: AccessFormProps) => {
   const publicAccessEndpoints = [
     ...new Set(form.values.network.public.map((ip) => ip.alias || ip.address)),
   ];
@@ -69,6 +73,7 @@ const AccessForm = ({ form, knownSSHUsers }: AccessFormProps) => {
       <Fieldset mt="md" legend="Emergency Access">
         <PasswordInput
           label="Root Password"
+          defaultVisible={isCreatingNew}
           {...form.getInputProps("access.emergency.root_password")}
         />
         <Group mt="md">
@@ -81,21 +86,24 @@ const AccessForm = ({ form, knownSSHUsers }: AccessFormProps) => {
               {...form.getInputProps("access.emergency.method")}
             />
           </Flex>
-          <TextInput
+          <PasswordInput
             label="Address"
             style={{
               flexGrow: 1,
             }}
+            defaultVisible={isCreatingNew}
             {...form.getInputProps("access.emergency.address")}
           />
         </Group>
         <Group mt="md" grow>
-          <TextInput
+          <PasswordInput
             label="Username"
+            defaultVisible={isCreatingNew}
             {...form.getInputProps("access.emergency.username")}
           />
           <PasswordInput
             label="Password"
+            defaultVisible={isCreatingNew}
             {...form.getInputProps("access.emergency.password")}
           />
         </Group>

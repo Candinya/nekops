@@ -158,7 +158,11 @@ const EditServerModal = ({
                 <NetworksForm form={form} />
               </Stepper.Step>
               <Stepper.Step label="Access" icon={<IconKey />}>
-                <AccessForm form={form} knownSSHUsers={knownSSHUsers} />
+                <AccessForm
+                  form={form}
+                  knownSSHUsers={knownSSHUsers}
+                  isCreatingNew={!serverInfo}
+                />
               </Stepper.Step>
               <Stepper.Completed>
                 <Flex direction="column" gap="md">
