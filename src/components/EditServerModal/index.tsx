@@ -31,6 +31,7 @@ import HardwareForm from "./forms/Hardware.tsx";
 import NetworksForm from "./forms/Networks.tsx";
 import AccessForm from "@/components/EditServerModal/forms/Access.tsx";
 import { deepClone } from "@/utils/deepClone.ts";
+import { spaceRegexp } from "@/utils/spaceRegexp.ts";
 
 interface EditServerModalProps {
   isOpen: boolean;
@@ -64,7 +65,15 @@ const EditServerModal = ({
     initialValues: defaultServer,
 
     validate: {
-      id: (value) => !value, // Not empty
+      id: (value) =>
+        // Not empty
+        !value ||
+        // No space
+        spaceRegexp.test(value) ||
+        // No consecutive dots
+        value.startsWith(".") ||
+        value.endsWith(".") ||
+        value.includes(".."),
     },
 
     validateInputOnBlur: true,
