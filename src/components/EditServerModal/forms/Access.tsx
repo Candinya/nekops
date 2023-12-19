@@ -21,15 +21,19 @@ const AccessForm = ({ form }: InputFormProps) => (
         data={[
           {
             group: "Public",
-            items: form.values.network.public.map(
-              (ip) => ip.alias || ip.address,
-            ),
+            items: [
+              ...new Set(
+                form.values.network.public.map((ip) => ip.alias || ip.address),
+              ),
+            ],
           },
           {
             group: "Private",
-            items: form.values.network.private.map(
-              (ip) => ip.alias || ip.address,
-            ),
+            items: [
+              ...new Set(
+                form.values.network.private.map((ip) => ip.alias || ip.address),
+              ),
+            ],
           },
         ]}
         style={{
