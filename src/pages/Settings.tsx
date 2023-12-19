@@ -112,7 +112,7 @@ const SettingsPage = () => {
           }),
         );
       });
-      dispatch(saveServers());
+      dispatch(saveServers(servers.map((server) => server.id)));
     }
     // Update settings
     form.setInitialValues({

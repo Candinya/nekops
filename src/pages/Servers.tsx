@@ -239,13 +239,13 @@ const ServersPage = () => {
       }
       dispatch(addServer(encryptServer(encryption, newServerInfo)));
     }
-    dispatch(saveServers());
+    dispatch(saveServers([newServerInfo.id]));
     return true;
   };
 
   const del = (index: number) => {
     dispatch(removeServerByIndex(index));
-    dispatch(saveServers());
+    dispatch(saveServers([]));
   };
 
   const reorder = (sourceIndex: number, destinationIndex: number) => {
@@ -256,7 +256,7 @@ const ServersPage = () => {
           destinationIndex,
         }),
       );
-      dispatch(saveServers());
+      dispatch(saveServers([]));
     }
   };
 

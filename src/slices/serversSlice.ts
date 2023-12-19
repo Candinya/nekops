@@ -39,17 +39,20 @@ export const readServers = createAsyncThunk(
 
 export const saveServers = createAsyncThunk(
   "servers/save",
-  async (_, { getState }) => {
+  async (ids: string[], { getState }) => {
     const state: any = getState() as RootState;
     await checkParentDir(state.settings.data_dir + ServersBaseDir);
     // Write detailed server configurations
     const serversIndex: string[] = [];
     for (const server of state.servers) {
       const serverConfigFileName = server.id + ".json";
-      await writeTextFile(
-        state.settings.data_dir + ServersBaseDir + serverConfigFileName,
-        JSON.stringify(server, null, 2),
-      );
+      if (ids.includes(server.id)) {
+        // Requires update
+        await writeTextFile(
+          state.settings.data_dir + ServersBaseDir + serverConfigFileName,
+          JSON.stringify(server, null, 2),
+        );
+      }
       serversIndex.push(serverConfigFileName);
     }
     // Write index file
