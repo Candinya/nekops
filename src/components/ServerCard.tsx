@@ -11,7 +11,7 @@ import {
   Title,
   Tooltip,
 } from "@mantine/core";
-import { IconServer, IconTag } from "@tabler/icons-react";
+import { IconCloudComputing, IconServer, IconTag } from "@tabler/icons-react";
 import { useHover } from "@mantine/hooks";
 
 import CPU from "@/icons/CPU.tsx";
@@ -52,17 +52,31 @@ const ServerCard = ({ server, onClick }: ServerCardProps) => {
           bottom: rem(-9 * 16),
         }}
       />
-      <IconServer
-        color="white"
-        opacity="30%"
-        style={{
-          width: rem(10 * 16),
-          height: rem(10 * 16),
-          position: "absolute",
-          bottom: rem(-0.5 * 16),
-          right: 0,
-        }}
-      />
+      {server.provider.type === "DS" ? (
+        <IconServer
+          color="white"
+          opacity="30%"
+          style={{
+            width: rem(10 * 16),
+            height: rem(10 * 16),
+            position: "absolute",
+            bottom: rem(-0.5 * 16),
+            right: 0,
+          }}
+        />
+      ) : (
+        <IconCloudComputing
+          color="white"
+          opacity="30%"
+          style={{
+            width: rem(9 * 16),
+            height: rem(9 * 16),
+            position: "absolute",
+            bottom: 0,
+            right: rem(0.5 * 16),
+          }}
+        />
+      )}
       <Flex
         justify="space-between"
         gap="xl"
