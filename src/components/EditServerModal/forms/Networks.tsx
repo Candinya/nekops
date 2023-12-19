@@ -25,7 +25,7 @@ const IPItem = ({ ip, formListItem, index, form }: IPItemProps) => {
   const itemName =
     `IP ${index + 1}: ` +
     (ip.family === "IPv4" ? ipCIDR : `[${ipCIDR}]`) +
-    ` - ${ip.comment}`;
+    (ip.comment ? ` - ${ip.comment}` : "");
   return (
     <Accordion.Item value={`ip_${index}`}>
       <Center>
