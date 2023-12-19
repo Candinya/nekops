@@ -14,6 +14,7 @@ import {
 import { IconPlus, IconSitemap } from "@tabler/icons-react";
 import { defaultIP, IP } from "@/types/server.ts";
 import DeleteItemButton from "@/components/DeleteItemButton.tsx";
+import { spaceRegexp } from "@/utils/spaceRegexp.ts";
 
 interface IPItemProps extends InputFormProps {
   ip: IP;
@@ -28,7 +29,6 @@ const IPItem = ({ ip, formListItem, index, form }: IPItemProps) => {
     (ip.comment ? ` - ${ip.comment}` : "");
 
   const checkIP = (ip: string, index: number) => {
-    const spaceRegexp = /\s/g;
     let newIPValue = ip;
     if (spaceRegexp.test(ip)) {
       newIPValue = ip.replace(spaceRegexp, ""); // Remove all spaces
