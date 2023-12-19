@@ -231,6 +231,7 @@ const ServersPage = () => {
   // Autofill related
   const knownProviders = useRef<string[]>([]);
   const knownRegions = useRef<string[]>([]);
+  const knownSSHUsers = useRef<string[]>([]);
 
   useEffect(() => {
     for (const server of servers) {
@@ -245,6 +246,12 @@ const ServersPage = () => {
         !knownRegions.current.includes(server.location.region)
       ) {
         knownRegions.current.push(server.location.region);
+      }
+      if (
+        server.access.regular.user !== "" &&
+        !knownSSHUsers.current.includes(server.access.regular.user)
+      ) {
+        knownSSHUsers.current.push(server.access.regular.user);
       }
     }
   }, [servers]);
@@ -308,6 +315,7 @@ const ServersPage = () => {
         save={confirm}
         knownProviders={knownProviders.current}
         knownRegions={knownRegions.current}
+        knownSSHUsers={knownSSHUsers.current}
       />
 
       {/*Server Card Modal*/}

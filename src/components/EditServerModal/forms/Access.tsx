@@ -12,7 +12,10 @@ import {
   TextInput,
 } from "@mantine/core";
 
-const AccessForm = ({ form }: InputFormProps) => {
+interface AccessFormProps extends InputFormProps {
+  knownSSHUsers: string[];
+}
+const AccessForm = ({ form, knownSSHUsers }: AccessFormProps) => {
   const publicAccessEndpoints = [
     ...new Set(form.values.network.public.map((ip) => ip.alias || ip.address)),
   ];
@@ -52,8 +55,10 @@ const AccessForm = ({ form }: InputFormProps) => {
             max={65535}
             {...form.getInputProps("access.regular.port")}
           />
-          <TextInput
+          <Autocomplete
             label="User"
+            placeholder="root"
+            data={knownSSHUsers}
             style={{
               flexGrow: 1,
             }}

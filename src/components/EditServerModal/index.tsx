@@ -39,6 +39,7 @@ interface EditServerModalProps {
   save: (info: Server) => void;
   knownProviders: string[];
   knownRegions: string[];
+  knownSSHUsers: string[];
 }
 const EditServerModal = ({
   isOpen,
@@ -47,6 +48,7 @@ const EditServerModal = ({
   save,
   knownProviders,
   knownRegions,
+  knownSSHUsers,
 }: EditServerModalProps) => {
   const StepsCount = 5;
 
@@ -144,7 +146,7 @@ const EditServerModal = ({
                 <NetworksForm form={form} />
               </Stepper.Step>
               <Stepper.Step label="Access" icon={<IconKey />}>
-                <AccessForm form={form} />
+                <AccessForm form={form} knownSSHUsers={knownSSHUsers} />
               </Stepper.Step>
               <Stepper.Completed>
                 <Flex direction="column" gap="md">

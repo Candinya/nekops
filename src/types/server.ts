@@ -181,7 +181,7 @@ export const defaultServer: Server = {
     regular: {
       address: "",
       port: 22,
-      user: "root",
+      user: "",
     },
     emergency: {
       root_password: "",
