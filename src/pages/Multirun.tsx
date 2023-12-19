@@ -82,15 +82,15 @@ interface ServerTableProps {
   servers: Server[];
   show: (index: number) => void;
   isSearching: boolean;
-  selectedServers: number[];
-  setSelectedServers: (state: number[]) => void;
+  selectedServerIDs: string[];
+  setSelectedServerIDs: (state: string[]) => void;
 }
 const ServerTable = ({
   servers,
   show,
   isSearching,
-  selectedServers,
-  setSelectedServers,
+  selectedServerIDs,
+  setSelectedServerIDs,
 }: ServerTableProps) => (
   <Table stickyHeader stickyHeaderOffset={0} highlightOnHover>
     <Table.Thead
@@ -101,15 +101,15 @@ const ServerTable = ({
       <ServerTableHead
         selectAll={(state) => {
           if (state) {
-            setSelectedServers(servers.map((_, index) => index));
+            setSelectedServerIDs(servers.map((server) => server.id));
           } else {
-            setSelectedServers([]);
+            setSelectedServerIDs([]);
           }
         }}
         selectedState={
-          selectedServers.length === 0
+          selectedServerIDs.length === 0
             ? "none"
-            : selectedServers.length === servers.length
+            : selectedServerIDs.length === servers.length
               ? "all"
               : "partial"
         }
@@ -121,18 +121,20 @@ const ServerTable = ({
           key={server.id}
           server={server}
           show={() => show(index)}
-          isSelected={selectedServers.includes(index)}
+          isSelected={selectedServerIDs.includes(server.id)}
           setIsSelected={(state) => {
             if (state) {
-              if (!selectedServers.includes(index)) {
-                setSelectedServers([...selectedServers, index]);
+              if (!selectedServerIDs.includes(server.id)) {
+                setSelectedServerIDs([...selectedServerIDs, server.id]);
               }
             } else {
-              const keyIndex = selectedServers.findIndex((i) => i === index);
+              const keyIndex = selectedServerIDs.findIndex(
+                (i) => i === server.id,
+              );
               if (keyIndex > -1) {
-                setSelectedServers([
-                  ...selectedServers.slice(0, keyIndex),
-                  ...selectedServers.slice(keyIndex + 1),
+                setSelectedServerIDs([
+                  ...selectedServerIDs.slice(0, keyIndex),
+                  ...selectedServerIDs.slice(keyIndex + 1),
                 ]);
               }
             }
@@ -159,7 +161,7 @@ const MultirunPage = () => {
   ] = useDisclosure(false);
 
   const [activeServerIndex, setActiveServerIndex] = useState<number>(-1);
-  const [selectedServers, setSelectedServers] = useState<number[]>([]);
+  const [selectedServerIDs, setSelectedServerIDs] = useState<string[]>([]);
 
   const [searchInput, setSearchInput] = useState("");
   const [debouncedSearchInput] = useDebouncedValue(searchInput, 500);
@@ -181,9 +183,10 @@ const MultirunPage = () => {
               <ActionIcon
                 size="lg"
                 color="green"
+                disabled={selectedServerIDs.length === 0}
                 onClick={() => {
                   // TODO: Multirun
-                  console.log(selectedServers);
+                  console.log(selectedServerIDs);
                 }}
               >
                 <IconPlayerPlay style={actionIconStyle} />
@@ -201,8 +204,8 @@ const MultirunPage = () => {
               openServerCardModal();
             }}
             isSearching={debouncedSearchInput !== ""}
-            selectedServers={selectedServers}
-            setSelectedServers={setSelectedServers}
+            selectedServerIDs={selectedServerIDs}
+            setSelectedServerIDs={setSelectedServerIDs}
           />
         </ScrollArea>
       </Flex>
