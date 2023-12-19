@@ -6,6 +6,7 @@ import { checkParentDir } from "@/slices/common.ts";
 
 const ServersIndexFileName = "servers.json";
 const ServersBaseDir = "servers/";
+const ServersFileSuffix = ".json";
 
 const noServer: Server[] = [];
 
@@ -23,7 +24,10 @@ export const readServers = createAsyncThunk(
       const servers: Server[] = [];
       for (const serverConfigFileName of serversIndex) {
         const serverConfigFileNameFull =
-          state.settings.data_dir + ServersBaseDir + serverConfigFileName;
+          state.settings.data_dir +
+          ServersBaseDir +
+          serverConfigFileName +
+          ServersFileSuffix;
         if (await exists(serverConfigFileNameFull)) {
           servers.push(
             JSON.parse(await readTextFile(serverConfigFileNameFull)),
@@ -45,15 +49,17 @@ export const saveServers = createAsyncThunk(
     // Write detailed server configurations
     const serversIndex: string[] = [];
     for (const server of state.servers) {
-      const serverConfigFileName = server.id + ".json";
       if (ids.includes(server.id)) {
         // Requires update
         await writeTextFile(
-          state.settings.data_dir + ServersBaseDir + serverConfigFileName,
+          state.settings.data_dir +
+            ServersBaseDir +
+            server.id +
+            ServersFileSuffix,
           JSON.stringify(server, null, 2),
         );
       }
-      serversIndex.push(serverConfigFileName);
+      serversIndex.push(server.id);
     }
     // Write index file
     await writeTextFile(
