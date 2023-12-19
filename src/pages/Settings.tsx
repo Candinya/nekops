@@ -8,6 +8,7 @@ import {
   Center,
   Flex,
   Group,
+  type MantineColorScheme,
   PasswordInput,
   rem,
   SegmentedControl,
@@ -37,7 +38,6 @@ import UnlockModal from "@/components/UnlockModal.tsx";
 import { notifications } from "@mantine/notifications";
 import { actionIconStyle } from "@/common/actionStyles.ts";
 import { saveServers, updateServerByIndex } from "@/slices/serversSlice.ts";
-import { deepClone } from "@/utils/deepClone.ts";
 
 const colorSchemeData = [
   {
@@ -66,6 +66,7 @@ const colorSchemeData = [
 }));
 
 interface SettingsExtended extends Settings {
+  color_scheme: MantineColorScheme;
   password?: string;
 }
 
@@ -78,9 +79,12 @@ const SettingsPage = () => {
   const servers = useSelector((state: RootState) => state.servers);
   const dispatch = useDispatch<AppDispatch>();
 
+  const { colorScheme, setColorScheme } = useMantineColorScheme();
+
   const form = useForm<SettingsExtended>({
     initialValues: {
       ...settings,
+      color_scheme: colorScheme,
       password: encryption.isEncryptionEnabled ? passwordUnchanged : "",
     },
 
@@ -88,8 +92,6 @@ const SettingsPage = () => {
       data_dir: (value) => !value, // Not empty
     },
   });
-
-  const { setColorScheme } = useMantineColorScheme();
 
   const saveSettings = async (newSettings: SettingsExtended) => {
     // Apply
@@ -117,9 +119,10 @@ const SettingsPage = () => {
       ...newSettings,
       password: Boolean(newSettings.password) ? passwordUnchanged : "",
     });
-    const newSettingsCopy = deepClone(newSettings);
-    delete newSettingsCopy.password;
-    dispatch(saveSettingsToFileSystem(newSettingsCopy));
+    const newSettingsSave: Settings = {
+      data_dir: newSettings.data_dir,
+    };
+    dispatch(saveSettingsToFileSystem(newSettingsSave));
     form.reset();
   };
 
