@@ -16,15 +16,7 @@ import { arrayBufferToBase64, base64ToUint8Array } from "@/encrypt/helper.ts";
 import type { Server } from "@/types/server.ts";
 import { deepClone } from "@/utils/deepClone.ts";
 import { rawDecrypt, rawEncrypt } from "@/encrypt/methods.ts";
-
-interface EncryptionState {
-  publicKeyBase64?: string;
-  privateKeyBase64?: string;
-
-  // State
-  isEncryptionEnabled: boolean;
-  isUnlocked: boolean;
-}
+import type { EncryptionState } from "@/types/encryption.ts";
 
 const PublicKeyFile = "public.key";
 

@@ -18,7 +18,9 @@ import {
 } from "@mantine/core";
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
-import type { RootState } from "@/store.ts";
+import type { Server } from "@/types/server.ts";
+import type { Snippet } from "@/types/snippet.ts";
+import type { EncryptionState } from "@/types/encryption.ts";
 
 interface Section {
   color: DefaultMantineColor;
@@ -60,13 +62,15 @@ const StatCard = ({ Icon, sections, label, stats }: StatCardProps) => (
 );
 
 interface GeneralStaticsProps {
-  state: RootState;
+  servers: Server[];
+  snippets: Snippet[];
+  encryption: EncryptionState;
 }
-const GeneralStatics = ({ state }: GeneralStaticsProps) => {
-  const servers = state.servers;
-  const snippets = state.snippets;
-  const encryption = state.encryption;
-
+const GeneralStatics = ({
+  servers,
+  snippets,
+  encryption,
+}: GeneralStaticsProps) => {
   const [serversCountDS, setServersCountDS] = useState(0);
   const [serversCountVPS, setServersCountVPS] = useState(0);
   const [serversCount, setServersCount] = useState(0);
