@@ -206,7 +206,9 @@ const HardwareForm = ({ form }: InputFormProps) => (
               </Text>
               <Checkbox
                 size="xl"
-                {...form.getInputProps("hardware.memory.ecc")}
+                {...form.getInputProps("hardware.memory.ecc", {
+                  type: "checkbox",
+                })}
               />
             </Flex>
           </Flex>

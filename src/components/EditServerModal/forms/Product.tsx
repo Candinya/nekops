@@ -84,7 +84,9 @@ const ProductForm = ({
               </Text>
               <Checkbox
                 size="xl"
-                {...form.getInputProps("traffic.double_rate")}
+                {...form.getInputProps("traffic.double_rate", {
+                  type: "checkbox",
+                })}
               />
             </Flex>
           </Flex>
