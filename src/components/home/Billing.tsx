@@ -8,6 +8,7 @@ import {
   Progress,
   rem,
   SimpleGrid,
+  Table,
   Text,
   Title,
   Tooltip,
@@ -34,6 +35,7 @@ const BillingSection = ({ title, data }: BillingSectionProps) => (
     <Progress.Root size={34} mt={16}>
       {data.map((segment) => (
         <Tooltip
+          key={segment.label}
           label={
             <>
               <Center>
@@ -92,8 +94,7 @@ interface BillingCardProps {
   servers: Server[];
 }
 const BillingCard = ({ servers }: BillingCardProps) => {
-  const [billingCount, setBillingCount] = useState(0);
-
+  const [billingSum, setBillingSum] = useState(0);
   const [billingCountByType, setBillingCountByType] = useState<SectionData[]>([
     {
       label: "Dedicated Server",
@@ -136,7 +137,7 @@ const BillingCard = ({ servers }: BillingCardProps) => {
         );
       }
       const sum = sumDS + sumVPS;
-      setBillingCount(sum);
+      setBillingSum(sum);
       // Count by type
       setBillingCountByType([
         {
@@ -162,7 +163,6 @@ const BillingCard = ({ servers }: BillingCardProps) => {
         });
       }
       sumProviderArray.sort((a, b) => b.priceSum - a.priceSum);
-      console.log(sumProviderArray);
       const colors = ["#37B24D", "#1098AD", "#7048E8", "#F03E3E"];
       let i = 0;
       const countByProviderPending: SectionData[] = [];
@@ -217,7 +217,7 @@ const BillingCard = ({ servers }: BillingCardProps) => {
       <Flex direction="column" gap="xl">
         <Group justify="space-between">
           <Box>
-            <Title c="dimmed" order={2} size="h5" fw={700}>
+            <Title c="dimmed" order={3} size="h5" fw={700}>
               Monthly billing
             </Title>
 
@@ -237,7 +237,7 @@ const BillingCard = ({ servers }: BillingCardProps) => {
                   fontSize: rem(36),
                 }}
               >
-                {billingCount.toFixed(2)}
+                {billingSum.toFixed(2)}
               </Text>
             </Group>
           </Box>
@@ -253,12 +253,74 @@ const BillingCard = ({ servers }: BillingCardProps) => {
   );
 };
 
+interface MostValuableServersProps {
+  servers: Server[];
+  limit: number;
+}
+const MostValuableServers = ({ servers, limit }: MostValuableServersProps) => {
+  const [MVS, setMVS] = useState<Server[]>([]);
+  const [MVSPriceSum, setMVSPriceSum] = useState(0);
+
+  useEffect(() => {
+    if (servers.length > 0) {
+      let sum = 0;
+      const serverSortByPrice: Server[] = servers.map((s) => s); // `servers` state is read-only, so let's make a sortable copy
+      serverSortByPrice.sort((a, b) => b.provider.price - a.provider.price); // Could use toSorted() on new browsers, but using sort() is safer
+      const mvs = serverSortByPrice.slice(0, limit);
+      for (const valuableServer of mvs) {
+        sum += valuableServer.provider.price;
+      }
+      setMVS(mvs);
+      setMVSPriceSum(sum);
+    }
+  }, [servers]);
+
+  return (
+    <Card withBorder p="md" radius="md">
+      <Title c="dimmed" order={3} size="h5" fw={700}>
+        Top {limit} valuable servers
+      </Title>
+
+      <Table mt="md">
+        <Table.Thead>
+          <Table.Tr>
+            <Table.Th>Server Name</Table.Th>
+            <Table.Th>Provider</Table.Th>
+            <Table.Th>Type</Table.Th>
+            <Table.Th>Price</Table.Th>
+            <Table.Th />
+          </Table.Tr>
+        </Table.Thead>
+        <Table.Tbody>
+          {MVS.map((server) => (
+            <Table.Tr key={server.id}>
+              <Table.Td>{server.name}</Table.Td>
+              <Table.Td>{server.provider.name}</Table.Td>
+              <Table.Td>{server.provider.type}</Table.Td>
+              <Table.Td>${server.provider.price.toFixed(2)}</Table.Td>
+              <Table.Td width="20%">
+                <Progress.Root>
+                  <Progress.Section
+                    value={(server.provider.price / MVSPriceSum) * 100}
+                    color="teal"
+                  />
+                </Progress.Root>
+              </Table.Td>
+            </Table.Tr>
+          ))}
+        </Table.Tbody>
+      </Table>
+    </Card>
+  );
+};
+
 interface BillingProps {
   servers: Server[];
 }
 const Billing = ({ servers }: BillingProps) => (
   <Flex direction="column" gap="md">
     <BillingCard servers={servers} />
+    <MostValuableServers servers={servers} limit={5} />
   </Flex>
 );
 
