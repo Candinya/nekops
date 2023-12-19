@@ -40,6 +40,7 @@ const SnippetTableHead = () => (
   <Table.Tr>
     <Table.Th style={{ width: rem(40) }} />
     <Table.Th>Snippet Name</Table.Th>
+    <Table.Th>Tags</Table.Th>
     <Table.Th style={actionRowStyle}>Actions</Table.Th>
   </Table.Tr>
 );
@@ -73,6 +74,7 @@ const SnippetTableRow = ({
           </Flex>
         </Table.Td>
         <Table.Td>{snippet.name}</Table.Td>
+        <Table.Td>{snippet.tags.join(", ")}</Table.Td>
         <Table.Td style={actionRowStyle}>
           <Group gap="xs" justify="center">
             {/*Copy*/}

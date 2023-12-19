@@ -41,6 +41,7 @@ const ServerTableHead = () => (
     <Table.Th style={{ width: rem(40) }} />
     <Table.Th>Server Name</Table.Th>
     <Table.Th>Server ID</Table.Th>
+    <Table.Th>Tags</Table.Th>
     <Table.Th style={actionRowStyle}>Actions</Table.Th>
   </Table.Tr>
 );
@@ -77,6 +78,7 @@ const ServerTableRow = ({
         </Table.Td>
         <Table.Td>{server.name}</Table.Td>
         <Table.Td>{server.id}</Table.Td>
+        <Table.Td>{server.tags.join(", ")}</Table.Td>
         <Table.Td style={actionRowStyle}>
           <Group gap="xs" justify="center">
             {/*Show Card*/}

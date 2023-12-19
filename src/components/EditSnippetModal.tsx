@@ -1,4 +1,4 @@
-import { Button, Modal, Textarea, TextInput } from "@mantine/core";
+import { Button, Modal, TagsInput, Textarea, TextInput } from "@mantine/core";
 import { defaultSnippet, type Snippet } from "@/types/snippet.ts";
 import { useForm } from "@mantine/form";
 import { useEffect } from "react";
@@ -55,6 +55,8 @@ const EditSnippetModal = ({
           data-autofocus
           {...form.getInputProps("name")}
         />
+
+        <TagsInput label="Tags" clearable {...form.getInputProps("tags")} />
 
         <Textarea
           label="Code"
