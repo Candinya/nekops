@@ -26,6 +26,33 @@ const IPItem = ({ ip, formListItem, index, form }: IPItemProps) => {
     `IP ${index + 1}: ` +
     (ip.family === "IPv4" ? ipCIDR : `[${ipCIDR}]`) +
     (ip.comment ? ` - ${ip.comment}` : "");
+
+  const checkIP = (ip: string, index: number) => {
+    const spaceRegexp = /\s/g;
+    let newIPValue = ip;
+    if (spaceRegexp.test(ip)) {
+      newIPValue = ip.replace(spaceRegexp, ""); // Remove all spaces
+    }
+    if (newIPValue.includes("/")) {
+      const [ipAddr, cidr] = newIPValue.split("/");
+      form.setFieldValue(
+        `${formListItem}.${index}.cidr_prefix`,
+        parseInt(cidr),
+      );
+      newIPValue = ipAddr;
+    }
+    const containsPoint = newIPValue.includes(".");
+    const containsColon = newIPValue.includes(":");
+    if (containsPoint && !containsColon) {
+      form.setFieldValue(`${formListItem}.${index}.family`, "IPv4");
+    } else if (!containsPoint && containsColon) {
+      form.setFieldValue(`${formListItem}.${index}.family`, "IPv6");
+    } // else we don't know what IP is this, so just skip
+    if (newIPValue !== ip) {
+      form.setFieldValue(`${formListItem}.${index}.address`, newIPValue);
+    }
+  };
+
   return (
     <Accordion.Item value={`ip_${index}`}>
       <Center>
@@ -47,6 +74,7 @@ const IPItem = ({ ip, formListItem, index, form }: IPItemProps) => {
               flexGrow: 1,
             }}
             {...form.getInputProps(`${formListItem}.${index}.address`)}
+            onBlur={(ev) => checkIP(ev.target.value, index)}
           />
           <NumberInput
             label="CIDR Prefix"
