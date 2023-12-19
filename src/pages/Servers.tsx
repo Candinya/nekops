@@ -1,6 +1,7 @@
 import {
   ActionIcon,
   Box,
+  Code,
   Flex,
   Group,
   rem,
@@ -35,6 +36,7 @@ import SearchBar from "@/components/SearchBar.tsx";
 import { actionIconStyle, actionRowStyle } from "@/common/actionStyles.ts";
 import { encryptServer } from "@/slices/encryptionSlice.ts";
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
+import { notifications } from "@mantine/notifications";
 
 const ServerTableHead = () => (
   <Table.Tr>
@@ -187,9 +189,33 @@ const ServersPage = () => {
     useState<number>(emptyIndex);
 
   // Edit actions
-  const confirm = (newServerInfo: Server) => {
+  const notifyDupID = (dupServerName: string) => {
+    notifications.show({
+      color: "yellow",
+      title: "Duplicate ID found",
+      message: (
+        <>
+          Specified ID is conflict with server <Code>{dupServerName}</Code>.
+        </>
+      ),
+    });
+  };
+
+  const confirm = (newServerInfo: Server): boolean => {
     if (activeServerIndex !== emptyIndex) {
       // Edit
+      if (newServerInfo.id !== servers[activeServerIndex].id) {
+        // Check duplicate ID
+        const findDupIDServer = servers.find(
+          (server) => server.id === newServerInfo.id,
+        );
+        if (findDupIDServer !== undefined) {
+          // Found
+          notifyDupID(findDupIDServer.name);
+          return false;
+        }
+      }
+
       dispatch(
         updateServerByIndex({
           index: activeServerIndex,
@@ -202,9 +228,19 @@ const ServersPage = () => {
       );
     } else {
       // Create
+      // Check duplicate ID
+      const findDupIDServer = servers.find(
+        (server) => server.id === newServerInfo.id,
+      );
+      if (findDupIDServer !== undefined) {
+        // Found
+        notifyDupID(findDupIDServer.name);
+        return false;
+      }
       dispatch(addServer(encryptServer(encryption, newServerInfo)));
     }
     dispatch(saveServers());
+    return true;
   };
 
   const del = (index: number) => {

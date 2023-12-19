@@ -36,7 +36,7 @@ interface EditServerModalProps {
   isOpen: boolean;
   close: () => void;
   serverInfo?: Server;
-  save: (info: Server) => void;
+  save: (info: Server) => boolean;
   knownProviders: string[];
   knownRegions: string[];
   knownSSHUsers: string[];
@@ -69,8 +69,9 @@ const EditServerModal = ({
   });
 
   const saveServer = (serverProps: Server) => {
-    save(serverProps);
-    close();
+    if (save(serverProps)) {
+      close();
+    }
   };
 
   useEffect(() => {
