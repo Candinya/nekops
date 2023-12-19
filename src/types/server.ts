@@ -157,7 +157,7 @@ export const defaultServer: Server = {
   hardware: {
     cpu: {
       count: 1,
-      manufacturer: "Unknown",
+      manufacturer: "",
       model: "Generic processor",
       core_count: 1,
       thread_count: 1,
