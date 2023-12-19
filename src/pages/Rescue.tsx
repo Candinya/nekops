@@ -88,34 +88,36 @@ const RescueModal = ({ isOpen, close, server }: RescueModalProps) => (
           <Copy value={server?.access.emergency.root_password} />
         </Group>
       )}
-      <Group>
-        <Flex direction="column">
-          <Text size="sm" fw={500} mb={2}>
-            Type
-          </Text>
-          <Tooltip
-            label={`Launch ${server?.access.emergency.method}`}
-            openDelay={500}
-          >
-            <Button
-              style={{
-                alignSelf: "end",
-              }}
+      {server?.access.emergency.address && (
+        <Group>
+          <Flex direction="column">
+            <Text size="sm" fw={500} mb={2}>
+              Type
+            </Text>
+            <Tooltip
+              label={`Launch ${server?.access.emergency.method}`}
+              openDelay={500}
             >
-              {server?.access.emergency.method}
-            </Button>
-          </Tooltip>
-        </Flex>
-        <TextInput
-          label="Address"
-          value={server?.access.emergency.address}
-          readOnly
-          style={{
-            flexGrow: 1,
-          }}
-        />
-        <Copy value={server?.access.emergency.address} />
-      </Group>
+              <Button
+                style={{
+                  alignSelf: "end",
+                }}
+              >
+                {server?.access.emergency.method}
+              </Button>
+            </Tooltip>
+          </Flex>
+          <TextInput
+            label="Address"
+            value={server?.access.emergency.address}
+            readOnly
+            style={{
+              flexGrow: 1,
+            }}
+          />
+          <Copy value={server?.access.emergency.address} />
+        </Group>
+      )}
       {server?.access.emergency.username && (
         <Group>
           <TextInput
