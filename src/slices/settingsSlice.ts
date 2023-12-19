@@ -29,6 +29,7 @@ export const saveSettings = createAsyncThunk(
     // save to local file
     await checkParentDir(BaseDir);
     await writeTextFile(SettingsFileName, JSON.stringify(state));
+    await checkParentDir(state.data_dir);
     return state;
   },
 );
