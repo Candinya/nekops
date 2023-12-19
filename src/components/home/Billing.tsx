@@ -88,10 +88,10 @@ const BillingSection = ({ title, data }: BillingSectionProps) => (
   </Box>
 );
 
-interface BillingProps {
+interface BillingCardProps {
   servers: Server[];
 }
-const Billing = ({ servers }: BillingProps) => {
+const BillingCard = ({ servers }: BillingCardProps) => {
   const [billingCount, setBillingCount] = useState(0);
 
   const [billingCountByType, setBillingCountByType] = useState<SectionData[]>([
@@ -252,5 +252,14 @@ const Billing = ({ servers }: BillingProps) => {
     </Card>
   );
 };
+
+interface BillingProps {
+  servers: Server[];
+}
+const Billing = ({ servers }: BillingProps) => (
+  <Flex direction="column" gap="md">
+    <BillingCard servers={servers} />
+  </Flex>
+);
 
 export default Billing;
