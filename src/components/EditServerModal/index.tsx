@@ -26,7 +26,7 @@ import {
 import stepperClasses from "./stepper.module.css";
 
 import BasicInfoForm from "./forms/BasicInfo.tsx";
-import ProviderAndLocationForm from "./forms/ProviderAndLocation.tsx";
+import ProductForm from "./forms/Product.tsx";
 import HardwareForm from "./forms/Hardware.tsx";
 import NetworksForm from "./forms/Networks.tsx";
 import AccessForm from "@/components/EditServerModal/forms/Access.tsx";
@@ -130,11 +130,8 @@ const EditServerModal = ({
               <Stepper.Step label="Basic Info" icon={<IconServerBolt />}>
                 <BasicInfoForm form={form} />
               </Stepper.Step>
-              <Stepper.Step
-                label="Provider & Location"
-                icon={<IconBuildingStore />}
-              >
-                <ProviderAndLocationForm
+              <Stepper.Step label="Product" icon={<IconBuildingStore />}>
+                <ProductForm
                   form={form}
                   knownProviders={knownProviders}
                   knownRegions={knownRegions}

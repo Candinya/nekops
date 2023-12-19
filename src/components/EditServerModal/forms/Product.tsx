@@ -1,6 +1,7 @@
 import type { InputFormProps } from "../inputFormProps.ts";
 import {
   Autocomplete,
+  Checkbox,
   Fieldset,
   Flex,
   Grid,
@@ -11,15 +12,15 @@ import {
 } from "@mantine/core";
 import { IconCurrencyDollar } from "@tabler/icons-react";
 
-interface ProviderAndLocationFormProps extends InputFormProps {
+interface ProductFormProps extends InputFormProps {
   knownProviders: string[];
   knownRegions: string[];
 }
-const ProviderAndLocationForm = ({
+const ProductForm = ({
   form,
   knownProviders,
   knownRegions,
-}: ProviderAndLocationFormProps) => (
+}: ProductFormProps) => (
   <>
     <Fieldset legend="Provider">
       <Grid>
@@ -63,6 +64,46 @@ const ProviderAndLocationForm = ({
       />
     </Fieldset>
 
+    <Fieldset mt="lg" legend="Traffic">
+      <Grid>
+        <Grid.Col span={6}>
+          <Flex gap="md">
+            <NumberInput
+              label="Traffic Limit"
+              decimalScale={3}
+              allowNegative={false}
+              suffix="TB"
+              style={{
+                flexGrow: 1,
+              }}
+              {...form.getInputProps("traffic.limit")}
+            />
+            <Flex direction="column" justify="end">
+              <Text size="sm" fw={500} mb={1}>
+                Double Rate
+              </Text>
+              <Checkbox
+                size="xl"
+                {...form.getInputProps("traffic.double_rate")}
+              />
+            </Flex>
+          </Flex>
+        </Grid.Col>
+        <Grid.Col span={6}>
+          <NumberInput
+            label="Bandwidth"
+            allowDecimal={false}
+            allowNegative={false}
+            suffix="Mbps"
+            style={{
+              flexGrow: 1,
+            }}
+            {...form.getInputProps("traffic.bandwidth")}
+          />
+        </Grid.Col>
+      </Grid>
+    </Fieldset>
+
     <Fieldset mt="lg" legend="Location">
       <Grid>
         <Grid.Col span={2}>
@@ -90,4 +131,4 @@ const ProviderAndLocationForm = ({
   </>
 );
 
-export default ProviderAndLocationForm;
+export default ProductForm;

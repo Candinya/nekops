@@ -15,6 +15,14 @@ export type Provider = {
   };
 };
 
+export type Traffic = {
+  traffic: {
+    limit: number; // TB
+    double_rate: boolean;
+    bandwidth: number; // Mbps
+  };
+};
+
 export type Location = {
   location: {
     region: string;
@@ -96,6 +104,7 @@ export type Access = {
 
 export type Server = BaseInfo &
   Provider &
+  Traffic &
   Location &
   Hardware &
   Network &
@@ -131,6 +140,12 @@ export const defaultServer: Server = {
     type: "VPS",
     product: "",
     price: 0,
+  },
+
+  traffic: {
+    limit: 1,
+    double_rate: true,
+    bandwidth: 1000,
   },
 
   location: {
