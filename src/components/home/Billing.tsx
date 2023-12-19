@@ -1,10 +1,10 @@
 import { IconBusinessplan } from "@tabler/icons-react";
 import {
   Box,
+  Card,
   Center,
   Flex,
   Group,
-  Paper,
   Progress,
   rem,
   SimpleGrid,
@@ -190,36 +190,58 @@ const Billing = ({ servers }: BillingProps) => {
   }, [servers]);
 
   return (
-    <Paper withBorder p="md" radius="md">
+    <Card withBorder p="md" radius="md">
+      <Box
+        bg="#62b6e7"
+        style={{
+          height: rem(16 * 16),
+          width: rem(16 * 16),
+          borderRadius: rem(16 * 16),
+          justifyContent: "center",
+          position: "absolute",
+          right: rem(-6.5 * 16),
+          top: rem(-6.5 * 16),
+        }}
+      />
+      <IconBusinessplan
+        color="white"
+        opacity="30%"
+        style={{
+          width: rem(6 * 16),
+          height: rem(6 * 16),
+          position: "absolute",
+          top: rem(0.5 * 16),
+          right: rem(0.5 * 16),
+        }}
+      />
       <Flex direction="column" gap="xl">
-        <Box>
-          <Group justify="space-between">
+        <Group justify="space-between">
+          <Box>
             <Title c="dimmed" order={2} size="h5" fw={700}>
               Monthly billing
             </Title>
-            <IconBusinessplan size="1.4rem" stroke={1.5} />
-          </Group>
 
-          <Group gap={rem(8)}>
-            <Text
-              c="teal"
-              fw={700}
-              style={{
-                fontSize: rem(36),
-              }}
-            >
-              $
-            </Text>
-            <Text
-              fw={700}
-              style={{
-                fontSize: rem(36),
-              }}
-            >
-              {billingCount.toFixed(2)}
-            </Text>
-          </Group>
-        </Box>
+            <Group gap={rem(8)}>
+              <Text
+                c="teal"
+                fw={700}
+                style={{
+                  fontSize: rem(36),
+                }}
+              >
+                $
+              </Text>
+              <Text
+                fw={700}
+                style={{
+                  fontSize: rem(36),
+                }}
+              >
+                {billingCount.toFixed(2)}
+              </Text>
+            </Group>
+          </Box>
+        </Group>
 
         <BillingSection title="By Server Types" data={billingCountByType} />
         <BillingSection
@@ -227,7 +249,7 @@ const Billing = ({ servers }: BillingProps) => {
           data={billingCountByProvider}
         />
       </Flex>
-    </Paper>
+    </Card>
   );
 };
 
