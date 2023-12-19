@@ -1,11 +1,10 @@
 import { IconTrash } from "@tabler/icons-react";
+import type { ActionIconVariant, MantineSize } from "@mantine/core";
 import {
   ActionIcon,
-  ActionIconVariant,
   Button,
   Center,
   Group,
-  MantineSize,
   Modal,
   Text,
   Title,

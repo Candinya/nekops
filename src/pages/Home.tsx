@@ -1,15 +1,15 @@
+import type { TablerIconsProps } from "@tabler/icons-react";
 import {
   IconCodeAsterix,
   IconLock,
   IconLockOpen,
   IconLockOpenOff,
   IconServer,
-  type TablerIconsProps,
 } from "@tabler/icons-react";
+import type { DefaultMantineColor } from "@mantine/core";
 import {
   Box,
   Center,
-  type DefaultMantineColor,
   Divider,
   Flex,
   Group,

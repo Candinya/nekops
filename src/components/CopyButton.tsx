@@ -1,7 +1,8 @@
 // Fork from https://github.com/mantinedev/mantine/blob/master/packages/@mantine/core/src/components/CopyButton/CopyButton.tsx
 // Use tauri clipboard API here
 
-import { ReactNode, useState } from "react";
+import type { ReactNode } from "react";
+import { useState } from "react";
 import { useProps } from "@mantine/core";
 import { writeText } from "@tauri-apps/plugin-clipboard-manager";
 import { notifications } from "@mantine/notifications";

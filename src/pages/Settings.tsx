@@ -1,5 +1,6 @@
-import { type Settings } from "@/types/settings.ts";
+import type { Settings } from "@/types/settings.ts";
 import { useForm } from "@mantine/form";
+import type { MantineColorScheme } from "@mantine/core";
 import {
   ActionIcon,
   Box,
@@ -8,7 +9,6 @@ import {
   Center,
   Flex,
   Group,
-  type MantineColorScheme,
   PasswordInput,
   rem,
   SegmentedControl,
