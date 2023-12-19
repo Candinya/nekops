@@ -48,10 +48,10 @@ const StatCard = ({ Icon, sections, label, stats }: StatCardProps) => (
       />
 
       <div>
-        <Text c="dimmed" size="sm" fw={700}>
+        <Text c="dimmed" size="md" fw={700}>
           {label}
         </Text>
-        <Text fw={700} size="xl">
+        <Text fw={700} size={rem(30)}>
           {stats}
         </Text>
       </div>
