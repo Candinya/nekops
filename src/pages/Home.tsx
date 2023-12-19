@@ -1,19 +1,26 @@
 import { Box, Divider, ScrollArea } from "@mantine/core";
-import GeneralCounts from "@/components/home/GeneralCounts.tsx";
+import GeneralStatics from "@/components/home/GeneralStatics.tsx";
 import Billing from "@/components/home/Billing.tsx";
+import { useSelector } from "react-redux";
+import type { RootState } from "@/store.ts";
 
-const HomePage = () => (
-  <Box h="100%">
-    <ScrollArea p="md" h="100%">
-      <GeneralCounts />
+const HomePage = () => {
+  const state = useSelector((state: RootState) => state);
+  const servers = useSelector((state: RootState) => state.servers);
 
-      <Divider my="lg" variant="dashed" opacity={30} label="Geo Location" />
+  return (
+    <Box h="100%">
+      <ScrollArea p="md" h="100%">
+        <GeneralStatics state={state} />
 
-      <Divider my="lg" variant="dashed" opacity={30} label="Billing" />
+        <Divider my="lg" variant="dashed" opacity={30} label="Geo Location" />
 
-      <Billing />
-    </ScrollArea>
-  </Box>
-);
+        <Divider my="lg" variant="dashed" opacity={30} label="Billing" />
+
+        <Billing servers={servers} />
+      </ScrollArea>
+    </Box>
+  );
+};
 
 export default HomePage;

@@ -13,8 +13,7 @@ import {
   Tooltip,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import type { RootState } from "@/store.ts";
+import type { Server } from "@/types/server.ts";
 
 interface SectionData {
   label: string;
@@ -89,9 +88,10 @@ const BillingSection = ({ title, data }: BillingSectionProps) => (
   </Box>
 );
 
-const Billing = () => {
-  const servers = useSelector((state: RootState) => state.servers);
-
+interface BillingProps {
+  servers: Server[];
+}
+const Billing = ({ servers }: BillingProps) => {
   const [billingCount, setBillingCount] = useState(0);
 
   const [billingCountByType, setBillingCountByType] = useState<SectionData[]>([

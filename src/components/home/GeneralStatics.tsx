@@ -18,7 +18,6 @@ import {
 } from "@mantine/core";
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import type { RootState } from "@/store.ts";
 
 interface Section {
@@ -60,10 +59,13 @@ const StatCard = ({ Icon, sections, label, stats }: StatCardProps) => (
   </Paper>
 );
 
-const GeneralCounts = () => {
-  const servers = useSelector((state: RootState) => state.servers);
-  const snippets = useSelector((state: RootState) => state.snippets);
-  const encryption = useSelector((state: RootState) => state.encryption);
+interface GeneralStaticsProps {
+  state: RootState;
+}
+const GeneralStatics = ({ state }: GeneralStaticsProps) => {
+  const servers = state.servers;
+  const snippets = state.snippets;
+  const encryption = state.encryption;
 
   const [serversCountDS, setServersCountDS] = useState(0);
   const [serversCountVPS, setServersCountVPS] = useState(0);
@@ -158,4 +160,4 @@ const GeneralCounts = () => {
   );
 };
 
-export default GeneralCounts;
+export default GeneralStatics;
