@@ -1,6 +1,6 @@
 import { Window } from "@tauri-apps/api/window";
 
-const ShellWindowLabel = "shellWindow";
+const ShellWindowLabel = "nekopShell"; // Nekops Shell
 export const openShellWindow = async () => {
   let shellWindow = Window.getByLabel(ShellWindowLabel);
   if (shellWindow === null) {
