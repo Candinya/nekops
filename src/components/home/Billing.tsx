@@ -1,8 +1,7 @@
-import { IconBusinessplan } from "@tabler/icons-react";
+import { IconBusinessplan, IconCurrencyDollar } from "@tabler/icons-react";
 import {
   Box,
   Card,
-  Center,
   Flex,
   Group,
   Progress,
@@ -37,24 +36,11 @@ const BillingSection = ({ title, data }: BillingSectionProps) => (
       {data.map((segment) => (
         <Tooltip
           key={segment.label}
-          label={
-            <>
-              <Center>
-                <Text>{segment.label}</Text>
-              </Center>
-              <Center>
-                <Text size="xs">{segment.part.toFixed(1)}%</Text>
-              </Center>
-            </>
-          }
+          label={segment.label}
           withArrow
           arrowSize={6}
         >
-          <Progress.Section
-            key={segment.label}
-            value={segment.part}
-            color={segment.color}
-          />
+          <Progress.Section value={segment.part} color={segment.color} />
         </Tooltip>
       ))}
     </Progress.Root>
@@ -225,19 +211,11 @@ const BillingCard = ({ servers }: BillingCardProps) => {
         <Group justify="space-between">
           <Box>
             <Title c="dimmed" order={3} size="h5" fw={700}>
-              Monthly billing
+              Monthly bill
             </Title>
 
-            <Group gap={rem(8)}>
-              <Text
-                c="teal"
-                fw={700}
-                style={{
-                  fontSize: rem(36),
-                }}
-              >
-                $
-              </Text>
+            <Group>
+              <IconCurrencyDollar size={36} color={theme.colors.teal[6]} />
               <Text
                 fw={700}
                 style={{
