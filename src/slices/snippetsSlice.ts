@@ -3,6 +3,7 @@ import { exists, readTextFile, writeTextFile } from "@tauri-apps/plugin-fs";
 import type { Snippet } from "@/types/snippet.ts";
 import type { RootState } from "@/store.ts";
 import { checkParentDir } from "@/slices/common.ts";
+import { path } from "@tauri-apps/api";
 
 const SnippetsFileName = "snippets.json";
 
@@ -13,12 +14,13 @@ export const readSnippets = createAsyncThunk(
   async (_, { getState }): Promise<Snippet[]> => {
     // read from local file
     const state = getState() as RootState;
-    if (await exists(state.settings.data_dir + SnippetsFileName)) {
+    const snippetsIndexFilePath = await path.join(
+      state.settings.data_dir,
+      SnippetsFileName,
+    );
+    if (await exists(snippetsIndexFilePath)) {
       // Read and parse
-      const snippetsFile = await readTextFile(
-        state.settings.data_dir + SnippetsFileName,
-      );
-      return JSON.parse(snippetsFile);
+      return JSON.parse(await readTextFile(snippetsIndexFilePath));
     } else {
       return noSnippet;
     }
@@ -30,9 +32,13 @@ export const saveSnippets = createAsyncThunk(
   async (_, { getState }) => {
     // save to local file
     const state: any = getState() as RootState;
+    const snippetsIndexFilePath = await path.join(
+      state.settings.data_dir,
+      SnippetsFileName,
+    );
     await checkParentDir(state.settings.data_dir);
     await writeTextFile(
-      state.settings.data_dir + SnippetsFileName,
+      snippetsIndexFilePath,
       JSON.stringify(state.snippets, null, 2),
     );
   },

@@ -32,6 +32,9 @@ dependencies:
   '@tauri-apps/plugin-clipboard-manager':
     specifier: 2.0.0-alpha.4
     version: 2.0.0-alpha.4
+  '@tauri-apps/plugin-dialog':
+    specifier: 2.0.0-alpha.5
+    version: 2.0.0-alpha.5
   '@tauri-apps/plugin-fs':
     specifier: 2.0.0-alpha.4
     version: 2.0.0-alpha.4
@@ -851,6 +854,11 @@ packages:
     engines: {node: '>= 18', npm: '>= 6.6.0', yarn: '>= 1.19.1'}
     dev: false
 
+  /@tauri-apps/api@2.0.0-alpha.13:
+    resolution: {integrity: sha512-sGgCkFahF3OZAHoGN5Ozt9WK7wJlbVZSgWpPQKNag4nSOX1+Py6VDRTEWriiJHDiV+gg31CWHnNXRy6TFoZmdA==}
+    engines: {node: '>= 18', npm: '>= 6.6.0', yarn: '>= 1.19.1'}
+    dev: false
+
   /@tauri-apps/cli-darwin-arm64@1.5.8:
     resolution: {integrity: sha512-/AksDWfAt3NUSt8Rq2a3gTLASChKzldPVUjmJhcbtsuzFg2nx5g+hhOHxfBYzss2Te1K5mzlu+73LAMy1Sb9Gw==}
     engines: {node: '>= 10'}
@@ -962,6 +970,12 @@ packages:
     resolution: {integrity: sha512-/xPQBXuzD8cSh81xkTphIAKxSD2kGsv8deKK+Qoh+89puay1xJjjnxVv5b9IKKn0G8r8HPm+JDEamlKxQbOgnA==}
     dependencies:
       '@tauri-apps/api': 2.0.0-alpha.12
+    dev: false
+
+  /@tauri-apps/plugin-dialog@2.0.0-alpha.5:
+    resolution: {integrity: sha512-OHodi10R5an4nVq/kavU9HOATkc20RYNVdFYWMvPSVyI7rL1n55llPmbGXdWiZO94Tn10XZyZDVs7eJ1uKOkeA==}
+    dependencies:
+      '@tauri-apps/api': 2.0.0-alpha.13
     dev: false
 
   /@tauri-apps/plugin-fs@2.0.0-alpha.4:

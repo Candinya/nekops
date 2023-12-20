@@ -17,6 +17,7 @@ import type { Server } from "@/types/server.ts";
 import { deepClone } from "@/utils/deepClone.ts";
 import { rawDecrypt, rawEncrypt } from "@/encrypt/methods.ts";
 import type { EncryptionState } from "@/types/encryption.ts";
+import { path } from "@tauri-apps/api";
 
 const PublicKeyFile = "public.key";
 
@@ -29,11 +30,13 @@ export const readEncryption = createAsyncThunk(
   "encryption/read",
   async (_, { getState }): Promise<EncryptionState> => {
     const state = getState() as RootState;
-    if (await exists(state.settings.data_dir + PublicKeyFile)) {
+    const publicKeyFilePath = await path.join(
+      state.settings.data_dir,
+      PublicKeyFile,
+    );
+    if (await exists(publicKeyFilePath)) {
       // Read and parse
-      const publicKeyFile = await readTextFile(
-        state.settings.data_dir + PublicKeyFile,
-      );
+      const publicKeyFile = await readTextFile(publicKeyFilePath);
       return {
         publicKeyBase64: publicKeyFile,
         privateKeyBase64: undefined,
@@ -56,10 +59,14 @@ export const updatePassword = createAsyncThunk(
       throw "Please unlock first";
     }
 
+    const publicKeyFilePath = await path.join(
+      state.settings.data_dir,
+      PublicKeyFile,
+    );
     if (password === "") {
       // Disable encryption
-      if (await exists(state.settings.data_dir + PublicKeyFile)) {
-        await removeFile(state.settings.data_dir + PublicKeyFile);
+      if (await exists(publicKeyFilePath)) {
+        await removeFile(publicKeyFilePath);
       }
       return noEncryption;
     }
@@ -77,10 +84,7 @@ export const updatePassword = createAsyncThunk(
 
     // Save public key into file
     await checkParentDir(state.settings.data_dir);
-    await writeTextFile(
-      state.settings.data_dir + PublicKeyFile,
-      newEncryptionState.publicKeyBase64,
-    );
+    await writeTextFile(publicKeyFilePath, newEncryptionState.publicKeyBase64);
 
     return newEncryptionState;
   },

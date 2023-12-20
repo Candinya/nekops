@@ -3,9 +3,10 @@ import { exists, readTextFile, writeTextFile } from "@tauri-apps/plugin-fs";
 import type { Server } from "@/types/server.ts";
 import type { RootState } from "@/store.ts";
 import { checkParentDir } from "@/slices/common.ts";
+import { path } from "@tauri-apps/api";
 
 const ServersIndexFileName = "servers.json";
-const ServersBaseDir = "servers/";
+const ServersBaseDir = "servers";
 const ServersFileSuffix = ".json";
 
 const noServer: Server[] = [];
@@ -14,20 +15,24 @@ export const readServers = createAsyncThunk(
   "servers/read",
   async (_, { getState }): Promise<Server[]> => {
     const state = getState() as RootState;
-    if (await exists(state.settings.data_dir + ServersIndexFileName)) {
+    const serversIndexFilePath = await path.join(
+      state.settings.data_dir,
+      ServersIndexFileName,
+    );
+    const serversDirectoryPath = await path.join(
+      state.settings.data_dir,
+      ServersBaseDir,
+    );
+    if (await exists(serversIndexFilePath)) {
       // Read index file
-      const serversIndexFile = await readTextFile(
-        state.settings.data_dir + ServersIndexFileName,
-      );
-      const serversIndex = JSON.parse(serversIndexFile);
+      const serversIndex = JSON.parse(await readTextFile(serversIndexFilePath));
       // Read detailed server configurations
       const servers: Server[] = [];
       for (const serverConfigFileName of serversIndex) {
-        const serverConfigFileNameFull =
-          state.settings.data_dir +
-          ServersBaseDir +
-          serverConfigFileName +
-          ServersFileSuffix;
+        const serverConfigFileNameFull = await path.join(
+          serversDirectoryPath,
+          serverConfigFileName + ServersFileSuffix,
+        );
         if (await exists(serverConfigFileNameFull)) {
           servers.push(
             JSON.parse(await readTextFile(serverConfigFileNameFull)),
@@ -45,17 +50,22 @@ export const saveServers = createAsyncThunk(
   "servers/save",
   async (ids: string[], { getState }) => {
     const state: any = getState() as RootState;
-    await checkParentDir(state.settings.data_dir + ServersBaseDir);
+    const serversIndexFilePath = await path.join(
+      state.settings.data_dir,
+      ServersIndexFileName,
+    );
+    const serversDirectoryPath = await path.join(
+      state.settings.data_dir,
+      ServersBaseDir,
+    );
+    await checkParentDir(serversDirectoryPath);
     // Write detailed server configurations
     const serversIndex: string[] = [];
     for (const server of state.servers) {
       if (ids.includes(server.id)) {
         // Requires update
         await writeTextFile(
-          state.settings.data_dir +
-            ServersBaseDir +
-            server.id +
-            ServersFileSuffix,
+          await path.join(serversDirectoryPath, server.id + ServersFileSuffix),
           JSON.stringify(server, null, 2),
         );
       }
@@ -63,7 +73,7 @@ export const saveServers = createAsyncThunk(
     }
     // Write index file
     await writeTextFile(
-      state.settings.data_dir + ServersIndexFileName,
+      serversIndexFilePath,
       JSON.stringify(serversIndex, null, 2),
     );
   },

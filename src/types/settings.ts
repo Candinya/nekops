@@ -3,5 +3,5 @@ export type Settings = {
 };
 
 export const defaultSettings: Settings = {
-  data_dir: "nekops_data/",
+  data_dir: "nekops_data",
 };

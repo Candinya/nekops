@@ -19,12 +19,12 @@ import {
 } from "@mantine/core";
 import {
   IconBolt,
+  IconFolder,
   IconLock,
   IconLockOpen,
   IconMoon,
   IconSun,
 } from "@tabler/icons-react";
-
 import { saveSettings as saveSettingsToFileSystem } from "@/slices/settingsSlice.ts";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/store.ts";
@@ -38,6 +38,7 @@ import UnlockModal from "@/components/UnlockModal.tsx";
 import { notifications } from "@mantine/notifications";
 import { actionIconStyle } from "@/common/actionStyles.ts";
 import { saveServers, updateServerByIndex } from "@/slices/serversSlice.ts";
+import { open } from "@tauri-apps/plugin-dialog";
 
 const colorSchemeData = [
   {
@@ -93,6 +94,16 @@ const SettingsPage = () => {
     },
   });
 
+  const selectDataDirectory = async () => {
+    const dataDir = await open({
+      multiple: false,
+      directory: true,
+    });
+    if (dataDir) {
+      form.setFieldValue("data_dir", dataDir);
+    }
+  };
+
   const saveSettings = async (newSettings: SettingsExtended) => {
     // Apply
     setColorScheme(newSettings.color_scheme);
@@ -136,10 +147,27 @@ const SettingsPage = () => {
       <Box p="md">
         <form onSubmit={form.onSubmit(saveSettings)}>
           <Flex direction="column" gap="md">
-            <TextInput
-              label="Data Directory"
-              {...form.getInputProps("data_dir")}
-            />
+            <Group>
+              <TextInput
+                label="Data Directory"
+                style={{
+                  flexGrow: 1,
+                }}
+                {...form.getInputProps("data_dir")}
+              />
+
+              <Tooltip label="Select" openDelay={500}>
+                <ActionIcon
+                  size="lg"
+                  onClick={selectDataDirectory}
+                  style={{
+                    alignSelf: "end",
+                  }}
+                >
+                  <IconFolder style={actionIconStyle} />
+                </ActionIcon>
+              </Tooltip>
+            </Group>
 
             <Flex direction="column">
               <Text size="sm" fw={500} mb={2}>
