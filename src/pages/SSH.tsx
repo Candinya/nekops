@@ -17,12 +17,27 @@ const SSHPage = () => {
       `${server.access.regular.user || "root"}@${
         server.access.regular.address
       }`,
+      "-tt", // force Pseudo-terminal
     ];
     if (server.access.regular.port !== 22) {
       // Is not default SSH port
       sshArgs.push("-p", server.access.regular.port.toString());
     }
     const sshProcess = Command.create("ssh", sshArgs);
+    sshProcess.on("close", (data) => {
+      console.log("close", data);
+    });
+    sshProcess.on("error", (data) => {
+      console.log("error", data);
+    });
+    sshProcess.stdout.on("data", (data) => {
+      console.log("stdout", data);
+    });
+    sshProcess.stderr.on("data", (data) => {
+      console.log("stderr", data);
+    });
+    // sshProcess.execute().then(console.log);
+    sshProcess.spawn().then(console.log);
   };
 
   // Search related
