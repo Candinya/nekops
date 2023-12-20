@@ -9,8 +9,7 @@ import { searchServers } from "@/search/servers.ts";
 import SearchBar from "@/components/SearchBar.tsx";
 import { actionIconStyle } from "@/common/actionStyles.ts";
 import ServerTable from "@/components/multirun/ServerTable.tsx";
-import type { Server } from "@/types/server.ts";
-import { Command } from "@tauri-apps/plugin-shell";
+import { openShellWindow } from "@/utils/openShellWindow.ts";
 
 const MultirunPage = () => {
   const servers = useSelector((state: RootState) => state.servers);
@@ -23,32 +22,9 @@ const MultirunPage = () => {
   const [activeServerIndex, setActiveServerIndex] = useState<number>(-1);
   const [selectedServerIDs, setSelectedServerIDs] = useState<string[]>([]);
 
-  const startSSH = (server: Server) => {
-    const sshArgs = [
-      `${server.access.regular.user || "root"}@${
-        server.access.regular.address
-      }`,
-      "-tt", // force Pseudo-terminal
-    ];
-    if (server.access.regular.port !== 22) {
-      // Is not default SSH port
-      sshArgs.push("-p", server.access.regular.port.toString());
-    }
-    const sshProcess = Command.create("ssh", sshArgs);
-    sshProcess.on("close", (data) => {
-      console.log("close", data);
-    });
-    sshProcess.on("error", (data) => {
-      console.log("error", data);
-    });
-    sshProcess.stdout.on("data", (data) => {
-      console.log("stdout", data);
-    });
-    sshProcess.stderr.on("data", (data) => {
-      console.log("stderr", data);
-    });
-    // sshProcess.execute().then(console.log);
-    sshProcess.spawn().then(console.log);
+  const startMultirun = async () => {
+    const shellWindow = await openShellWindow();
+    console.log(shellWindow);
   };
 
   const [searchInput, setSearchInput] = useState("");
@@ -72,10 +48,7 @@ const MultirunPage = () => {
                 size="lg"
                 color="green"
                 disabled={selectedServerIDs.length === 0}
-                onClick={() => {
-                  // TODO: Multirun
-                  console.log(selectedServerIDs);
-                }}
+                onClick={startMultirun}
               >
                 <IconPlayerPlay style={actionIconStyle} />
               </ActionIcon>
