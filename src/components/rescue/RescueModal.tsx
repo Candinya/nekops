@@ -41,8 +41,9 @@ interface RescueModalProps {
   isOpen: boolean;
   close: () => void;
   server: Server | null;
+  launch: () => void;
 }
-const RescueModal = ({ isOpen, close, server }: RescueModalProps) => (
+const RescueModal = ({ isOpen, close, server, launch }: RescueModalProps) => (
   <Modal
     opened={isOpen}
     onClose={close}
@@ -79,6 +80,7 @@ const RescueModal = ({ isOpen, close, server }: RescueModalProps) => (
               openDelay={500}
             >
               <Button
+                onClick={launch}
                 style={{
                   alignSelf: "end",
                 }}

@@ -22,6 +22,7 @@ import { decryptServer } from "@/slices/encryptionSlice.ts";
 import { notifications } from "@mantine/notifications";
 import UnlockModal from "@/components/UnlockModal.tsx";
 import RescueModal from "@/components/rescue/RescueModal.tsx";
+import { open } from "@tauri-apps/plugin-shell";
 
 const RescuePage = () => {
   const servers = useSelector((state: RootState) => state.servers);
@@ -47,6 +48,38 @@ const RescuePage = () => {
 
     setActiveServer(decryptServer(encryption, server));
     openRescueModal();
+  };
+
+  const launchRescuePlatform = async () => {
+    switch (activeServer?.access.emergency.method) {
+      case "VNC":
+        notifications.show({
+          color: "blue",
+          title: "Launch VNC",
+          message:
+            "You may have to copy Address and handle it with correct VNC tool (like TigerVNC).",
+        });
+        break;
+      case "IPMI":
+        try {
+          await open(activeServer?.access.emergency.address);
+        } catch (e: any) {
+          notifications.show({
+            color: "red",
+            title: "Launch failed",
+            message: e.message,
+          });
+        }
+        break;
+      default:
+        notifications.show({
+          color: "blue",
+          title: "Launch rescue",
+          message:
+            "You may have to copy Address and handle it with correct tool.",
+        });
+        break;
+    }
   };
 
   // Search related
@@ -131,6 +164,7 @@ const RescuePage = () => {
         isOpen={isRescueModalOpen}
         close={closeRescueModal}
         server={activeServer}
+        launch={launchRescuePlatform}
       />
     </>
   );
