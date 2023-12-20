@@ -99,13 +99,13 @@ const GeneralStatics = ({
         label="Servers"
         sections={[
           {
-            color: "indigo",
+            color: "indigo.6",
             value:
               (serversCount === 0 ? 0.5 : serversCountDS / serversCount) * 100,
             tooltip: <Text>Dedicated Server : {serversCountDS}</Text>,
           },
           {
-            color: "lime",
+            color: "lime.6",
             value:
               (serversCount === 0 ? 0.5 : serversCountVPS / serversCount) * 100,
             tooltip: <Text>Virtual Private Servers : {serversCountVPS}</Text>,

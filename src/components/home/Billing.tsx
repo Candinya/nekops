@@ -12,6 +12,7 @@ import {
   Text,
   Title,
   Tooltip,
+  useMantineTheme,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import type { Server } from "@/types/server.ts";
@@ -94,19 +95,20 @@ interface BillingCardProps {
   servers: Server[];
 }
 const BillingCard = ({ servers }: BillingCardProps) => {
+  const theme = useMantineTheme();
   const [billingSum, setBillingSum] = useState(0);
   const [billingCountByType, setBillingCountByType] = useState<SectionData[]>([
     {
       label: "Dedicated Server",
       text: "0",
       part: 50,
-      color: "#3b5bdb", // indigo
+      color: theme.colors.indigo[6], // indigo
     },
     {
       label: "Virtual Private Server",
       text: "0",
       part: 50,
-      color: "#66a811", // lime
+      color: theme.colors.lime[6], // lime
     },
   ]);
   const [billingCountByProvider, setBillingCountByProvider] = useState<
@@ -163,7 +165,12 @@ const BillingCard = ({ servers }: BillingCardProps) => {
         });
       }
       sumProviderArray.sort((a, b) => b.priceSum - a.priceSum);
-      const colors = ["#37B24D", "#1098AD", "#7048E8", "#F03E3E"];
+      const colors = [
+        theme.colors.green[6],
+        theme.colors.cyan[6],
+        theme.colors.violet[6],
+        theme.colors.pink[6],
+      ];
       let i = 0;
       const countByProviderPending: SectionData[] = [];
       for (; i < colors.length - 1 && i < sumProviderArray.length - 1; i++) {
