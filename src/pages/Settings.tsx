@@ -25,7 +25,7 @@ import {
   IconMoon,
   IconSun,
 } from "@tabler/icons-react";
-import { saveSettings as saveSettingsToFileSystem } from "@/slices/settingsSlice.ts";
+import { saveSettings } from "@/slices/settingsSlice.ts";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/store.ts";
 import {
@@ -104,7 +104,7 @@ const SettingsPage = () => {
     }
   };
 
-  const saveSettings = async (newSettings: SettingsExtended) => {
+  const save = async (newSettings: SettingsExtended) => {
     // Apply
     setColorScheme(newSettings.color_scheme);
     if (newSettings.password !== passwordUnchanged) {
@@ -133,7 +133,7 @@ const SettingsPage = () => {
     const newSettingsSave: Settings = {
       data_dir: newSettings.data_dir,
     };
-    dispatch(saveSettingsToFileSystem(newSettingsSave));
+    dispatch(saveSettings(newSettingsSave));
     form.reset();
   };
 
@@ -145,7 +145,7 @@ const SettingsPage = () => {
   return (
     <>
       <Box p="md">
-        <form onSubmit={form.onSubmit(saveSettings)}>
+        <form onSubmit={form.onSubmit(save)}>
           <Flex direction="column" gap="md">
             <Group>
               <TextInput
