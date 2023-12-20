@@ -7,17 +7,22 @@ import { useState } from "react";
 import { useDebouncedValue } from "@mantine/hooks";
 import { searchServers } from "@/search/servers.ts";
 import type { Server } from "@/types/server.ts";
+import { Command } from "@tauri-apps/plugin-shell";
 
 const SSHPage = () => {
   const servers = useSelector((state: RootState) => state.servers);
 
   const startSSH = (server: Server) => {
-    let command = `ssh ${server.access.regular.user}@${server.access.regular.address}`;
+    const sshArgs = [
+      `${server.access.regular.user || "root"}@${
+        server.access.regular.address
+      }`,
+    ];
     if (server.access.regular.port !== 22) {
       // Is not default SSH port
-      command += ` -p ${server.access.regular.port}`;
+      sshArgs.push("-p", server.access.regular.port.toString());
     }
-    console.log(command);
+    const sshProcess = Command.create("ssh", sshArgs);
   };
 
   // Search related
