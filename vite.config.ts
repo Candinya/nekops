@@ -32,4 +32,12 @@ export default defineConfig(async () => ({
         }
       : undefined,
   },
+  build: {
+    rollupOptions: {
+      input: {
+        main: resolve(__dirname, "index.html"),
+        shell: resolve(__dirname, "shell.html"),
+      },
+    },
+  },
 }));

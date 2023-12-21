@@ -8,47 +8,22 @@ import { useDebouncedValue } from "@mantine/hooks";
 import { searchServers } from "@/search/servers.ts";
 import type { Server } from "@/types/server.ts";
 import { openShellWindow } from "@/utils/openShellWindow.ts";
+import { emit } from "@tauri-apps/api/event";
+import type { EventsNewSSH } from "@/types/crossEvents.ts";
 
 const SSHPage = () => {
   const servers = useSelector((state: RootState) => state.servers);
+  const encryption = useSelector((state: RootState) => state.encryption);
 
   const startSSH = async (server: Server) => {
-    const shellWindow = await openShellWindow();
-    console.log(shellWindow);
+    // Create or open Shell window
+    await openShellWindow(encryption.isUnlocked); // Disable content protection when unlocked
 
-    // Add event listener
-    // shellWindow?.once("tauri://created", (e) => {
-    //   console.log("window created", e);
-    // });
-    // shellWindow?.once("tauri://error", (e) => {
-    //   console.log("window error", e);
-    // });
-
-    // const sshArgs = [
-    //   `${server.access.regular.user || "root"}@${
-    //     server.access.regular.address
-    //   }`,
-    //   "-tt", // force Pseudo-terminal
-    // ];
-    // if (server.access.regular.port !== 22) {
-    //   // Is not default SSH port
-    //   sshArgs.push("-p", server.access.regular.port.toString());
-    // }
-    // const sshProcess = Command.create("ssh", sshArgs);
-    // sshProcess.on("close", (data) => {
-    //   console.log("close", data);
-    // });
-    // sshProcess.on("error", (data) => {
-    //   console.log("error", data);
-    // });
-    // sshProcess.stdout.on("data", (data) => {
-    //   console.log("stdout", data);
-    // });
-    // sshProcess.stderr.on("data", (data) => {
-    //   console.log("stderr", data);
-    // });
-    // // sshProcess.execute().then(console.log);
-    // sshProcess.spawn().then(console.log);
+    // Emit SSH event
+    const newSSHEvent: EventsNewSSH = {
+      server,
+    };
+    await emit("newSSH", newSSHEvent);
   };
 
   // Search related

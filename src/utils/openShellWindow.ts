@@ -1,7 +1,14 @@
 import { Window } from "@tauri-apps/api/window";
 
-const ShellWindowLabel = "nekopShell"; // Nekops Shell
-export const openShellWindow = async () => {
+const ShellWindowLabel = "nekopshell"; // Nekops Shell
+
+/**
+ * Open (or create if non-current) Shell Window
+ * @param disableContentProtection Disable window content protection (means can be captured by other software)
+ */
+export const openShellWindow = async (
+  disableContentProtection: boolean = false,
+) => {
   let shellWindow = Window.getByLabel(ShellWindowLabel);
   if (shellWindow === null) {
     // Open new
@@ -10,6 +17,8 @@ export const openShellWindow = async () => {
       url: "shell.html",
       width: 1200,
       height: 800,
+      contentProtected: !disableContentProtection,
+      decorations: false,
     });
   } else {
     // Bring back to focus
