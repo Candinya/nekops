@@ -1,18 +1,34 @@
 import { ActionIcon, Tabs } from "@mantine/core";
 import { IconX } from "@tabler/icons-react";
 import ShellTerminal from "@/shell/ShellTerminal.tsx";
-import { listen } from "@tauri-apps/api/event";
+import { emit, listen } from "@tauri-apps/api/event";
 import { useEffect } from "react";
-import { EventsNewSSH } from "@/types/crossEvents.ts";
+import {
+  EventAckSSHWindowReady,
+  EventIsSSHWindowReady,
+  EventNewSSHName,
+} from "@/events/name.ts";
+import type { EventNewSSHPayload } from "@/events/payload.ts";
 
 const ShellTabs = () => {
   useEffect(() => {
-    const stopListenPromise = listen<EventsNewSSH>("newSSH", (ev) => {
-      console.log(ev);
-    });
+    const stopSSHWindowReadyPromise = listen<string>(
+      EventIsSSHWindowReady,
+      async (ev) => {
+        await emit(EventAckSSHWindowReady, ev.payload);
+      },
+    );
+    const stopSSHListenPromise = listen<EventNewSSHPayload>(
+      EventNewSSHName,
+      (ev) => {
+        console.log(ev);
+      },
+    );
+
     return () => {
       (async () => {
-        (await stopListenPromise)();
+        (await stopSSHWindowReadyPromise)();
+        (await stopSSHListenPromise)();
       })();
     };
   }, []);
