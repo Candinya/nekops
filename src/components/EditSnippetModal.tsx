@@ -18,10 +18,6 @@ const EditSnippetModal = ({
 }: EditSnippetModalProps) => {
   const form = useForm<Snippet>({
     initialValues: defaultSnippet,
-    validate: {
-      name: (value) => !value, // Not empty
-      code: (value) => !value,
-    },
   });
   const saveSnippet = (snippetInfo: Snippet) => {
     save(snippetInfo);
@@ -51,6 +47,7 @@ const EditSnippetModal = ({
       <form onSubmit={form.onSubmit(saveSnippet)}>
         <TextInput
           label="Name"
+          required
           withAsterisk
           data-autofocus
           {...form.getInputProps("name")}
@@ -60,7 +57,6 @@ const EditSnippetModal = ({
 
         <Textarea
           label="Code"
-          withAsterisk
           autosize
           minRows={8}
           {...form.getInputProps("code")}

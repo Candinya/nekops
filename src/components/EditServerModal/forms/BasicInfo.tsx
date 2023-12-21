@@ -19,6 +19,7 @@ const BasicInfoForm = ({ form, knownTags }: BasicInfoFormProps) => {
       <Grid>
         <Grid.Col span={4}>
           <TextInput
+            required
             withAsterisk
             label="ID"
             placeholder="my.new.server"
