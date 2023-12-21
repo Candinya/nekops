@@ -12,7 +12,7 @@ import {
 import { getVersion } from "@tauri-apps/api/app";
 import { useEffect, useState } from "react";
 import { IconHeartFilled } from "@tabler/icons-react";
-import { notifications } from "@mantine/notifications";
+import { open } from "@tauri-apps/plugin-shell";
 
 interface AboutModalProps {
   isOpen: boolean;
@@ -21,12 +21,8 @@ interface AboutModalProps {
 const AboutModal = ({ isOpen, close }: AboutModalProps) => {
   const [version, setVersion] = useState("Loading...");
 
-  const checkNewVersion = () => {
-    notifications.show({
-      color: "green",
-      title: "Already latest version!",
-      message: "Don't hesitate to enjoy~",
-    });
+  const clickVersion = () => {
+    open("https://nekops.app");
   };
 
   useEffect(() => {
@@ -58,7 +54,7 @@ const AboutModal = ({ isOpen, close }: AboutModalProps) => {
               style={{
                 cursor: "pointer",
               }}
-              onClick={checkNewVersion}
+              onClick={clickVersion}
             >
               {version}
             </Badge>
