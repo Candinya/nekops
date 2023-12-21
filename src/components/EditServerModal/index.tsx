@@ -32,7 +32,7 @@ import NetworksForm from "./forms/Networks.tsx";
 import AccessForm from "@/components/EditServerModal/forms/Access.tsx";
 import { deepClone } from "@/utils/deepClone.ts";
 
-const serverIdRegexp = /^\w+([-.]\w+)*$/;
+const serverIDRegexp = /^\w+([-.]\w+)*$/;
 
 interface EditServerModalProps {
   isOpen: boolean;
@@ -66,7 +66,7 @@ const EditServerModal = ({
     initialValues: defaultServer,
 
     validate: {
-      id: (value) => !serverIdRegexp.test(value),
+      id: (value) => !serverIDRegexp.test(value),
     },
 
     validateInputOnBlur: true,
