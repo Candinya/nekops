@@ -74,7 +74,7 @@ const SSHPage = () => {
 
         // Emit SSH event
         const newSSHEvent: EventNewSSHPayload = {
-          server,
+          server: server.access.regular,
         };
         await emit(EventNewSSHName, newSSHEvent);
 

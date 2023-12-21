@@ -1,5 +1,5 @@
-import type { Server } from "@/types/server.ts";
+import type { AccessRegular } from "@/types/server.ts";
 
 export interface EventNewSSHPayload {
-  server: Server;
+  server: AccessRegular;
 }
