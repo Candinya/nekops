@@ -10,6 +10,7 @@ import SearchBar from "@/components/SearchBar.tsx";
 import { actionIconStyle } from "@/common/actionStyles.ts";
 import ServerTable from "@/components/multirun/ServerTable.tsx";
 import { openShellWindow } from "@/utils/openShellWindow.ts";
+import type { Server } from "@/types/server.ts";
 
 const MultirunPage = () => {
   const servers = useSelector((state: RootState) => state.servers);
@@ -19,7 +20,7 @@ const MultirunPage = () => {
     { open: openServerCardModal, close: closeServerCardModal },
   ] = useDisclosure(false);
 
-  const [activeServerIndex, setActiveServerIndex] = useState<number>(-1);
+  const [activeServer, setActiveServer] = useState<Server | null>(null);
   const [selectedServerIDs, setSelectedServerIDs] = useState<string[]>([]);
 
   const startMultirun = async () => {
@@ -60,8 +61,8 @@ const MultirunPage = () => {
         <ScrollArea>
           <ServerTable
             servers={searchServers(debouncedSearchInput, servers)}
-            show={(index) => {
-              setActiveServerIndex(index);
+            show={(server) => {
+              setActiveServer(server);
               openServerCardModal();
             }}
             isSearching={debouncedSearchInput !== ""}
@@ -75,9 +76,7 @@ const MultirunPage = () => {
       <ServerCardModal
         isOpen={isServerCardModalOpen}
         close={closeServerCardModal}
-        serverInfo={
-          activeServerIndex === -1 ? undefined : servers[activeServerIndex]
-        }
+        serverInfo={activeServer}
       />
     </>
   );

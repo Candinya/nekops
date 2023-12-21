@@ -37,7 +37,7 @@ const serverIDRegexp = /^\w+([-.]\w+)*$/;
 interface EditServerModalProps {
   isOpen: boolean;
   close: () => void;
-  serverInfo?: Server;
+  serverInfo?: Server | null;
   save: (info: Server) => boolean;
   knownTags: string[];
   knownProviders: string[];
@@ -80,10 +80,10 @@ const EditServerModal = ({
 
   useEffect(() => {
     if (isOpen) {
-      if (!!serverInfo) {
-        form.setInitialValues(deepClone(serverInfo));
-      } else {
+      if (!serverInfo) {
         form.setInitialValues(defaultServer);
+      } else {
+        form.setInitialValues(deepClone(serverInfo));
       }
       form.reset();
       setActiveStep(0);

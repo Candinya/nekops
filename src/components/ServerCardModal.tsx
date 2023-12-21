@@ -5,7 +5,7 @@ import ServerCard from "@/components/ServerCard.tsx";
 interface ServerCardModalProps {
   isOpen: boolean;
   close: () => void;
-  serverInfo?: Server;
+  serverInfo?: Server | null;
 }
 const ServerCardModal = ({
   isOpen,

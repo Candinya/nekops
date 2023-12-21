@@ -18,6 +18,7 @@ import { searchSnippets } from "@/search/snippets.ts";
 import SearchBar from "@/components/SearchBar.tsx";
 import { actionIconStyle } from "@/common/actionStyles.ts";
 import SnippetTable from "@/components/snippets/SnippetTable.tsx";
+import { notifications } from "@mantine/notifications";
 
 const SnippetsPage = () => {
   const snippets = useSelector((state: RootState) => state.snippets);
@@ -28,14 +29,36 @@ const SnippetsPage = () => {
     { open: openEditSnippetModal, close: closeEditSnippetModal },
   ] = useDisclosure(false);
 
-  const [activeSnippetIndex, setActiveSnippetIndex] = useState<number>(-1);
+  const [activeSnippet, setActiveSnippet] = useState<Snippet | null>(null);
 
-  const save = (newSnippetInfo: Snippet) => {
-    if (activeSnippetIndex !== -1) {
+  const notifyDupName = () => {
+    notifications.show({
+      color: "yellow",
+      title: "Duplicate name found",
+      message: <>Specified name is conflict with another snippet.</>,
+    });
+  };
+
+  const save = (newSnippetInfo: Snippet): boolean => {
+    // Check duplicate ID
+    if (activeSnippet === null || newSnippetInfo.name !== activeSnippet.name) {
+      const findSnippetByName = snippets.find(
+        (snippet) => snippet.name === newSnippetInfo.name,
+      );
+      if (findSnippetByName !== undefined) {
+        // Found
+        notifyDupName();
+        return false;
+      }
+    }
+
+    if (activeSnippet !== null) {
       // Edit
       dispatch(
         updateSnippetByIndex({
-          index: activeSnippetIndex,
+          index: snippets.findIndex(
+            (snippet) => snippet.name === activeSnippet.name,
+          ),
           snippet: newSnippetInfo,
         }),
       );
@@ -44,19 +67,27 @@ const SnippetsPage = () => {
       dispatch(addSnippet(newSnippetInfo));
     }
     dispatch(saveSnippets());
+    return true;
   };
 
-  const del = (index: number) => {
-    dispatch(removeSnippetByIndex(index));
+  const del = (snippet: Snippet) => {
+    dispatch(
+      removeSnippetByIndex(snippets.findIndex((s) => s.name === snippet.name)),
+    );
     dispatch(saveSnippets());
   };
 
-  const reorder = (sourceIndex: number, destinationIndex: number) => {
-    if (sourceIndex !== destinationIndex) {
+  const reorder = (
+    sourceSnippetName: string,
+    destinationSnippetName: string,
+  ) => {
+    if (sourceSnippetName !== destinationSnippetName) {
       dispatch(
         reorderSnippet({
-          sourceIndex,
-          destinationIndex,
+          sourceIndex: snippets.findIndex((s) => s.name === sourceSnippetName),
+          destinationIndex: snippets.findIndex(
+            (s) => s.name === destinationSnippetName,
+          ),
         }),
       );
       dispatch(saveSnippets());
@@ -84,7 +115,7 @@ const SnippetsPage = () => {
                 size="lg"
                 color="green"
                 onClick={() => {
-                  setActiveSnippetIndex(-1);
+                  setActiveSnippet(null);
                   openEditSnippetModal();
                 }}
               >
@@ -98,8 +129,8 @@ const SnippetsPage = () => {
         <ScrollArea>
           <SnippetTable
             snippets={searchSnippets(debouncedSearchInput, snippets)}
-            edit={(index) => {
-              setActiveSnippetIndex(index);
+            edit={(snippet) => {
+              setActiveSnippet(snippet);
               openEditSnippetModal();
             }}
             del={del}
@@ -113,9 +144,7 @@ const SnippetsPage = () => {
       <EditSnippetModal
         isOpen={isEditSnippetModalOpen}
         close={closeEditSnippetModal}
-        snippetInfo={
-          activeSnippetIndex === -1 ? undefined : snippets[activeSnippetIndex]
-        }
+        snippetInfo={activeSnippet}
         save={save}
       />
     </>

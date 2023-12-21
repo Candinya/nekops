@@ -7,8 +7,8 @@ import { deepClone } from "@/utils/deepClone.ts";
 interface EditSnippetModalProps {
   isOpen: boolean;
   close: () => void;
-  snippetInfo?: Snippet;
-  save: (info: Snippet) => void;
+  snippetInfo?: Snippet | null;
+  save: (info: Snippet) => boolean;
 }
 const EditSnippetModal = ({
   isOpen,
@@ -20,8 +20,9 @@ const EditSnippetModal = ({
     initialValues: defaultSnippet,
   });
   const saveSnippet = (snippetInfo: Snippet) => {
-    save(snippetInfo);
-    close();
+    if (save(snippetInfo)) {
+      close();
+    }
   };
 
   useEffect(() => {

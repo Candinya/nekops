@@ -72,7 +72,7 @@ const ServerTableRow = ({
 
 interface ServerTableProps {
   servers: Server[];
-  show: (index: number) => void;
+  show: (server: Server) => void;
   isSearching: boolean;
   selectedServerIDs: string[];
   setSelectedServerIDs: (state: string[]) => void;
@@ -108,11 +108,11 @@ const ServerTable = ({
       />
     </Table.Thead>
     <Table.Tbody>
-      {servers.map((server, index) => (
+      {servers.map((server) => (
         <ServerTableRow
           key={server.id}
           server={server}
-          show={() => show(index)}
+          show={() => show(server)}
           isSelected={selectedServerIDs.includes(server.id)}
           setIsSelected={(state) => {
             if (state) {

@@ -80,10 +80,10 @@ const ServerTableRow = ({
 
 interface ServerTableProps {
   servers: Server[];
-  show: (index: number) => void;
-  edit: (index: number) => void;
-  del: (index: number) => void;
-  reorder: (sourceIndex: number, destinationIndex: number) => void;
+  show: (server: Server) => void;
+  edit: (server: Server) => void;
+  del: (server: Server) => void;
+  reorder: (sourceServerID: string, destinationServerID: string) => void;
   isSearching: boolean;
 }
 const ServerTable = ({
@@ -96,7 +96,7 @@ const ServerTable = ({
 }: ServerTableProps) => (
   <DragDropContext
     onDragEnd={({ destination, source }) => {
-      reorder(source.index, destination?.index || 0);
+      reorder(servers[source.index].id, servers[destination?.index || 0].id);
     }}
   >
     <Table stickyHeader stickyHeaderOffset={0} highlightOnHover>
@@ -115,9 +115,9 @@ const ServerTable = ({
                 key={server.id}
                 index={index}
                 server={server}
-                show={() => show(index)}
-                edit={() => edit(index)}
-                del={() => del(index)}
+                show={() => show(server)}
+                edit={() => edit(server)}
+                del={() => del(server)}
               />
             ))}
             {provided.placeholder}

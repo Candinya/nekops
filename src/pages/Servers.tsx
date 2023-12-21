@@ -30,7 +30,6 @@ import { notifications } from "@mantine/notifications";
 import ServerTable from "@/components/servers/ServerTable.tsx";
 
 // const passwordUnchanged = "keep-unchanged";
-const emptyIndex = -1;
 
 const ServersPage = () => {
   const servers = useSelector((state: RootState) => state.servers);
@@ -47,10 +46,8 @@ const ServersPage = () => {
     { open: openServerCardModal, close: closeServerCardModal },
   ] = useDisclosure(false);
 
-  const [activeServerIndex, setActiveServerIndex] =
-    useState<number>(emptyIndex);
+  const [activeServer, setActiveServer] = useState<Server | null>(null);
 
-  // Edit actions
   const notifyDupID = (dupServerName: string) => {
     notifications.show({
       color: "yellow",
@@ -64,58 +61,47 @@ const ServersPage = () => {
   };
 
   const confirm = (newServerInfo: Server): boolean => {
-    if (activeServerIndex !== emptyIndex) {
-      // Edit
-      if (newServerInfo.id !== servers[activeServerIndex].id) {
-        // Check duplicate ID
-        const findDupIDServer = servers.find(
-          (server) => server.id === newServerInfo.id,
-        );
-        if (findDupIDServer !== undefined) {
-          // Found
-          notifyDupID(findDupIDServer.name);
-          return false;
-        }
+    // Check duplicate ID
+    if (activeServer === null || newServerInfo.id !== activeServer.id) {
+      const findServerByID = servers.find(
+        (server) => server.id === newServerInfo.id,
+      );
+      if (findServerByID !== undefined) {
+        // Found
+        notifyDupID(findServerByID.name);
+        return false;
       }
+    }
 
+    if (activeServer !== null) {
+      // Edit
       dispatch(
         updateServerByIndex({
-          index: activeServerIndex,
-          server: encryptServer(
-            encryption,
-            newServerInfo,
-            servers[activeServerIndex],
-          ),
+          index: servers.findIndex((server) => server.id === activeServer.id),
+          server: encryptServer(encryption, newServerInfo, activeServer),
         }),
       );
     } else {
       // Create
-      // Check duplicate ID
-      const findDupIDServer = servers.find(
-        (server) => server.id === newServerInfo.id,
-      );
-      if (findDupIDServer !== undefined) {
-        // Found
-        notifyDupID(findDupIDServer.name);
-        return false;
-      }
       dispatch(addServer(encryptServer(encryption, newServerInfo)));
     }
     dispatch(saveServers([newServerInfo.id]));
     return true;
   };
 
-  const del = (index: number) => {
-    dispatch(removeServerByIndex(index));
+  const del = (server: Server) => {
+    dispatch(removeServerByIndex(servers.findIndex((s) => s.id === server.id)));
     dispatch(saveServers([]));
   };
 
-  const reorder = (sourceIndex: number, destinationIndex: number) => {
-    if (sourceIndex !== destinationIndex) {
+  const reorder = (sourceServerID: string, destinationServerID: string) => {
+    if (sourceServerID !== destinationServerID) {
       dispatch(
         reorderServer({
-          sourceIndex,
-          destinationIndex,
+          sourceIndex: servers.findIndex((s) => s.id === sourceServerID),
+          destinationIndex: servers.findIndex(
+            (s) => s.id === destinationServerID,
+          ),
         }),
       );
       dispatch(saveServers([]));
@@ -178,7 +164,7 @@ const ServersPage = () => {
                 size="lg"
                 color="green"
                 onClick={() => {
-                  setActiveServerIndex(emptyIndex);
+                  setActiveServer(null);
                   openEditServerModal();
                 }}
               >
@@ -192,12 +178,12 @@ const ServersPage = () => {
         <ScrollArea>
           <ServerTable
             servers={searchServers(debouncedSearchInput, servers)}
-            show={(index) => {
-              setActiveServerIndex(index);
+            show={(server) => {
+              setActiveServer(server);
               openServerCardModal();
             }}
-            edit={(index) => {
-              setActiveServerIndex(index);
+            edit={(server) => {
+              setActiveServer(server);
               openEditServerModal();
             }}
             del={del}
@@ -211,11 +197,7 @@ const ServersPage = () => {
       <EditServerModal
         isOpen={isEditServerModalOpen}
         close={closeEditServerModal}
-        serverInfo={
-          activeServerIndex === emptyIndex
-            ? undefined
-            : servers[activeServerIndex]
-        }
+        serverInfo={activeServer}
         save={confirm}
         knownTags={knownTags.current}
         knownProviders={knownProviders.current}
@@ -227,11 +209,7 @@ const ServersPage = () => {
       <ServerCardModal
         isOpen={isServerCardModalOpen}
         close={closeServerCardModal}
-        serverInfo={
-          activeServerIndex === emptyIndex
-            ? undefined
-            : servers[activeServerIndex]
-        }
+        serverInfo={activeServer}
       />
     </>
   );

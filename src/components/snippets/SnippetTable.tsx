@@ -90,9 +90,9 @@ const SnippetTableRow = ({
 
 interface SnippetTableProps {
   snippets: Snippet[];
-  edit: (index: number) => void;
-  del: (index: number) => void;
-  reorder: (sourceIndex: number, destinationIndex: number) => void;
+  edit: (snippet: Snippet) => void;
+  del: (snippet: Snippet) => void;
+  reorder: (sourceSnippetName: string, destinationSnippetName: string) => void;
   isSearching: boolean;
 }
 const SnippetTable = ({
@@ -104,7 +104,10 @@ const SnippetTable = ({
 }: SnippetTableProps) => (
   <DragDropContext
     onDragEnd={({ destination, source }) => {
-      reorder(source.index, destination?.index || 0);
+      reorder(
+        snippets[source.index].name,
+        snippets[destination?.index || 0].name,
+      );
     }}
   >
     <Table stickyHeader stickyHeaderOffset={0} highlightOnHover>
@@ -123,8 +126,8 @@ const SnippetTable = ({
                 key={snippet.name}
                 index={index}
                 snippet={snippet}
-                edit={() => edit(index)}
-                del={() => del(index)}
+                edit={() => edit(snippet)}
+                del={() => del(snippet)}
               />
             ))}
             {provided.placeholder}
