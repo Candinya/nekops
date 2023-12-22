@@ -1,17 +1,18 @@
-// Forked from https://github.com/robert-harbison/xterm-for-react
-
 import { useEffect, useRef } from "react";
 
 import { Terminal } from "xterm";
 import { Command } from "@tauri-apps/plugin-shell";
 
 interface ShellTerminalProps {
+  nonce: string;
   user: string;
   address: string;
   port: number;
 }
-const ShellTerminal = ({ user, address, port }: ShellTerminalProps) => {
+const ShellTerminal = ({ nonce, user, address, port }: ShellTerminalProps) => {
   const terminalElementRef = useRef<HTMLDivElement | null>(null);
+
+  const terminateSSH = useRef<(() => Promise<void>) | null>(null);
 
   const startSSH = (
     terminal: Terminal,
@@ -27,8 +28,11 @@ const ShellTerminal = ({ user, address, port }: ShellTerminalProps) => {
       // Is not default SSH port
       sshArgs.push("-p", port.toString());
     }
-    const sshProcess = Command.create("ssh", sshArgs);
-    sshProcess.on("close", (data) => {
+
+    // Pipe message from ssh to terminal
+    const sshCommand = Command.create("ssh", sshArgs);
+    sshCommand.on("close", (data) => {
+      // Print message
       terminal.write(
         `Process ended ${
           data.code === 0
@@ -36,38 +40,64 @@ const ShellTerminal = ({ user, address, port }: ShellTerminalProps) => {
             : `with code \x1B[1;31m${data.code}\x1B[0m`
         }.`,
       );
+
+      // Invalidate terminate func
+      terminateSSH.current = null;
     });
-    sshProcess.on("error", (data) => {
+    sshCommand.on("error", (data) => {
       console.log("error", data);
     });
-    sshProcess.stdout.on("data", (data) => {
+    sshCommand.stdout.on("data", (data) => {
       terminal.write(data);
       console.log("stdout", data);
     });
-    sshProcess.stderr.on("data", (data) => {
+    sshCommand.stderr.on("data", (data) => {
       terminal.write(`\x1B[0;31m${data}\x1B[0m`);
     });
-    sshProcess.spawn().then(console.log);
+
+    // Start SSH process
+    sshCommand.spawn().then((sshProcess) => {
+      console.log(sshProcess);
+
+      // Pipe input from terminal to ssh
+      terminal.onData((data) => {
+        sshProcess.write(data);
+      });
+
+      // Terminate when close
+      terminateSSH.current = sshProcess.kill;
+    });
   };
 
   // Mount hooks
   useEffect(() => {
-    const terminal = new Terminal();
-
     if (terminalElementRef.current) {
-      terminal.open(terminalElementRef.current);
-    }
+      console.log("init", nonce);
+      const terminal = new Terminal();
 
-    if (user && address && port) {
-      startSSH(terminal, user, address, port);
-    } else {
-      terminal.writeln("Hello from \x1B[1;3;31mxterm.js\x1B[0m");
-      terminal.write(" $ ");
-    }
+      try {
+        terminal.open(terminalElementRef.current);
 
-    return () => {
-      terminal.dispose();
-    };
+        if (user && address && port) {
+          startSSH(terminal, user, address, port);
+        } else {
+          terminal.writeln(`Test with nonce \x1B[1;3;31m${nonce}\x1B[0m`);
+          terminal.write(" $ ");
+        }
+      } catch (e) {
+        console.error(e);
+      }
+
+      return () => {
+        // Terminate SSH
+        if (terminateSSH.current !== null) {
+          terminateSSH.current();
+        }
+
+        // Close terminal
+        terminal?.dispose();
+      };
+    }
   }, []);
 
   return <div ref={terminalElementRef} />;

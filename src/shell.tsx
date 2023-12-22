@@ -8,6 +8,7 @@ import "xterm/css/xterm.css";
 import "@/shell/style.css";
 
 import ShellTabs from "@/shell/ShellTabs.tsx";
+import ShellBackground from "@/shell/ShellBackground.tsx";
 
 const theme = createTheme({
   /** Put your mantine theme override here */
@@ -16,6 +17,7 @@ const theme = createTheme({
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <MantineProvider theme={theme}>
+      <ShellBackground />
       <ShellTabs />
     </MantineProvider>
   </React.StrictMode>,
