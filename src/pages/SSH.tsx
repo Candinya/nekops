@@ -86,7 +86,7 @@ const SSHPage = () => {
     // Start check interval
     isReadyChecker = setInterval(() => {
       emit(EventIsSSHWindowReady, nonce);
-    }, 1_000);
+    }, 200);
 
     // Set timeout notice
     setTimeout(() => {
