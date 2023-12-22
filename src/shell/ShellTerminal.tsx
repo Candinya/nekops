@@ -92,6 +92,9 @@ const ShellTerminal = ({ nonce, user, address, port }: ShellTerminalProps) => {
         startSSH(terminal, user, address, port);
       } else {
         terminal.writeln(`Test with nonce \x1B[1;3;31m${nonce}\x1B[0m`);
+        for (let i = 0; i < 100; i++) {
+          terminal.writeln(`Test with line \x1B[1;3;31m${i + 1}\x1B[0m`);
+        }
         terminal.write(" $ ");
       }
 
