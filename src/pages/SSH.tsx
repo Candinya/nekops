@@ -1,7 +1,6 @@
-import { Box, Flex, rem, ScrollArea } from "@mantine/core";
+import { Box, Flex, rem } from "@mantine/core";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/store.ts";
-import ServerCard from "@/components/ServerCard.tsx";
 import SearchBar from "@/components/SearchBar.tsx";
 import { useState } from "react";
 import { useDebouncedValue } from "@mantine/hooks";
@@ -18,6 +17,7 @@ import {
   EventNewSSHName,
 } from "@/events/name.ts";
 import { randomString } from "@/utils/randomString.ts";
+import ServerCardsVirtualScroll from "@/components/ServerCardsVirtualScroll.tsx";
 
 const SSHPage = () => {
   const servers = useSelector((state: RootState) => state.servers);
@@ -119,17 +119,10 @@ const SSHPage = () => {
           debouncedSearchInput={debouncedSearchInput}
         />
       </Box>
-      <ScrollArea>
-        <Flex px="md" pb="md" direction="column" gap="md">
-          {searchServers(debouncedSearchInput, servers).map((server) => (
-            <ServerCard
-              key={server.id}
-              server={server}
-              onClick={() => startSSH(server)}
-            />
-          ))}
-        </Flex>
-      </ScrollArea>
+      <ServerCardsVirtualScroll
+        servers={searchServers(debouncedSearchInput, servers)}
+        onClicked={startSSH}
+      />
     </Flex>
   );
 };
