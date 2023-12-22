@@ -41,6 +41,9 @@ dependencies:
   '@tauri-apps/plugin-shell':
     specifier: 2.0.0-alpha.4
     version: 2.0.0-alpha.4
+  '@xterm/addon-fit':
+    specifier: 0.9.0-beta.1
+    version: 0.9.0-beta.1(xterm@5.3.0)
   react:
     specifier: ^18.2.0
     version: 18.2.0
@@ -1072,6 +1075,14 @@ packages:
     transitivePeerDependencies:
       - supports-color
     dev: true
+
+  /@xterm/addon-fit@0.9.0-beta.1(xterm@5.3.0):
+    resolution: {integrity: sha512-HmGRUMMamUpQYuQBF2VP1LJ0xzqF85LMFfpaNu84t1Tsrl1lPKJWtqX9FDZ22Rf5q6bnKdbj44TRVAUHgDRbLA==}
+    peerDependencies:
+      xterm: ^5.0.0
+    dependencies:
+      xterm: 5.3.0
+    dev: false
 
   /ansi-escapes@6.2.0:
     resolution: {integrity: sha512-kzRaCqXnpzWs+3z5ABPQiVke+iq0KXkHo8xiWV4RPTi5Yli0l97BEQuhXV1s7+aSU/fu1kUuxgS4MsQ0fRuygw==}

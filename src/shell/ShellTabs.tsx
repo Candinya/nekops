@@ -1,4 +1,4 @@
-import { ActionIcon, rem, Tabs } from "@mantine/core";
+import { ActionIcon, Box, rem, Tabs } from "@mantine/core";
 import { IconBell, IconX } from "@tabler/icons-react";
 import ShellTerminal from "@/shell/ShellTerminal.tsx";
 import type { Event } from "@tauri-apps/api/event";
@@ -44,7 +44,7 @@ interface ShellPanelProps {
   data: EventNewSSHPayload;
 }
 const ShellPanel = ({ data }: ShellPanelProps) => (
-  <Tabs.Panel value={data.nonce}>
+  <Tabs.Panel value={data.nonce} h="100%">
     {/*Production*/}
     {/*<ShellTerminal*/}
     {/*  nonce={data.nonce}*/}
@@ -118,6 +118,11 @@ const ShellTabs = () => {
     <Tabs
       // variant="unstyled"
       // classNames={classes}
+      h="100%"
+      display="flex"
+      style={{
+        flexDirection: "column",
+      }}
       value={currentActiveTab}
       onChange={setCurrentActiveTag}
       activateTabWithKeyboard={false}
@@ -140,10 +145,17 @@ const ShellTabs = () => {
         </Tabs.Tab>
       </Tabs.List>
 
-      {tabsData.map((data) => (
-        <ShellPanel key={data.nonce} data={data} />
-      ))}
-      <Tabs.Panel value="help">Hello</Tabs.Panel>
+      <Box
+        style={{
+          flexGrow: 1,
+          maxHeight: `calc(100dvh - ${rem(40)})`, // Tabs title bar
+        }}
+      >
+        {tabsData.map((data) => (
+          <ShellPanel key={data.nonce} data={data} />
+        ))}
+        <Tabs.Panel value="help">Hello</Tabs.Panel>
+      </Box>
     </Tabs>
   );
 };

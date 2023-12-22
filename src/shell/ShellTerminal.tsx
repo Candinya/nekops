@@ -1,7 +1,8 @@
 import { useEffect, useRef } from "react";
-
 import { Terminal } from "xterm";
 import { Command } from "@tauri-apps/plugin-shell";
+import { FitAddon } from "@xterm/addon-fit";
+import { Window } from "@tauri-apps/api/window";
 
 interface ShellTerminalProps {
   nonce: string;
@@ -74,33 +75,52 @@ const ShellTerminal = ({ nonce, user, address, port }: ShellTerminalProps) => {
     if (terminalElementRef.current) {
       console.log("init", nonce);
       const terminal = new Terminal();
+      const fitAddon = new FitAddon();
 
-      try {
-        terminal.open(terminalElementRef.current);
+      // Apply size fit addon
+      terminal.loadAddon(fitAddon);
+      terminal.open(terminalElementRef.current);
+      fitAddon.fit();
 
-        if (user && address && port) {
-          startSSH(terminal, user, address, port);
-        } else {
-          terminal.writeln(`Test with nonce \x1B[1;3;31m${nonce}\x1B[0m`);
-          terminal.write(" $ ");
-        }
-      } catch (e) {
-        console.error(e);
+      // Hook window resize event
+      const currentWindow = Window.getCurrent();
+      const stopListenWindowResizeEvent = currentWindow.onResized(() => {
+        fitAddon.fit();
+      });
+
+      if (user && address && port) {
+        startSSH(terminal, user, address, port);
+      } else {
+        terminal.writeln(`Test with nonce \x1B[1;3;31m${nonce}\x1B[0m`);
+        terminal.write(" $ ");
       }
 
       return () => {
+        // Stop window resize listener
+        (async () => {
+          (await stopListenWindowResizeEvent)();
+        })();
+
         // Terminate SSH
         if (terminateSSH.current !== null) {
           terminateSSH.current();
         }
 
         // Close terminal
+        fitAddon?.dispose();
         terminal?.dispose();
       };
     }
   }, []);
 
-  return <div ref={terminalElementRef} />;
+  return (
+    <div
+      ref={terminalElementRef}
+      style={{
+        height: "100%",
+      }}
+    />
+  );
 };
 
 export default ShellTerminal;

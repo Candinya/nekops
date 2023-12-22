@@ -11,6 +11,7 @@ const ShellBackground = () => (
     style={{
       zIndex: -1,
       pointerEvents: "none",
+      overflow: "hidden",
     }}
     onContextMenu={(e) => {
       e.preventDefault();
