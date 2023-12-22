@@ -14,7 +14,6 @@ import { checkParentDir } from "@/slices/common.ts";
 import { getKeyMaterial, getPrivateBits } from "@/encrypt/keyHandler.ts";
 import { arrayBufferToBase64, base64ToUint8Array } from "@/encrypt/helper.ts";
 import type { Server } from "@/types/server.ts";
-import { deepClone } from "@/utils/deepClone.ts";
 import { rawDecrypt, rawEncrypt } from "@/encrypt/methods.ts";
 import type { EncryptionState } from "@/types/encryption.ts";
 import { path } from "@tauri-apps/api";
@@ -157,7 +156,7 @@ export const encryptServer = (
     return newServerInfo; // Skip encryption
   }
 
-  const encryptedServerInfo = deepClone(newServerInfo);
+  const encryptedServerInfo = structuredClone(newServerInfo);
   // Encrypt sensitive fields:
   //   - access.emergency.root_password
   //   - access.emergency.address
@@ -223,7 +222,7 @@ export const decryptServer = (
     return encryptedServerInfo; // Actually not encrypted
   }
 
-  const serverInfo = deepClone(encryptedServerInfo);
+  const serverInfo = structuredClone(encryptedServerInfo);
   if (encryptedServerInfo.access.emergency.root_password !== "") {
     serverInfo.access.emergency.root_password = decrypt(
       state,

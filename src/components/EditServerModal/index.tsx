@@ -30,7 +30,6 @@ import ProductForm from "./forms/Product.tsx";
 import HardwareForm from "./forms/Hardware.tsx";
 import NetworksForm from "./forms/Networks.tsx";
 import AccessForm from "@/components/EditServerModal/forms/Access.tsx";
-import { deepClone } from "@/utils/deepClone.ts";
 
 const serverIDRegexp = /^\w+([-.]\w+)*$/;
 
@@ -83,7 +82,7 @@ const EditServerModal = ({
       if (!serverInfo) {
         form.setInitialValues(defaultServer);
       } else {
-        form.setInitialValues(deepClone(serverInfo));
+        form.setInitialValues(structuredClone(serverInfo));
       }
       form.reset();
       setActiveStep(0);
