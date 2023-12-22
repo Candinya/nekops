@@ -42,7 +42,7 @@ const SSHPage = () => {
     });
 
     // Generate random nonce to prevent possible conflict
-    const nonce = randomString(8); // TODO
+    const nonce = randomString(8);
 
     // Wait till window is ready
     const isReadyListenerStopFn = await listen<string>(
