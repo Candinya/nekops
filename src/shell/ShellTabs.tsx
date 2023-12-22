@@ -148,7 +148,7 @@ const ShellTabs = () => {
       <Box
         style={{
           flexGrow: 1,
-          maxHeight: `calc(100dvh - ${rem(40)})`, // Tabs title bar
+          overflow: "clip",
         }}
       >
         {tabsData.map((data) => (
