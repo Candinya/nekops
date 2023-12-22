@@ -107,7 +107,10 @@ const SettingsPage = () => {
   const save = async (newSettings: SettingsExtended) => {
     // Apply
     setColorScheme(newSettings.color_scheme);
-    if (newSettings.password !== passwordUnchanged) {
+    if (
+      (encryption.isEncryptionEnabled || newSettings.password !== "") &&
+      newSettings.password !== passwordUnchanged
+    ) {
       // Set new password
       const newEncryptionState = await dispatch(
         updatePassword(newSettings.password ?? ""),
