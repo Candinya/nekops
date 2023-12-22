@@ -117,7 +117,7 @@ const ServerTable = ({
           setIsSelected={(state) => {
             if (state) {
               if (!selectedServerIDs.includes(server.id)) {
-                setSelectedServerIDs([...selectedServerIDs, server.id]);
+                setSelectedServerIDs(selectedServerIDs.concat(server.id));
               }
             } else {
               const keyIndex = selectedServerIDs.findIndex(
