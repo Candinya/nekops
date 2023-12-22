@@ -67,7 +67,7 @@ const SSHPage = () => {
             message: "Enjoy your journey~",
             icon: <IconCheck style={{ width: rem(18), height: rem(18) }} />,
             loading: false,
-            autoClose: 2_000,
+            autoClose: 4_000,
           });
           loadingNotify = null;
         }
