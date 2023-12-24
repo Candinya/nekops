@@ -90,8 +90,52 @@ const ShellTerminal = ({
     setIsLoading(true);
     setShellState("loading");
 
+    let commandBuf = "";
+
+    const prompt = () => {
+      terminal.write("\r\n $ ");
+    };
+
+    const runCommand = () => {
+      const commands = commandBuf.trim().split(/\s+/);
+      terminal.writeln("");
+      if (commands.length > 0) {
+        terminal.writeln(`Your input command is: [${commands.join(" ")}]`);
+      }
+      prompt();
+    };
+
+    // https://github.com/xtermjs/xtermjs.org/blob/master/js/demo.js#L109-L134
     terminal.onData((data) => {
-      terminal.write(data);
+      switch (data) {
+        case "\u0003": // Ctrl+C
+          terminal.write("^C");
+          prompt();
+          break;
+        case "\u0004": // Ctrl+D
+          terminal.write("logout");
+          prompt();
+          break;
+        case "\r": // Enter
+          runCommand();
+          commandBuf = "";
+          break;
+        case "\u007F": // Backspace (DEL)
+          if (commandBuf.length > 0) {
+            terminal.write("\b \b");
+            commandBuf = commandBuf.substring(0, commandBuf.length - 1);
+          }
+          break;
+        default:
+          if (
+            (data >= String.fromCharCode(0x20) &&
+              data <= String.fromCharCode(0x7e)) ||
+            data >= "\u00a0"
+          ) {
+            commandBuf += data;
+            terminal.write(data);
+          }
+      }
     });
 
     // Loading
@@ -103,13 +147,13 @@ const ShellTerminal = ({
       for (let i = 0; i < 100 * Math.random(); i++) {
         terminal.writeln(`Test with line \x1B[1;3;31m${i + 1}\x1B[0m`);
       }
-      terminal.write(" $ ");
+      prompt();
     }, 3_000);
 
     // Notification
     const notificationIntervalEv = setInterval(() => {
       terminal.writeln(`New message arrived`);
-      terminal.write(" $ ");
+      prompt();
 
       setNewMessage();
     }, 10_000);
