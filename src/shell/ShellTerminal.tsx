@@ -172,6 +172,7 @@ const ShellTerminal = ({
         ref={terminalElementRef}
         style={{
           height: "100%",
+          opacity: isLoading ? 0 : 100,
         }}
       />
       <LoadingOverlay
