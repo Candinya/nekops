@@ -216,6 +216,7 @@ const ShellTerminal = ({
       terminal.writeln("                      |_|        ");
       terminal.writeln("");
 
+      terminal.focus();
       prompt();
     }, 3_000);
   };
