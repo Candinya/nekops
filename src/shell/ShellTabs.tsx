@@ -1,5 +1,5 @@
 import { ActionIcon, Box, rem, Tabs, useMantineTheme } from "@mantine/core";
-import { IconBell, IconCircleFilled, IconX } from "@tabler/icons-react";
+import { IconBellFilled, IconCircleFilled, IconX } from "@tabler/icons-react";
 import ShellTerminal from "@/shell/ShellTerminal.tsx";
 import type { Event } from "@tauri-apps/api/event";
 import { emit, listen } from "@tauri-apps/api/event";
@@ -30,7 +30,7 @@ const ShellTab = ({ data, state, isNewMessage, close }: ShellTabProps) => {
           ? theme.colors.red[6]
           : theme.colors.gray[6];
 
-  const LeftIcon = isNewMessage ? IconBell : IconCircleFilled;
+  const LeftIcon = isNewMessage ? IconBellFilled : IconCircleFilled;
 
   return (
     <Tabs.Tab
