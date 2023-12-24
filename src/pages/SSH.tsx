@@ -77,7 +77,10 @@ const SSHPage = () => {
           nonce,
           name: server.name,
           color: server.color,
-          access: server.access.regular,
+          access: {
+            ...server.access.regular,
+            user: server.access.regular.user || "root", // Default
+          },
         };
         await emit(EventNewSSHName, newSSHEvent);
 

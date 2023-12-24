@@ -24,7 +24,7 @@ const ShellTerminal = ({
 }: ShellTerminalProps) => {
   const terminalElementRef = useRef<HTMLDivElement | null>(null);
 
-  const terminateSSH = useRef<(() => Promise<void>) | null>(null);
+  const terminateSSH = useRef<(() => void) | null>(null);
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -43,11 +43,21 @@ const ShellTerminal = ({
       sshArgs.push("-p", port.toString());
     }
 
+    const stateUpdateOnNewMessage = () => {
+      if (isLoading) {
+        setIsLoading(false);
+        setShellState("active");
+      }
+      setNewMessage();
+    };
+
     // Pipe message from ssh to terminal
     const sshCommand = Command.create("ssh", sshArgs);
     sshCommand.on("close", (data) => {
+      setShellState("terminated");
+
       // Print message
-      terminal.write(
+      terminal.writeln(
         `Process ended ${
           data.code === 0
             ? "\x1B[32msuccessfully\x1B[0m"
@@ -62,13 +72,15 @@ const ShellTerminal = ({
       console.log("error", data);
     });
     sshCommand.stdout.on("data", (data) => {
+      stateUpdateOnNewMessage();
+
       terminal.write(data);
-      setNewMessage();
       console.log("stdout", data);
     });
     sshCommand.stderr.on("data", (data) => {
-      terminal.write(`\x1B[0;31m${data}\x1B[0m`);
-      setNewMessage();
+      stateUpdateOnNewMessage();
+
+      terminal.write(`\x1B[0;0;31m${data}\x1B[0m`);
       console.log("stderr", data);
     });
 
@@ -77,12 +89,14 @@ const ShellTerminal = ({
       console.log(sshProcess);
 
       // Pipe input from terminal to ssh // TODO
-      // terminal.onData((data) => {
-      //   sshProcess.write(data);
-      // });
+      terminal.onData((data) => {
+        sshProcess.write(data);
+      });
 
       // Terminate when close
-      terminateSSH.current = sshProcess.kill;
+      terminateSSH.current = () => {
+        sshProcess.kill();
+      };
     });
   };
 

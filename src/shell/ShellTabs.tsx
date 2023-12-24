@@ -75,22 +75,11 @@ const ShellPanel = ({
   setNewMessage,
 }: ShellPanelProps) => (
   <Tabs.Panel value={data.nonce} h="100%">
-    {/*Production*/}
-    {/*<ShellTerminal*/}
-    {/*  nonce={data.nonce}*/}
-    {/*  user={data.access.user}*/}
-    {/*  address={data.access.address}*/}
-    {/*  port={data.access.port}*/}
-    {/*/>*/}
-
-    {/*Check*/}
-    {/*<ShellTerminal user={"root"} address={"nyawrt"} port={22} />*/}
-    {/*<ShellTerminal user={"root"} address={"10.0.8.1"} port={22} />*/}
     <ShellTerminal
       nonce={data.nonce}
-      user={""}
-      address={""}
-      port={0}
+      user={data.access.user}
+      address={data.access.address}
+      port={data.access.port}
       setShellState={setShellState}
       setNewMessage={setNewMessage}
     />
@@ -154,11 +143,13 @@ const ShellTabs = () => {
   };
 
   const setTabShellState = (newState: ShellState, index: number) => {
-    setTabsState([
-      ...tabsState.slice(0, index),
-      newState,
-      ...tabsState.slice(index + 1),
-    ]);
+    if (tabsState[index] !== "terminated") {
+      setTabsState([
+        ...tabsState.slice(0, index),
+        newState,
+        ...tabsState.slice(index + 1),
+      ]);
+    }
   };
 
   const setTabNewMessageState = (index: number) => {
