@@ -63,20 +63,23 @@ const ShellTerminal = ({
     });
     sshCommand.stdout.on("data", (data) => {
       terminal.write(data);
+      setNewMessage();
       console.log("stdout", data);
     });
     sshCommand.stderr.on("data", (data) => {
       terminal.write(`\x1B[0;31m${data}\x1B[0m`);
+      setNewMessage();
+      console.log("stderr", data);
     });
 
     // Start SSH process
     sshCommand.spawn().then((sshProcess) => {
       console.log(sshProcess);
 
-      // Pipe input from terminal to ssh
-      terminal.onData((data) => {
-        sshProcess.write(data);
-      });
+      // Pipe input from terminal to ssh // TODO
+      // terminal.onData((data) => {
+      //   sshProcess.write(data);
+      // });
 
       // Terminate when close
       terminateSSH.current = sshProcess.kill;
@@ -85,6 +88,7 @@ const ShellTerminal = ({
 
   const invalidAccessInfo = (terminal: Terminal) => {
     setIsLoading(true);
+    setShellState("loading");
 
     terminal.onData((data) => {
       terminal.write(data);
