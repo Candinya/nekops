@@ -99,18 +99,18 @@ const ShellPanel = ({
   </Tabs.Panel>
 );
 
-interface TerminateCloseModalProps {
+interface TerminateConfirmModalProps {
   open: boolean;
   onClose: () => void;
   itemName: string;
   confirm: () => void;
 }
-const TerminateCloseModal = ({
+const TerminateConfirmModal = ({
   open,
   onClose,
   itemName,
   confirm,
-}: TerminateCloseModalProps) => {
+}: TerminateConfirmModalProps) => {
   return (
     <Modal title="Delete confirmation" opened={open} onClose={onClose} centered>
       <Text>Are you sure to terminate :</Text>
@@ -315,7 +315,7 @@ const ShellTabs = () => {
         </Box>
       </Tabs>
 
-      <TerminateCloseModal
+      <TerminateConfirmModal
         open={isTerminateConfirmModalOpen}
         onClose={closeTerminateConfirmModal}
         itemName={
