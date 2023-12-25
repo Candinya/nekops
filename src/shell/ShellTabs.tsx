@@ -319,9 +319,9 @@ const ShellTabs = () => {
         open={isTerminateConfirmModalOpen}
         onClose={closeTerminateConfirmModal}
         itemName={
-          terminateConfirmIndex === -1
-            ? ""
-            : tabsData[terminateConfirmIndex].name
+          terminateConfirmIndex > -1 && terminateConfirmIndex < tabsData.length
+            ? tabsData[terminateConfirmIndex].name
+            : ""
         }
         confirm={() => {
           closeTerminateConfirmModal();
