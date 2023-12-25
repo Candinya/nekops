@@ -112,7 +112,12 @@ const TerminateConfirmModal = ({
   confirm,
 }: TerminateConfirmModalProps) => {
   return (
-    <Modal title="Delete confirmation" opened={open} onClose={onClose} centered>
+    <Modal
+      title="Terminate confirmation"
+      opened={open}
+      onClose={onClose}
+      centered
+    >
       <Text>Are you sure to terminate :</Text>
       <Title order={3} my="md" c="red">
         {itemName}
