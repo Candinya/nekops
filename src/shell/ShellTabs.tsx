@@ -1,4 +1,16 @@
-import { ActionIcon, Box, rem, Tabs, useMantineTheme } from "@mantine/core";
+import {
+  ActionIcon,
+  Box,
+  Button,
+  Center,
+  Group,
+  Modal,
+  rem,
+  Tabs,
+  Text,
+  Title,
+  useMantineTheme,
+} from "@mantine/core";
 import { IconBellFilled, IconCircleFilled, IconX } from "@tabler/icons-react";
 import ShellTerminal from "@/shell/ShellTerminal.tsx";
 import type { Event } from "@tauri-apps/api/event";
@@ -12,6 +24,7 @@ import {
 import type { EventNewSSHPayload } from "@/events/payload.ts";
 import { Window } from "@tauri-apps/api/window";
 import type { ShellState } from "@/types/shellState.ts";
+import { useDisclosure } from "@mantine/hooks";
 
 interface ShellTabProps {
   data: EventNewSSHPayload;
@@ -86,6 +99,38 @@ const ShellPanel = ({
   </Tabs.Panel>
 );
 
+interface TerminateCloseModalProps {
+  open: boolean;
+  onClose: () => void;
+  itemName: string;
+  confirm: () => void;
+}
+const TerminateCloseModal = ({
+  open,
+  onClose,
+  itemName,
+  confirm,
+}: TerminateCloseModalProps) => {
+  return (
+    <Modal title="Delete confirmation" opened={open} onClose={onClose} centered>
+      <Text>Are you sure to terminate :</Text>
+      <Title order={3} my="md" c="red">
+        {itemName}
+      </Title>
+      <Center mt="lg">
+        <Group gap="sm">
+          <Button variant="default" color="gray" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button color="red" onClick={confirm}>
+            Confirm
+          </Button>
+        </Group>
+      </Center>
+    </Modal>
+  );
+};
+
 const ShellTabs = () => {
   // For components render
   const [tabsData, setTabsData] = useState<EventNewSSHPayload[]>([]);
@@ -119,25 +164,37 @@ const ShellTabs = () => {
     setCurrentActiveTab(ev.payload.nonce);
   };
 
+  // Close (terminate) confirm
+  const [terminateConfirmIndex, setTerminateConfirmIndex] = useState(-1);
+  const [
+    isTerminateConfirmModalOpen,
+    { open: openTerminateConfirmModal, close: closeTerminateConfirmModal },
+  ] = useDisclosure(false);
+  const doClose = (index: number) => {
+    const newTabsLength = tabsData.length - 1;
+    setTabsData([...tabsData.slice(0, index), ...tabsData.slice(index + 1)]);
+    setTabsState([...tabsState.slice(0, index), ...tabsState.slice(index + 1)]);
+    setTabsNewMessage([
+      ...tabsNewMessage.slice(0, index),
+      ...tabsNewMessage.slice(index + 1),
+    ]);
+
+    if (newTabsLength === 0) {
+      // Close window
+      Window.getCurrent().close();
+    }
+  };
+
   const closeTab = (nonce: string) => {
     const index = tabsDataRef.current.findIndex(
       (state) => state.nonce === nonce,
     );
     if (index != -1) {
-      const newTabsLength = tabsData.length - 1;
-      setTabsData([...tabsData.slice(0, index), ...tabsData.slice(index + 1)]);
-      setTabsState([
-        ...tabsState.slice(0, index),
-        ...tabsState.slice(index + 1),
-      ]);
-      setTabsNewMessage([
-        ...tabsNewMessage.slice(0, index),
-        ...tabsNewMessage.slice(index + 1),
-      ]);
-
-      if (newTabsLength === 0) {
-        // Close window
-        Window.getCurrent().close();
+      if (tabsStateRef.current[index] === "active") {
+        setTerminateConfirmIndex(index);
+        openTerminateConfirmModal();
+      } else {
+        doClose(index);
       }
     }
   };
@@ -202,64 +259,81 @@ const ShellTabs = () => {
   }, []);
 
   return (
-    <Tabs
-      // variant="unstyled"
-      // classNames={classes}
-      h="100%"
-      display="flex"
-      style={{
-        flexDirection: "column",
-      }}
-      value={currentActiveTab}
-      onChange={(newActive) => {
-        setCurrentActiveTab(newActive);
-        if (newActive) {
-          clearTabNewMessageState(newActive);
-        }
-      }}
-      activateTabWithKeyboard={false}
-      onContextMenu={(e) => {
-        e.preventDefault();
-      }}
-    >
-      <Tabs.List pr={rem(40)} data-tauri-drag-region>
-        {tabsData.map((tabData, index) => (
-          <ShellTab
-            key={tabData.nonce}
-            data={tabData}
-            close={() => {
-              closeTab(tabData.nonce);
-            }}
-            state={tabsState[index]}
-            isNewMessage={tabsNewMessage[index]}
-          />
-        ))}
-        <Tabs.Tab value="help" ml="auto">
-          Help
-        </Tabs.Tab>
-      </Tabs.List>
-
-      <Box
+    <>
+      <Tabs
+        // variant="unstyled"
+        // classNames={classes}
+        h="100%"
+        display="flex"
         style={{
-          flexGrow: 1,
-          overflow: "clip",
+          flexDirection: "column",
+        }}
+        value={currentActiveTab}
+        onChange={(newActive) => {
+          setCurrentActiveTab(newActive);
+          if (newActive) {
+            clearTabNewMessageState(newActive);
+          }
+        }}
+        activateTabWithKeyboard={false}
+        onContextMenu={(e) => {
+          e.preventDefault();
         }}
       >
-        {tabsData.map((tabData) => (
-          <ShellPanel
-            key={tabData.nonce}
-            data={tabData}
-            setShellState={(state) => {
-              setTabShellState(state, tabData.nonce);
-            }}
-            setNewMessage={() => {
-              setTabNewMessageState(tabData.nonce);
-            }}
-          />
-        ))}
-        <Tabs.Panel value="help">Hello</Tabs.Panel>
-      </Box>
-    </Tabs>
+        <Tabs.List pr={rem(40)} data-tauri-drag-region>
+          {tabsData.map((tabData, index) => (
+            <ShellTab
+              key={tabData.nonce}
+              data={tabData}
+              close={() => {
+                closeTab(tabData.nonce);
+              }}
+              state={tabsState[index]}
+              isNewMessage={tabsNewMessage[index]}
+            />
+          ))}
+          <Tabs.Tab value="help" ml="auto">
+            Help
+          </Tabs.Tab>
+        </Tabs.List>
+
+        <Box
+          style={{
+            flexGrow: 1,
+            overflow: "clip",
+          }}
+        >
+          {tabsData.map((tabData) => (
+            <ShellPanel
+              key={tabData.nonce}
+              data={tabData}
+              setShellState={(state) => {
+                setTabShellState(state, tabData.nonce);
+              }}
+              setNewMessage={() => {
+                setTabNewMessageState(tabData.nonce);
+              }}
+            />
+          ))}
+          <Tabs.Panel value="help">Hello</Tabs.Panel>
+        </Box>
+      </Tabs>
+
+      <TerminateCloseModal
+        open={isTerminateConfirmModalOpen}
+        onClose={closeTerminateConfirmModal}
+        itemName={
+          terminateConfirmIndex === -1
+            ? ""
+            : tabsData[terminateConfirmIndex].name
+        }
+        confirm={() => {
+          closeTerminateConfirmModal();
+          setTerminateConfirmIndex(-1);
+          doClose(terminateConfirmIndex);
+        }}
+      />
+    </>
   );
 };
 
