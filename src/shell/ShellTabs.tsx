@@ -119,20 +119,20 @@ const ShellTabs = () => {
     setCurrentActiveTab(ev.payload.nonce);
   };
 
-  const closeTab = (toCloseTabIndex: number) => {
-    if (toCloseTabIndex != -1) {
+  const closeTab = (nonce: string) => {
+    const index = tabsDataRef.current.findIndex(
+      (state) => state.nonce === nonce,
+    );
+    if (index != -1) {
       const newTabsLength = tabsData.length - 1;
-      setTabsData([
-        ...tabsData.slice(0, toCloseTabIndex),
-        ...tabsData.slice(toCloseTabIndex + 1),
-      ]);
+      setTabsData([...tabsData.slice(0, index), ...tabsData.slice(index + 1)]);
       setTabsState([
-        ...tabsState.slice(0, toCloseTabIndex),
-        ...tabsState.slice(toCloseTabIndex + 1),
+        ...tabsState.slice(0, index),
+        ...tabsState.slice(index + 1),
       ]);
       setTabsNewMessage([
-        ...tabsNewMessage.slice(0, toCloseTabIndex),
-        ...tabsNewMessage.slice(toCloseTabIndex + 1),
+        ...tabsNewMessage.slice(0, index),
+        ...tabsNewMessage.slice(index + 1),
       ]);
 
       if (newTabsLength === 0) {
@@ -142,36 +142,42 @@ const ShellTabs = () => {
     }
   };
 
-  const setTabShellState = (newState: ShellState, index: number) => {
-    if (tabsState[index] !== "terminated") {
+  const setTabShellState = (newState: ShellState, nonce: string) => {
+    const index = tabsDataRef.current.findIndex(
+      (state) => state.nonce === nonce,
+    );
+    if (tabsStateRef.current[index] !== "terminated") {
       setTabsState([
-        ...tabsState.slice(0, index),
+        ...tabsStateRef.current.slice(0, index),
         newState,
-        ...tabsState.slice(index + 1),
+        ...tabsStateRef.current.slice(index + 1),
       ]);
     }
   };
 
-  const setTabNewMessageState = (index: number) => {
-    if (currentActiveTabRef.current !== tabsData[index].nonce) {
+  const setTabNewMessageState = (nonce: string) => {
+    const index = tabsDataRef.current.findIndex(
+      (state) => state.nonce === nonce,
+    );
+    if (currentActiveTabRef.current !== tabsDataRef.current[index].nonce) {
       setTabsNewMessage([
-        ...tabsNewMessage.slice(0, index),
+        ...tabsNewMessageRef.current.slice(0, index),
         true,
-        ...tabsNewMessage.slice(index + 1),
+        ...tabsNewMessageRef.current.slice(index + 1),
       ]);
     }
   };
 
-  const clearTabNewMessageState = (nonce: string | null) => {
-    if (nonce) {
-      const index = tabsData.findIndex((state) => state.nonce === nonce);
-      if (index > -1 && tabsNewMessage[index]) {
-        setTabsNewMessage([
-          ...tabsNewMessage.slice(0, index),
-          false,
-          ...tabsNewMessage.slice(index + 1),
-        ]);
-      }
+  const clearTabNewMessageState = (nonce: string) => {
+    const index = tabsDataRef.current.findIndex(
+      (state) => state.nonce === nonce,
+    );
+    if (index > -1 && tabsNewMessageRef.current[index]) {
+      setTabsNewMessage([
+        ...tabsNewMessageRef.current.slice(0, index),
+        false,
+        ...tabsNewMessageRef.current.slice(index + 1),
+      ]);
     }
   };
 
@@ -207,7 +213,9 @@ const ShellTabs = () => {
       value={currentActiveTab}
       onChange={(newActive) => {
         setCurrentActiveTab(newActive);
-        clearTabNewMessageState(newActive);
+        if (newActive) {
+          clearTabNewMessageState(newActive);
+        }
       }}
       activateTabWithKeyboard={false}
       onContextMenu={(e) => {
@@ -220,7 +228,7 @@ const ShellTabs = () => {
             key={tabData.nonce}
             data={tabData}
             close={() => {
-              closeTab(index);
+              closeTab(tabData.nonce);
             }}
             state={tabsState[index]}
             isNewMessage={tabsNewMessage[index]}
@@ -237,15 +245,15 @@ const ShellTabs = () => {
           overflow: "clip",
         }}
       >
-        {tabsData.map((tabData, index) => (
+        {tabsData.map((tabData) => (
           <ShellPanel
             key={tabData.nonce}
             data={tabData}
             setShellState={(state) => {
-              setTabShellState(state, index);
+              setTabShellState(state, tabData.nonce);
             }}
             setNewMessage={() => {
-              setTabNewMessageState(index);
+              setTabNewMessageState(tabData.nonce);
             }}
           />
         ))}
