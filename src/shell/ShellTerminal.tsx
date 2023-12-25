@@ -69,7 +69,8 @@ const ShellTerminal = ({
       terminateSSH.current = null;
     });
     sshCommand.on("error", (data) => {
-      console.log("error", data);
+      // Print error
+      terminal.writeln(`Process error: \x1B[1;31m${data}\x1B[0m`);
     });
     sshCommand.stdout.on("data", (data) => {
       stateUpdateOnNewMessage();
