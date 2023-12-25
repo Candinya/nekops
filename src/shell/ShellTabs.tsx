@@ -292,9 +292,6 @@ const ShellTabs = () => {
               isNewMessage={tabsNewMessage[index]}
             />
           ))}
-          <Tabs.Tab value="help" ml="auto">
-            Help
-          </Tabs.Tab>
         </Tabs.List>
 
         <Box
@@ -315,7 +312,6 @@ const ShellTabs = () => {
               }}
             />
           ))}
-          <Tabs.Panel value="help">Hello</Tabs.Panel>
         </Box>
       </Tabs>
 
