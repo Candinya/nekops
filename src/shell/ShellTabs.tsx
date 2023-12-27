@@ -142,11 +142,23 @@ const ShellTabs = () => {
   const [tabsData, tabsDataHandlers] = useListState<EventNewSSHPayload>([]);
   const [tabsState, tabsStateHandlers] = useListState<ShellState>([]);
   const [tabsNewMessage, tabsNewMessageHandlers] = useListState<boolean>([]);
+  // For events binding
+  const tabsDataRef = useRef<EventNewSSHPayload[]>([]);
+  const tabsStateRef = useRef<ShellState[]>([]);
+  const tabsNewMessageRef = useRef<boolean[]>([]);
+  // Bind state : setTabsData -> tabsData -> tabsDataRef
+  useEffect(() => {
+    tabsDataRef.current = tabsData;
+  }, [tabsData]);
+  useEffect(() => {
+    tabsStateRef.current = tabsState;
+  }, [tabsState]);
+  useEffect(() => {
+    tabsNewMessageRef.current = tabsNewMessage;
+  }, [tabsNewMessage]);
 
   const [currentActiveTab, setCurrentActiveTab] = useState<string | null>(null);
-  // For state binding
   const currentActiveTabRef = useRef<string | null>(null);
-  // Bind state : setCurrentActiveTab -> currentActiveTab -> currentActiveTabRef
   useEffect(() => {
     currentActiveTabRef.current = currentActiveTab;
   }, [currentActiveTab]);
@@ -177,9 +189,11 @@ const ShellTabs = () => {
   };
 
   const closeTab = (nonce: string) => {
-    const index = tabsData.findIndex((state) => state.nonce === nonce);
+    const index = tabsDataRef.current.findIndex(
+      (state) => state.nonce === nonce,
+    );
     if (index != -1) {
-      if (tabsState[index] === "active") {
+      if (tabsStateRef.current[index] === "active") {
         setTerminateConfirmIndex(index);
         openTerminateConfirmModal();
       } else {
@@ -189,22 +203,28 @@ const ShellTabs = () => {
   };
 
   const setTabShellState = (newState: ShellState, nonce: string) => {
-    const index = tabsData.findIndex((state) => state.nonce === nonce);
-    if (tabsState[index] !== "terminated") {
+    const index = tabsDataRef.current.findIndex(
+      (state) => state.nonce === nonce,
+    );
+    if (tabsStateRef.current[index] !== "terminated") {
       tabsStateHandlers.setItem(index, newState);
     }
   };
 
   const setTabNewMessageState = (nonce: string) => {
-    const index = tabsData.findIndex((state) => state.nonce === nonce);
-    if (currentActiveTabRef.current !== tabsData[index].nonce) {
+    const index = tabsDataRef.current.findIndex(
+      (state) => state.nonce === nonce,
+    );
+    if (currentActiveTabRef.current !== tabsDataRef.current[index].nonce) {
       tabsNewMessageHandlers.setItem(index, true);
     }
   };
 
   const clearTabNewMessageState = (nonce: string) => {
-    const index = tabsData.findIndex((state) => state.nonce === nonce);
-    if (index > -1 && tabsNewMessage[index]) {
+    const index = tabsDataRef.current.findIndex(
+      (state) => state.nonce === nonce,
+    );
+    if (index > -1 && tabsNewMessageRef.current[index]) {
       tabsNewMessageHandlers.setItem(index, false);
     }
   };
