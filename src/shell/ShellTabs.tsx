@@ -142,11 +142,6 @@ const ShellTabs = () => {
   const [tabsData, tabsDataHandlers] = useListState<EventNewSSHPayload>([]);
   const [tabsState, tabsStateHandlers] = useListState<ShellState>([]);
   const [tabsNewMessage, tabsNewMessageHandlers] = useListState<boolean>([]);
-  // For state binding
-  const tabsDataRef = useRef<EventNewSSHPayload[]>([]);
-  useEffect(() => {
-    tabsDataRef.current = tabsData;
-  }, [tabsData]);
 
   const [currentActiveTab, setCurrentActiveTab] = useState<string | null>(null);
   // For state binding
@@ -194,18 +189,14 @@ const ShellTabs = () => {
   };
 
   const setTabShellState = (newState: ShellState, nonce: string) => {
-    const index = tabsDataRef.current.findIndex(
-      (state) => state.nonce === nonce,
-    );
+    const index = tabsData.findIndex((state) => state.nonce === nonce);
     if (tabsState[index] !== "terminated") {
       tabsStateHandlers.setItem(index, newState);
     }
   };
 
   const setTabNewMessageState = (nonce: string) => {
-    const index = tabsDataRef.current.findIndex(
-      (state) => state.nonce === nonce,
-    );
+    const index = tabsData.findIndex((state) => state.nonce === nonce);
     if (currentActiveTabRef.current !== tabsData[index].nonce) {
       tabsNewMessageHandlers.setItem(index, true);
     }
