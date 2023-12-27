@@ -24,7 +24,8 @@ import {
 import type { EventNewSSHPayload } from "@/events/payload.ts";
 import { Window } from "@tauri-apps/api/window";
 import type { ShellState } from "@/types/shellState.ts";
-import { useDisclosure } from "@mantine/hooks";
+import { useDisclosure, useListState } from "@mantine/hooks";
+import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
 
 interface ShellTabProps {
   data: EventNewSSHPayload;
@@ -138,9 +139,9 @@ const TerminateConfirmModal = ({
 
 const ShellTabs = () => {
   // For components render
-  const [tabsData, setTabsData] = useState<EventNewSSHPayload[]>([]);
-  const [tabsState, setTabsState] = useState<ShellState[]>([]);
-  const [tabsNewMessage, setTabsNewMessage] = useState<boolean[]>([]);
+  const [tabsData, tabsDataHandlers] = useListState<EventNewSSHPayload>([]);
+  const [tabsState, tabsStateHandlers] = useListState<ShellState>([]);
+  const [tabsNewMessage, tabsNewMessageHandlers] = useListState<boolean>([]);
   // For events binding
   const tabsDataRef = useRef<EventNewSSHPayload[]>([]);
   const tabsStateRef = useRef<ShellState[]>([]);
@@ -163,9 +164,9 @@ const ShellTabs = () => {
   }, [currentActiveTab]);
 
   const newSSHEventListener = (ev: Event<EventNewSSHPayload>) => {
-    setTabsData(tabsDataRef.current.concat(ev.payload));
-    setTabsState(tabsStateRef.current.concat("loading"));
-    setTabsNewMessage(tabsNewMessageRef.current.concat(false));
+    tabsDataHandlers.append(ev.payload);
+    tabsStateHandlers.append("loading");
+    tabsNewMessageHandlers.append(false);
     setCurrentActiveTab(ev.payload.nonce);
   };
 
@@ -177,12 +178,9 @@ const ShellTabs = () => {
   ] = useDisclosure(false);
   const doClose = (index: number) => {
     const newTabsLength = tabsData.length - 1;
-    setTabsData([...tabsData.slice(0, index), ...tabsData.slice(index + 1)]);
-    setTabsState([...tabsState.slice(0, index), ...tabsState.slice(index + 1)]);
-    setTabsNewMessage([
-      ...tabsNewMessage.slice(0, index),
-      ...tabsNewMessage.slice(index + 1),
-    ]);
+    tabsDataHandlers.remove(index);
+    tabsStateHandlers.remove(index);
+    tabsNewMessageHandlers.remove(index);
 
     if (newTabsLength === 0) {
       // Close window
@@ -209,11 +207,7 @@ const ShellTabs = () => {
       (state) => state.nonce === nonce,
     );
     if (tabsStateRef.current[index] !== "terminated") {
-      setTabsState([
-        ...tabsStateRef.current.slice(0, index),
-        newState,
-        ...tabsStateRef.current.slice(index + 1),
-      ]);
+      tabsStateHandlers.setItem(index, newState);
     }
   };
 
@@ -222,11 +216,7 @@ const ShellTabs = () => {
       (state) => state.nonce === nonce,
     );
     if (currentActiveTabRef.current !== tabsDataRef.current[index].nonce) {
-      setTabsNewMessage([
-        ...tabsNewMessageRef.current.slice(0, index),
-        true,
-        ...tabsNewMessageRef.current.slice(index + 1),
-      ]);
+      tabsNewMessageHandlers.setItem(index, true);
     }
   };
 
@@ -235,11 +225,7 @@ const ShellTabs = () => {
       (state) => state.nonce === nonce,
     );
     if (index > -1 && tabsNewMessageRef.current[index]) {
-      setTabsNewMessage([
-        ...tabsNewMessageRef.current.slice(0, index),
-        false,
-        ...tabsNewMessageRef.current.slice(index + 1),
-      ]);
+      tabsNewMessageHandlers.setItem(index, false);
     }
   };
 
@@ -285,19 +271,55 @@ const ShellTabs = () => {
           e.preventDefault();
         }}
       >
-        <Tabs.List pr={rem(40)} data-tauri-drag-region>
-          {tabsData.map((tabData, index) => (
-            <ShellTab
-              key={tabData.nonce}
-              data={tabData}
-              close={() => {
-                closeTab(tabData.nonce);
-              }}
-              state={tabsState[index]}
-              isNewMessage={tabsNewMessage[index]}
-            />
-          ))}
-        </Tabs.List>
+        <DragDropContext
+          onDragEnd={({ destination, source }) => {
+            const reorderOption = {
+              from: source.index,
+              to: destination?.index || 0,
+            };
+
+            tabsDataHandlers.reorder(reorderOption);
+            tabsStateHandlers.reorder(reorderOption);
+            tabsNewMessageHandlers.reorder(reorderOption);
+          }}
+        >
+          <Droppable droppableId="shell-tabs" direction="horizontal">
+            {(provided) => (
+              <Tabs.List
+                pr={rem(40)}
+                ref={provided.innerRef}
+                {...provided.droppableProps}
+                data-tauri-drag-region
+              >
+                {tabsData.map((tabData, index) => (
+                  <Draggable
+                    key={tabData.nonce}
+                    draggableId={tabData.nonce}
+                    index={index}
+                  >
+                    {(provided) => (
+                      <div
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        ref={provided.innerRef}
+                      >
+                        <ShellTab
+                          data={tabData}
+                          close={() => {
+                            closeTab(tabData.nonce);
+                          }}
+                          state={tabsState[index]}
+                          isNewMessage={tabsNewMessage[index]}
+                        />
+                      </div>
+                    )}
+                  </Draggable>
+                ))}
+                {provided.placeholder}
+              </Tabs.List>
+            )}
+          </Droppable>
+        </DragDropContext>
 
         <Box
           style={{
