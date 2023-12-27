@@ -31,7 +31,7 @@ const ServerTableRow = ({
   del,
 }: ServerTableRowProps) => (
   <Draggable draggableId={server.id} index={index}>
-    {(provided) => (
+    {(provided, snapshot) => (
       <Table.Tr ref={provided.innerRef} {...provided.draggableProps}>
         <Table.Td>
           <Flex
@@ -47,9 +47,11 @@ const ServerTableRow = ({
           </Flex>
         </Table.Td>
         <Table.Td>{server.name}</Table.Td>
-        <Table.Td>{server.id}</Table.Td>
-        <Table.Td>{server.tags.join(", ")}</Table.Td>
-        <Table.Td style={actionRowStyle}>
+        <Table.Td hidden={snapshot.isDragging}>{server.id}</Table.Td>
+        <Table.Td hidden={snapshot.isDragging}>
+          {server.tags.join(", ")}
+        </Table.Td>
+        <Table.Td style={actionRowStyle} hidden={snapshot.isDragging}>
           <Group gap="xs" justify="center">
             {/*Show Card*/}
             <Tooltip label={"Show"} openDelay={500}>

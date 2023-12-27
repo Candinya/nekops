@@ -34,7 +34,7 @@ const SnippetTableRow = ({
   del,
 }: SnippetTableRowProps) => (
   <Draggable draggableId={snippet.name} index={index}>
-    {(provided) => (
+    {(provided, snapshot) => (
       <Table.Tr ref={provided.innerRef} {...provided.draggableProps}>
         <Table.Td>
           <Flex
@@ -50,8 +50,10 @@ const SnippetTableRow = ({
           </Flex>
         </Table.Td>
         <Table.Td>{snippet.name}</Table.Td>
-        <Table.Td>{snippet.tags.join(", ")}</Table.Td>
-        <Table.Td style={actionRowStyle}>
+        <Table.Td hidden={snapshot.isDragging}>
+          {snippet.tags.join(", ")}
+        </Table.Td>
+        <Table.Td style={actionRowStyle} hidden={snapshot.isDragging}>
           <Group gap="xs" justify="center">
             {/*Copy*/}
             <CopyButton value={snippet.code}>
