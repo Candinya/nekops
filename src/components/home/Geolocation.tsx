@@ -32,7 +32,7 @@ const RegionCard = ({ servers }: CountByRegionProps) => {
     const locntsMap = new Map<string, number>();
     for (const server of servers) {
       locntsMap.set(
-        server.location.region,
+        server.location.region || "World",
         (locntsMap.get(server.location.region) || 0) + 1,
       );
     }
