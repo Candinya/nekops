@@ -113,7 +113,13 @@ const SSHPage = () => {
   const [debouncedSearchInput] = useDebouncedValue(searchInput, 500);
 
   return (
-    <Flex direction="column" h="100%">
+    <Flex
+      direction="column"
+      h="100%"
+      style={{
+        overflow: "hidden",
+      }}
+    >
       <Box p="md">
         <SearchBar
           placeholder="Search servers"

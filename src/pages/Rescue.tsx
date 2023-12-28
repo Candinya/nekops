@@ -78,7 +78,14 @@ const RescuePage = () => {
 
   return (
     <>
-      <Flex direction="column" h="100%" pos="relative">
+      <Flex
+        direction="column"
+        h="100%"
+        pos="relative"
+        style={{
+          overflow: "hidden",
+        }}
+      >
         <Box p="md">
           <SearchBar
             placeholder="Search servers"
