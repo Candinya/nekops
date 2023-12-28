@@ -89,7 +89,7 @@ const ShellTerminal = ({
     sshCommand.spawn().then((sshProcess) => {
       console.log(sshProcess);
 
-      // Pipe input from terminal to ssh // TODO
+      // Pipe input from terminal to ssh
       terminal.onData((data) => {
         sshProcess.write(data);
       });
