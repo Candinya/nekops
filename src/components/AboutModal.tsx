@@ -48,7 +48,7 @@ const AboutModal = ({ isOpen, close }: AboutModalProps) => {
           />
           <Flex direction="column" mb="md" align="center">
             <Title order={1}>Nekops</Title>
-            <Text>Ops now nyaing</Text>
+            <Text>Ops' now nyaing</Text>
             <Badge
               mt={rem(4)}
               style={{

@@ -1,3 +1,3 @@
 # Nekops
 
-> Ops is now nyaing
+> Ops' now nyaing
