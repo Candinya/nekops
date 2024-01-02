@@ -30,7 +30,7 @@ export const readEncryption = createAsyncThunk(
   async (_, { getState }): Promise<EncryptionState> => {
     const state = getState() as RootState;
     const publicKeyFilePath = await path.join(
-      state.settings.data_dir,
+      state.settings.currentWorkspace.data_dir,
       PublicKeyFile,
     );
     if (await exists(publicKeyFilePath)) {
@@ -59,7 +59,7 @@ export const updatePassword = createAsyncThunk(
     }
 
     const publicKeyFilePath = await path.join(
-      state.settings.data_dir,
+      state.settings.currentWorkspace.data_dir,
       PublicKeyFile,
     );
     if (password === "") {
@@ -82,7 +82,7 @@ export const updatePassword = createAsyncThunk(
     };
 
     // Save public key into file
-    await checkParentDir(state.settings.data_dir);
+    await checkParentDir(state.settings.currentWorkspace.data_dir);
     await writeTextFile(publicKeyFilePath, newEncryptionState.publicKeyBase64);
 
     return newEncryptionState;

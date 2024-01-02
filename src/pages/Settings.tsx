@@ -1,13 +1,16 @@
-import type { Settings } from "@/types/settings.ts";
-import { useForm } from "@mantine/form";
+import { defaultWorkspace, Settings, WorkSpace } from "@/types/settings.ts";
+import { useForm, type UseFormReturnType } from "@mantine/form";
 import type { MantineColorScheme } from "@mantine/core";
 import {
+  Accordion,
   ActionIcon,
   Box,
   Button,
   ButtonGroup,
   Center,
+  Fieldset,
   Flex,
+  Grid,
   Group,
   PasswordInput,
   rem,
@@ -23,6 +26,7 @@ import {
   IconLock,
   IconLockOpen,
   IconMoon,
+  IconPlus,
   IconSun,
 } from "@tabler/icons-react";
 import { saveSettings } from "@/slices/settingsSlice.ts";
@@ -31,14 +35,21 @@ import type { AppDispatch, RootState } from "@/store.ts";
 import {
   decryptServer,
   encryptServer,
+  readEncryption,
   updatePassword,
 } from "@/slices/encryptionSlice.ts";
 import { useDisclosure } from "@mantine/hooks";
 import UnlockModal from "@/components/UnlockModal.tsx";
 import { notifications } from "@mantine/notifications";
 import { actionIconStyle } from "@/common/actionStyles.ts";
-import { saveServers, updateServerByIndex } from "@/slices/serversSlice.ts";
+import {
+  readServers,
+  saveServers,
+  updateServerByIndex,
+} from "@/slices/serversSlice.ts";
 import { open } from "@tauri-apps/plugin-dialog";
+import DeleteItemButton from "@/components/DeleteItemButton.tsx";
+import { readSnippets } from "@/slices/snippetsSlice.ts";
 
 const colorSchemeData = [
   {
@@ -67,11 +78,120 @@ const colorSchemeData = [
 }));
 
 interface SettingsExtended extends Settings {
-  color_scheme: MantineColorScheme;
   password?: string;
 }
 
 const passwordUnchanged = "keep-unchanged";
+
+interface SettingsFormProps {
+  form: UseFormReturnType<
+    SettingsExtended,
+    (values: SettingsExtended) => SettingsExtended
+  >;
+}
+
+interface WorkspaceItemProps extends SettingsFormProps {
+  w: WorkSpace;
+  index: number;
+  selectDataDirectory: () => void;
+}
+const WorkspaceItem = ({
+  w,
+  index,
+  selectDataDirectory,
+  form,
+}: WorkspaceItemProps) => (
+  <Accordion.Item value={`workspace_${index}`}>
+    <Center>
+      <Accordion.Control>{w.name}</Accordion.Control>
+      <DeleteItemButton
+        size={"lg"}
+        variant={"subtle"}
+        itemName={w.name}
+        onClick={() => form.removeListItem("workspaces", index)}
+      />
+    </Center>
+    <Accordion.Panel>
+      <Grid>
+        <Grid.Col span={4}>
+          <TextInput
+            label="ID"
+            {...form.getInputProps(`workspaces.${index}.id`)}
+          />
+        </Grid.Col>
+        <Grid.Col span={8}>
+          <TextInput
+            label="Name"
+            {...form.getInputProps(`workspaces.${index}.name`)}
+          />
+        </Grid.Col>
+      </Grid>
+
+      <Group>
+        <TextInput
+          label="Data Directory"
+          style={{
+            flexGrow: 1,
+          }}
+          {...form.getInputProps(`workspaces.${index}.data_dir`)}
+        />
+
+        <Tooltip label="Select" openDelay={500}>
+          <ActionIcon
+            size="lg"
+            onClick={selectDataDirectory}
+            style={{
+              alignSelf: "end",
+            }}
+          >
+            <IconFolder style={actionIconStyle} />
+          </ActionIcon>
+        </Tooltip>
+      </Group>
+    </Accordion.Panel>
+  </Accordion.Item>
+);
+
+interface WorkspaceGroupProps extends SettingsFormProps {}
+const WorkspaceGroup = ({ form }: WorkspaceGroupProps) => {
+  const selectDataDirectory = async (index: number) => {
+    const dataDir = await open({
+      multiple: false,
+      directory: true,
+    });
+    if (dataDir) {
+      form.setFieldValue(`workspaces.${index}.data_dir`, dataDir);
+    }
+  };
+
+  return (
+    <Fieldset legend="Workspaces">
+      <Accordion>
+        {form.values.workspaces.map((w: WorkSpace, index: number) => (
+          <WorkspaceItem
+            key={index}
+            index={index}
+            w={w}
+            selectDataDirectory={() => {
+              selectDataDirectory(index);
+            }}
+            form={form}
+          />
+        ))}
+      </Accordion>
+      <Center mt="md">
+        <Button
+          leftSection={<IconPlus size={16} />}
+          onClick={() =>
+            form.insertListItem("workspaces", structuredClone(defaultWorkspace))
+          }
+        >
+          Add
+        </Button>
+      </Center>
+    </Fieldset>
+  );
+};
 
 const SettingsPage = () => {
   // Redux related
@@ -80,33 +200,17 @@ const SettingsPage = () => {
   const servers = useSelector((state: RootState) => state.servers);
   const dispatch = useDispatch<AppDispatch>();
 
-  const { colorScheme, setColorScheme } = useMantineColorScheme();
+  const { colorScheme, setColorScheme, clearColorScheme } =
+    useMantineColorScheme();
 
   const form = useForm<SettingsExtended>({
     initialValues: {
-      ...settings,
-      color_scheme: colorScheme,
+      ...structuredClone(settings),
       password: encryption.isEncryptionEnabled ? passwordUnchanged : "",
-    },
-
-    validate: {
-      data_dir: (value) => !value, // Not empty
     },
   });
 
-  const selectDataDirectory = async () => {
-    const dataDir = await open({
-      multiple: false,
-      directory: true,
-    });
-    if (dataDir) {
-      form.setFieldValue("data_dir", dataDir);
-    }
-  };
-
   const save = async (newSettings: SettingsExtended) => {
-    // Apply
-    setColorScheme(newSettings.color_scheme);
     if (
       (encryption.isEncryptionEnabled || newSettings.password !== "") &&
       newSettings.password !== passwordUnchanged
@@ -128,15 +232,35 @@ const SettingsPage = () => {
       });
       dispatch(saveServers(servers.map((server) => server.id)));
     }
+    // Select workspace
+    if (newSettings.workspaces.length === 0) {
+      newSettings.workspaces.push(defaultWorkspace);
+    }
+    const currentWorkspaceIndex = settings.workspaces.findIndex(
+      (w) => w.id === settings.currentWorkspace.id,
+    );
+    const targetWorkspace =
+      newSettings.workspaces[
+        newSettings.workspaces.length > currentWorkspaceIndex
+          ? currentWorkspaceIndex
+          : 0 // No match, use first
+      ];
     // Update settings
+    const newSettingsSave: Settings = {
+      workspaces: newSettings.workspaces,
+      currentWorkspace: targetWorkspace,
+    };
+    await dispatch(saveSettings(newSettingsSave)).unwrap();
+    if (form.isDirty("workspaces")) {
+      // Initialize workspace
+      dispatch(readServers());
+      dispatch(readSnippets());
+      dispatch(readEncryption());
+    }
     form.setInitialValues({
       ...newSettings,
       password: Boolean(newSettings.password) ? passwordUnchanged : "",
     });
-    const newSettingsSave: Settings = {
-      data_dir: newSettings.data_dir,
-    };
-    dispatch(saveSettings(newSettingsSave));
     form.reset();
   };
 
@@ -150,75 +274,67 @@ const SettingsPage = () => {
       <Box p="md">
         <form onSubmit={form.onSubmit(save)}>
           <Flex direction="column" gap="md">
-            <Group>
-              <TextInput
-                label="Data Directory"
-                style={{
-                  flexGrow: 1,
-                }}
-                {...form.getInputProps("data_dir")}
-              />
-
-              <Tooltip label="Select" openDelay={500}>
-                <ActionIcon
-                  size="lg"
-                  onClick={selectDataDirectory}
-                  style={{
-                    alignSelf: "end",
-                  }}
-                >
-                  <IconFolder style={actionIconStyle} />
-                </ActionIcon>
-              </Tooltip>
-            </Group>
-
-            <Flex direction="column">
-              <Text size="sm" fw={500} mb={2}>
-                Color Scheme
-              </Text>
-              <SegmentedControl
-                data={colorSchemeData}
-                {...form.getInputProps("color_scheme")}
-              />
-            </Flex>
-
-            <Group>
-              <PasswordInput
-                label="Password"
-                disabled={!encryption.isUnlocked}
-                style={{
-                  flexGrow: 1,
-                }}
-                {...form.getInputProps("password")}
-              />
-
-              <Tooltip label="Unlock" openDelay={500}>
-                <ActionIcon
-                  size="lg"
-                  color={encryption.isUnlocked ? "green" : "orange"}
-                  onClick={() => {
-                    if (encryption.isUnlocked) {
-                      notifications.show({
-                        color: "green",
-                        title: "You've already unlocked!",
-                        message: "Feel free to change password",
-                      });
+            <Fieldset legend="Global">
+              <Flex direction="column">
+                <Text size="sm" fw={500} mb={2}>
+                  Color Scheme
+                </Text>
+                <SegmentedControl
+                  data={colorSchemeData}
+                  value={colorScheme}
+                  onChange={(newScheme) => {
+                    if (["light", "dark", "auto"].includes(newScheme)) {
+                      setColorScheme(newScheme as MantineColorScheme);
                     } else {
-                      openUnlockModal();
+                      // Unknown value
+                      clearColorScheme();
                     }
                   }}
+                />
+              </Flex>
+            </Fieldset>
+
+            <WorkspaceGroup form={form} />
+
+            <Fieldset legend="Current Workspace">
+              <Group>
+                <PasswordInput
+                  label="Password"
+                  disabled={!encryption.isUnlocked}
                   style={{
-                    alignSelf: "end",
+                    flexGrow: 1,
                   }}
-                >
-                  {encryption.isUnlocked ? (
-                    <IconLockOpen style={actionIconStyle} />
-                  ) : (
-                    <IconLock style={actionIconStyle} />
-                  )}
-                </ActionIcon>
-              </Tooltip>
-            </Group>
+                  {...form.getInputProps("password")}
+                />
+
+                <Tooltip label="Unlock" openDelay={500}>
+                  <ActionIcon
+                    size="lg"
+                    color={encryption.isUnlocked ? "green" : "orange"}
+                    onClick={() => {
+                      if (encryption.isUnlocked) {
+                        notifications.show({
+                          color: "green",
+                          title: "You've already unlocked!",
+                          message: "Feel free to change password",
+                        });
+                      } else {
+                        openUnlockModal();
+                      }
+                    }}
+                    style={{
+                      alignSelf: "end",
+                    }}
+                  >
+                    {encryption.isUnlocked ? (
+                      <IconLockOpen style={actionIconStyle} />
+                    ) : (
+                      <IconLock style={actionIconStyle} />
+                    )}
+                  </ActionIcon>
+                </Tooltip>
+              </Group>
+            </Fieldset>
           </Flex>
 
           <ButtonGroup mt="lg">

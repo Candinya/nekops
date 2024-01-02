@@ -15,7 +15,7 @@ export const readSnippets = createAsyncThunk(
     // read from local file
     const state = getState() as RootState;
     const snippetsIndexFilePath = await path.join(
-      state.settings.data_dir,
+      state.settings.currentWorkspace.data_dir,
       SnippetsFileName,
     );
     if (await exists(snippetsIndexFilePath)) {
@@ -33,10 +33,10 @@ export const saveSnippets = createAsyncThunk(
     // save to local file
     const state: any = getState() as RootState;
     const snippetsIndexFilePath = await path.join(
-      state.settings.data_dir,
+      state.settings.currentWorkspace.data_dir,
       SnippetsFileName,
     );
-    await checkParentDir(state.settings.data_dir);
+    await checkParentDir(state.settings.currentWorkspace.data_dir);
     await writeTextFile(
       snippetsIndexFilePath,
       JSON.stringify(state.snippets, null, 2),

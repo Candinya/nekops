@@ -16,11 +16,11 @@ export const readServers = createAsyncThunk(
   async (_, { getState }): Promise<Server[]> => {
     const state = getState() as RootState;
     const serversIndexFilePath = await path.join(
-      state.settings.data_dir,
+      state.settings.currentWorkspace.data_dir,
       ServersIndexFileName,
     );
     const serversDirectoryPath = await path.join(
-      state.settings.data_dir,
+      state.settings.currentWorkspace.data_dir,
       ServersBaseDir,
     );
     if (await exists(serversIndexFilePath)) {
@@ -51,11 +51,11 @@ export const saveServers = createAsyncThunk(
   async (ids: string[], { getState }) => {
     const state: any = getState() as RootState;
     const serversIndexFilePath = await path.join(
-      state.settings.data_dir,
+      state.settings.currentWorkspace.data_dir,
       ServersIndexFileName,
     );
     const serversDirectoryPath = await path.join(
-      state.settings.data_dir,
+      state.settings.currentWorkspace.data_dir,
       ServersBaseDir,
     );
     await checkParentDir(serversDirectoryPath);
