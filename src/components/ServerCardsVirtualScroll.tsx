@@ -46,12 +46,13 @@ const ServerCardsVirtualScroll = ({
             transform: `translateY(${items[0]?.start || 0}px)`,
           }}
         >
-          {items.map((virtualItem) => (
+          {items.map((virtualItem, index) => (
             <Box
               key={virtualItem.key}
               ref={rowVirtualizer.measureElement}
               mx="md"
               mb="md"
+              data-index={index}
             >
               <ServerCard
                 server={servers[virtualItem.index]}
