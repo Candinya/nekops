@@ -6,7 +6,7 @@
     "distDir": "../dist"
   },
   "package": {
-    "productName": "nekops",
+    "productName": "Nekops",
     "version": "0.0.1"
   },
   "tauri": {
