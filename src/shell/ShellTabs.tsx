@@ -267,9 +267,6 @@ const ShellTabs = () => {
           }
         }}
         activateTabWithKeyboard={false}
-        onContextMenu={(e) => {
-          e.preventDefault();
-        }}
       >
         <DragDropContext
           onDragEnd={({ destination, source }) => {

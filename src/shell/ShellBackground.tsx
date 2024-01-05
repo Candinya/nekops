@@ -13,9 +13,6 @@ const ShellBackground = () => (
       pointerEvents: "none",
       overflow: "hidden",
     }}
-    onContextMenu={(e) => {
-      e.preventDefault();
-    }}
   >
     <Flex gap="xl" align="center">
       <Image

@@ -40,9 +40,6 @@ const App = () => {
             desktop: !isNavOpen,
           },
         }}
-        onContextMenu={(e) => {
-          e.preventDefault();
-        }}
       >
         <AppShell.Header>
           <Header

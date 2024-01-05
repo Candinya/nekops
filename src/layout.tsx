@@ -14,11 +14,7 @@ const theme = createTheme({
 const Layout = () => (
   <MantineProvider theme={theme}>
     <BrowserRouter>
-      <Notifications
-        onContextMenu={(e) => {
-          e.preventDefault();
-        }}
-      />
+      <Notifications />
       <App />
     </BrowserRouter>
   </MantineProvider>
