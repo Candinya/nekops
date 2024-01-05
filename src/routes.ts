@@ -14,7 +14,6 @@ import {
   IconLibrary,
   IconServerCog,
   IconSettings,
-  IconStars,
   IconTerminal2,
 } from "@tabler/icons-react";
 
@@ -65,11 +64,11 @@ export const navs = [
         icon: IconTerminal2,
         path: "/ssh",
       },
-      {
-        label: "Multirun",
-        icon: IconStars,
-        path: "/multirun",
-      },
+      // {
+      //   label: "Multirun",
+      //   icon: IconStars,
+      //   path: "/multirun",
+      // },
       {
         label: "Rescue",
         icon: IconHeartbeat,
