@@ -2,7 +2,7 @@ import { Box, Flex, rem } from "@mantine/core";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/store.ts";
 import SearchBar from "@/components/SearchBar.tsx";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useDebouncedValue } from "@mantine/hooks";
 import { searchServers } from "@/search/servers.ts";
 import type { Server } from "@/types/server.ts";
@@ -21,6 +21,10 @@ import ServerCardsVirtualScroll from "@/components/ServerCardsVirtualScroll.tsx"
 
 const SSHPage = () => {
   const servers = useSelector((state: RootState) => state.servers);
+  const serversWithRegularAccess = useMemo(
+    () => servers.filter((server) => Boolean(server.access.regular.address)),
+    [servers],
+  );
   const encryption = useSelector((state: RootState) => state.encryption);
 
   const startSSH = async (server: Server) => {
@@ -129,7 +133,7 @@ const SSHPage = () => {
         />
       </Box>
       <ServerCardsVirtualScroll
-        servers={searchServers(debouncedSearchInput, servers)}
+        servers={searchServers(debouncedSearchInput, serversWithRegularAccess)}
         onClicked={startSSH}
       />
     </Flex>
