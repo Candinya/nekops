@@ -4,13 +4,13 @@ export const searchServers = (searchInput: string, allServers: Server[]) =>
   searchInput === ""
     ? allServers
     : allServers.filter((server) => {
-        for (const key of searchInput.split(/\s+/)) {
+        for (const key of searchInput.toLowerCase().split(/\s+/)) {
           if (
             key.length > 0 &&
-            (server.id.includes(key) ||
-              server.name.includes(key) ||
-              server.comment.includes(key) ||
-              server.tags.includes(key)) // Tag full match
+            (server.id.toLowerCase().includes(key) ||
+              server.name.toLowerCase().includes(key) ||
+              server.comment.toLowerCase().includes(key) ||
+              server.tags.findIndex((tag) => tag.toLowerCase() === key) != -1) // Tag full match
           ) {
             return true;
           }
