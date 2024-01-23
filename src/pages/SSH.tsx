@@ -1,4 +1,4 @@
-import { Box, Flex, rem } from "@mantine/core";
+import { Box, Flex } from "@mantine/core";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/store.ts";
 import SearchBar from "@/components/SearchBar.tsx";
@@ -10,7 +10,6 @@ import { openShellWindow } from "@/utils/openShellWindow.ts";
 import { emit, listen } from "@tauri-apps/api/event";
 import type { EventNewSSHPayload } from "@/events/payload.ts";
 import { notifications } from "@mantine/notifications";
-import { IconCheck } from "@tabler/icons-react";
 import {
   EventAckSSHWindowReady,
   EventIsSSHWindowReady,
@@ -18,6 +17,11 @@ import {
 } from "@/events/name.ts";
 import { randomString } from "@/utils/randomString.ts";
 import ServerCardsVirtualScroll from "@/components/ServerCardsVirtualScroll.tsx";
+import {
+  FailNotification,
+  LoadingNotification,
+  SuccessNotification,
+} from "@/notifications/shell.tsx";
 
 const SSHPage = () => {
   const servers = useSelector((state: RootState) => state.servers);
@@ -35,17 +39,9 @@ const SSHPage = () => {
     let isReadyChecker: ReturnType<typeof setInterval> | null = null;
 
     // Set notification
-    let loadingNotify: string | null = notifications.show({
-      color: "blue",
-      loading: true,
-      title: "Preparing shell...",
-      message:
-        "This shouldn't take too long... Or at least it's designed to be quick.",
-      autoClose: false,
-      withCloseButton: false,
-    });
+    let loadingNotify: string | null = notifications.show(LoadingNotification);
 
-    // Generate random nonce to prevent possible conflict
+    // Generate random nonce to prevent possible conflict, for both server and event
     const nonce = randomString(8);
 
     // Wait till window is ready
@@ -65,13 +61,8 @@ const SSHPage = () => {
         // Update notification
         if (loadingNotify) {
           notifications.update({
+            ...SuccessNotification,
             id: loadingNotify,
-            color: "teal",
-            title: "Prepare finished!",
-            message: "Enjoy your journey~",
-            icon: <IconCheck style={{ width: rem(18), height: rem(18) }} />,
-            loading: false,
-            autoClose: 4_000,
           });
           loadingNotify = null;
         }
@@ -107,10 +98,8 @@ const SSHPage = () => {
       if (loadingNotify) {
         // Still loading
         notifications.update({
+          ...FailNotification,
           id: loadingNotify,
-          color: "red",
-          message:
-            "It shouldn't take so long. If it's still not responding, you may need to restart the shell window, or even the whole program.",
         });
       }
     }, 10_000); // 10 seconds
