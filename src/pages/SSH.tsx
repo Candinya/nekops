@@ -78,13 +78,17 @@ const SSHPage = () => {
 
         // Emit SSH event
         const newSSHEvent: EventNewSSHPayload = {
-          nonce,
-          name: server.name,
-          color: server.color,
-          access: {
-            ...server.access.regular,
-            user: server.access.regular.user || "root", // Default
-          },
+          servers: [
+            {
+              nonce,
+              name: server.name,
+              color: server.color,
+              access: {
+                ...server.access.regular,
+                user: server.access.regular.user || "root", // Default
+              },
+            },
+          ],
         };
         await emit(EventNewSSHName, newSSHEvent);
 

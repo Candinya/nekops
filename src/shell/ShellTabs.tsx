@@ -21,14 +21,14 @@ import {
   EventIsSSHWindowReady,
   EventNewSSHName,
 } from "@/events/name.ts";
-import type { EventNewSSHPayload } from "@/events/payload.ts";
+import type { EventNewSSHPayload, SSHSingleServer } from "@/events/payload.ts";
 import { Window } from "@tauri-apps/api/window";
 import type { ShellState } from "@/types/shellState.ts";
 import { useDisclosure, useListState } from "@mantine/hooks";
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
 
 interface ShellTabProps {
-  data: EventNewSSHPayload;
+  data: SSHSingleServer;
   state?: ShellState;
   isNewMessage?: boolean;
   close: () => void;
@@ -79,7 +79,7 @@ const ShellTab = ({ data, state, isNewMessage, close }: ShellTabProps) => {
 };
 
 interface ShellPanelProps {
-  data: EventNewSSHPayload;
+  data: SSHSingleServer;
   setShellState: (state: ShellState) => void;
   setNewMessage: () => void;
 }
@@ -139,11 +139,11 @@ const TerminateConfirmModal = ({
 
 const ShellTabs = () => {
   // For components render
-  const [tabsData, tabsDataHandlers] = useListState<EventNewSSHPayload>([]);
+  const [tabsData, tabsDataHandlers] = useListState<SSHSingleServer>([]);
   const [tabsState, tabsStateHandlers] = useListState<ShellState>([]);
   const [tabsNewMessage, tabsNewMessageHandlers] = useListState<boolean>([]);
   // For events binding
-  const tabsDataRef = useRef<EventNewSSHPayload[]>([]);
+  const tabsDataRef = useRef<SSHSingleServer[]>([]);
   const tabsStateRef = useRef<ShellState[]>([]);
   const tabsNewMessageRef = useRef<boolean[]>([]);
   // Bind state : setTabsData -> tabsData -> tabsDataRef
@@ -164,10 +164,12 @@ const ShellTabs = () => {
   }, [currentActiveTab]);
 
   const newSSHEventListener = (ev: Event<EventNewSSHPayload>) => {
-    tabsDataHandlers.append(ev.payload);
-    tabsStateHandlers.append("loading");
-    tabsNewMessageHandlers.append(false);
-    setCurrentActiveTab(ev.payload.nonce);
+    for (const server of ev.payload.servers) {
+      tabsDataHandlers.append(server);
+      tabsStateHandlers.append("loading");
+      tabsNewMessageHandlers.append(false);
+      setCurrentActiveTab(server.nonce);
+    }
   };
 
   // Close (terminate) confirm

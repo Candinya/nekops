@@ -1,8 +1,13 @@
 import type { AccessRegular } from "@/types/server.ts";
 
-export interface EventNewSSHPayload {
+export interface SSHSingleServer {
   nonce: string;
   name: string;
   color: string;
   access: AccessRegular;
+}
+
+export interface EventNewSSHPayload {
+  servers: SSHSingleServer[];
+  code?: string;
 }
