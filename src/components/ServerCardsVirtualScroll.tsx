@@ -26,6 +26,7 @@ const ServerCardsVirtualScroll = ({
     <div
       style={{
         overflow: "auto",
+        height: "100%",
       }}
       ref={virtualScrollParentRef}
     >
