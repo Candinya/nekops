@@ -6,7 +6,7 @@ import type { RootState } from "@/store.ts";
 import {
   exists,
   readTextFile,
-  removeFile,
+  remove,
   writeTextFile,
 } from "@tauri-apps/plugin-fs";
 import { box, verify } from "tweetnacl";
@@ -65,7 +65,7 @@ export const updatePassword = createAsyncThunk(
     if (password === "") {
       // Disable encryption
       if (await exists(publicKeyFilePath)) {
-        await removeFile(publicKeyFilePath);
+        await remove(publicKeyFilePath);
       }
       return noEncryption;
     }
