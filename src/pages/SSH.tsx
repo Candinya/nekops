@@ -22,6 +22,7 @@ import {
   LoadingNotification,
   SuccessNotification,
 } from "@/notifications/shell.tsx";
+import { writeText } from "@tauri-apps/plugin-clipboard-manager";
 
 const SSHPage = () => {
   const servers = useSelector((state: RootState) => state.servers);
@@ -30,8 +31,47 @@ const SSHPage = () => {
     [servers],
   );
   const encryption = useSelector((state: RootState) => state.encryption);
+  const settings = useSelector((state: RootState) => state.settings);
 
-  const startSSH = async (server: Server) => {
+  const clickServerCard = async (server: Server) => {
+    switch (settings.default_ssh_action) {
+      case "start":
+        startSSHSession(server);
+        break;
+      case "copy":
+      default:
+        copySSHCommand(server);
+        break;
+    }
+  };
+
+  const copySSHCommand = async (server: Server) => {
+    const command = [
+      "ssh",
+      `${server.access.regular.user || "root"}@${
+        server.access.regular.address
+      }`,
+    ];
+    if (server.access.regular.port !== 22) {
+      command.push("-p", `${server.access.regular.port}`);
+    }
+    try {
+      await writeText(command.join(" "));
+      notifications.show({
+        color: "green",
+        title: "SSH command copied!",
+        message: "Paste into your favorite shell and let's start!",
+      });
+    } catch (e) {
+      notifications.show({
+        color: "red",
+        title: "Failed to copy...",
+        message: "Maybe let the server's id to remind of something?",
+      });
+    }
+  };
+
+  const startSSHSession = async (server: Server) => {
     // Create or open Shell window
     await openShellWindow(encryption.isUnlocked); // Disable content protection when unlocked
 
@@ -127,7 +167,7 @@ const SSHPage = () => {
       </Box>
       <ServerCardsVirtualScroll
         servers={searchServers(debouncedSearchInput, serversWithRegularAccess)}
-        onClicked={startSSH}
+        onClicked={clickServerCard}
       />
     </Flex>
   );

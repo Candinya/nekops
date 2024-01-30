@@ -21,13 +21,16 @@ import {
   Tooltip,
   useMantineColorScheme,
 } from "@mantine/core";
+import type { TablerIconsProps } from "@tabler/icons-react";
 import {
   IconBolt,
+  IconCode,
   IconFolder,
   IconLock,
   IconLockOpen,
   IconMoon,
   IconPlus,
+  IconRocket,
   IconSun,
 } from "@tabler/icons-react";
 import { saveSettings } from "@/slices/settingsSlice.ts";
@@ -68,15 +71,24 @@ const colorSchemeData = [
     text: "Dark",
     value: "dark",
   },
-].map((item) => ({
-  label: (
-    <Center style={{ gap: 10 }}>
-      <item.icon style={{ width: rem(16), height: rem(16) }} />
-      <span>{item.text}</span>
-    </Center>
-  ),
-  value: item.value,
-}));
+];
+
+const transformSegmentedControlOptions = (
+  data: {
+    icon: (props: TablerIconsProps) => JSX.Element;
+    text: string;
+    value: string;
+  }[],
+) =>
+  data.map((item) => ({
+    label: (
+      <Center style={{ gap: 10 }}>
+        <item.icon style={{ width: rem(16), height: rem(16) }} />
+        <span>{item.text}</span>
+      </Center>
+    ),
+    value: item.value,
+  }));
 
 interface SettingsExtended extends SettingsState {
   password?: string;
@@ -247,11 +259,12 @@ const SettingsPage = () => {
           : 0 // No match, use first
       ];
     // Update settings
-    const newSettingsSave: SettingsState = {
+    const newSettingsState: SettingsState = {
       workspaces: newSettings.workspaces,
       current_workspace: targetWorkspace,
+      default_ssh_action: newSettings.default_ssh_action,
     };
-    await dispatch(saveSettings(newSettingsSave)).unwrap();
+    await dispatch(saveSettings(newSettingsState)).unwrap();
     if (form.isDirty("workspaces")) {
       // Initialize workspace
       dispatch(readServers());
@@ -281,7 +294,7 @@ const SettingsPage = () => {
                   Color Scheme
                 </Text>
                 <SegmentedControl
-                  data={colorSchemeData}
+                  data={transformSegmentedControlOptions(colorSchemeData)}
                   value={colorScheme}
                   onChange={(newScheme) => {
                     if (["light", "dark", "auto"].includes(newScheme)) {
@@ -291,6 +304,26 @@ const SettingsPage = () => {
                       clearColorScheme();
                     }
                   }}
+                />
+              </Flex>
+              <Flex direction="column" mt="md">
+                <Text size="sm" fw={500} mb={2}>
+                  Default SSH Action
+                </Text>
+                <SegmentedControl
+                  data={transformSegmentedControlOptions([
+                    {
+                      icon: IconCode,
+                      text: "Copy Command",
+                      value: "copy",
+                    },
+                    {
+                      icon: IconRocket,
+                      text: "Start Session",
+                      value: "start",
+                    },
+                  ])}
+                  {...form.getInputProps("default_ssh_action")}
                 />
               </Flex>
             </Fieldset>
