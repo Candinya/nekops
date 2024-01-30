@@ -4,15 +4,17 @@ export type WorkSpace = {
   data_dir: string;
 };
 
-export type SettingsSave = {
+type SettingsCommon = {
   workspaces: WorkSpace[];
-  currentWorkspaceID: string;
 };
 
-export type Settings = {
-  workspaces: WorkSpace[];
-  currentWorkspace: WorkSpace;
-};
+export type SettingsSave = {
+  current_workspace_id: string;
+} & SettingsCommon;
+
+export type SettingsState = {
+  current_workspace: WorkSpace;
+} & SettingsCommon;
 
 export const defaultWorkspace: WorkSpace = {
   id: "default",
@@ -20,7 +22,7 @@ export const defaultWorkspace: WorkSpace = {
   data_dir: "nekops_data",
 };
 
-export const defaultSettings: Settings = {
+export const defaultSettings: SettingsState = {
   workspaces: [defaultWorkspace],
-  currentWorkspace: defaultWorkspace,
+  current_workspace: defaultWorkspace,
 };

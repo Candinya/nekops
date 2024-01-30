@@ -1,9 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import {
-  defaultSettings,
-  type Settings,
+import type {
   SettingsSave,
+  SettingsState,
+  WorkSpace,
 } from "@/types/settings.ts";
+import { defaultSettings } from "@/types/settings.ts";
 import { exists, readTextFile, writeTextFile } from "@tauri-apps/plugin-fs";
 import { checkParentDir } from "@/slices/common.ts";
 import { path } from "@tauri-apps/api";
@@ -14,7 +15,7 @@ const SettingsFileName = "settings.json";
 
 export const readSettings = createAsyncThunk(
   "settings/read",
-  async (): Promise<Settings> => {
+  async (): Promise<SettingsState> => {
     // read from local file
     const parentDir = await path.join(await documentDir(), "nekops");
     const settingsFilePath = await path.join(parentDir, SettingsFileName);
@@ -25,12 +26,19 @@ export const readSettings = createAsyncThunk(
       const settingsSaved: SettingsSave = JSON.parse(settingsFile);
       if (settingsSaved.workspaces.length > 0) {
         // Find current active workspace
-        const targetWorkspace = settingsSaved.workspaces.find(
-          (w) => w.id === settingsSaved.currentWorkspaceID,
-        );
+        let targetWorkspace: WorkSpace | undefined = undefined;
+        if (settingsSaved.current_workspace_id) {
+          targetWorkspace = settingsSaved.workspaces.find(
+            (w) => w.id === settingsSaved.current_workspace_id,
+          );
+        }
+        if (!targetWorkspace) {
+          // Fallback to first workspace
+          targetWorkspace = settingsSaved.workspaces[0];
+        }
         return {
           workspaces: settingsSaved.workspaces,
-          currentWorkspace: targetWorkspace || settingsSaved.workspaces[0],
+          current_workspace: targetWorkspace,
         };
       } else {
         return defaultSettings;
@@ -47,7 +55,7 @@ export const readSettings = createAsyncThunk(
 
 export const saveSettings = createAsyncThunk(
   "settings/save",
-  async (state: Settings | undefined, { getState }) => {
+  async (state: SettingsState | undefined, { getState }) => {
     if (state === undefined) {
       state = (getState() as RootState).settings;
     }
@@ -57,7 +65,7 @@ export const saveSettings = createAsyncThunk(
     await checkParentDir(parentDir);
     const settingsSave: SettingsSave = {
       workspaces: state.workspaces,
-      currentWorkspaceID: state.currentWorkspace.id,
+      current_workspace_id: state.current_workspace.id,
     };
     await writeTextFile(settingsFilePath, JSON.stringify(settingsSave));
     return state;
@@ -73,7 +81,7 @@ export const settingsSlice = createSlice({
         (w) => w.id === action.payload,
       );
       if (targetWorkspace !== undefined) {
-        state.currentWorkspace = targetWorkspace;
+        state.current_workspace = targetWorkspace;
       } else {
         throw new Error("No such workspace");
       }

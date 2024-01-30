@@ -1,4 +1,5 @@
-import { defaultWorkspace, Settings, WorkSpace } from "@/types/settings.ts";
+import type { SettingsState, WorkSpace } from "@/types/settings.ts";
+import { defaultWorkspace } from "@/types/settings.ts";
 import { useForm, type UseFormReturnType } from "@mantine/form";
 import type { MantineColorScheme } from "@mantine/core";
 import {
@@ -77,7 +78,7 @@ const colorSchemeData = [
   value: item.value,
 }));
 
-interface SettingsExtended extends Settings {
+interface SettingsExtended extends SettingsState {
   password?: string;
 }
 
@@ -237,7 +238,7 @@ const SettingsPage = () => {
       newSettings.workspaces.push(defaultWorkspace);
     }
     const currentWorkspaceIndex = settings.workspaces.findIndex(
-      (w) => w.id === settings.currentWorkspace.id,
+      (w) => w.id === settings.current_workspace.id,
     );
     const targetWorkspace =
       newSettings.workspaces[
@@ -246,9 +247,9 @@ const SettingsPage = () => {
           : 0 // No match, use first
       ];
     // Update settings
-    const newSettingsSave: Settings = {
+    const newSettingsSave: SettingsState = {
       workspaces: newSettings.workspaces,
-      currentWorkspace: targetWorkspace,
+      current_workspace: targetWorkspace,
     };
     await dispatch(saveSettings(newSettingsSave)).unwrap();
     if (form.isDirty("workspaces")) {

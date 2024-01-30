@@ -45,13 +45,13 @@ const WorkspaceSelector = () => {
           <Menu.Item
             key={w.id}
             leftSection={
-              w.id === settings.currentWorkspace.id ? (
+              w.id === settings.current_workspace.id ? (
                 <IconCheck style={actionIconStyle} />
               ) : (
                 <IconStack style={actionIconStyle} />
               )
             }
-            disabled={w.id === settings.currentWorkspace.id}
+            disabled={w.id === settings.current_workspace.id}
             onClick={() => switchWorkspace(w.id)}
           >
             {w.name}
