@@ -172,11 +172,16 @@ const SSHContextMenu = ({
   }, [isOpen]);
 
   return (
-    <Menu opened={isOpen} onChange={setIsOpen}>
+    <Menu opened={isOpen} onChange={setIsOpen} position="bottom-start">
       <Menu.Target>
-        <div />
+        <div
+          style={{
+            ...menuLocation,
+            position: "absolute",
+          }}
+        />
       </Menu.Target>
-      <Menu.Dropdown left={menuLocation.left} top={menuLocation.top}>
+      <Menu.Dropdown>
         <Menu.Label>Connect Directly</Menu.Label>
         <Menu.Item
           leftSection={<IconCode style={actionIconStyle} />}
