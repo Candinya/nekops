@@ -84,6 +84,7 @@ export type AccessRegular = {
   address: string;
   port: number;
   user: string;
+  is_jump_server: boolean; // Is this server a SSH jump board?
 };
 
 export type AccessEmergency = {
@@ -182,6 +183,7 @@ export const defaultServer: Server = {
       address: "",
       port: 22,
       user: "",
+      is_jump_server: false,
     },
     emergency: {
       root_password: "",

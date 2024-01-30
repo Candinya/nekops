@@ -5,20 +5,19 @@ import { FitAddon } from "@xterm/addon-fit";
 import { Window } from "@tauri-apps/api/window";
 import type { ShellState } from "@/types/shellState.ts";
 import { LoadingOverlay } from "@mantine/core";
+import type { AccessRegular } from "@/types/server.ts";
 
 interface ShellTerminalProps {
   nonce: string;
-  user: string;
-  address: string;
-  port: number;
+  server: AccessRegular;
+  jumpServer?: AccessRegular;
   setShellState: (state: ShellState) => void;
   setNewMessage: () => void;
 }
 const ShellTerminal = ({
   nonce,
-  user,
-  address,
-  port,
+  server,
+  jumpServer,
   setShellState,
   setNewMessage,
 }: ShellTerminalProps) => {
@@ -30,18 +29,26 @@ const ShellTerminal = ({
 
   const startSSH = (
     terminal: Terminal,
-    user: string,
-    address: string,
-    port: number,
+    server: AccessRegular,
+    jumpServer?: AccessRegular,
   ) => {
     const sshArgs = [
-      `${user}@${address}`,
       "-tt", // force Pseudo-terminal
     ];
-    if (port !== 22) {
-      // Is not default SSH port
-      sshArgs.push("-p", port.toString());
+    if (jumpServer) {
+      sshArgs.push(
+        "-J",
+        `${jumpServer.user || "root"}@${jumpServer.address}` +
+          (jumpServer.port !== 22 ? `:${jumpServer.port}` : ""),
+      );
     }
+    if (server.port !== 22) {
+      // Is not default SSH port
+      sshArgs.push("-p", server.port.toString());
+    }
+    sshArgs.push(`${server.user || "root"}@${server.address}`);
+
+    console.log("Args", sshArgs.join(" "));
 
     const stateUpdateOnNewMessage = () => {
       if (isLoading) {
@@ -119,9 +126,7 @@ const ShellTerminal = ({
         fitAddon.fit();
       });
 
-      if (user && address && port) {
-        startSSH(terminal, user, address, port);
-      }
+      startSSH(terminal, server, jumpServer);
 
       return () => {
         // Stop window resize listener

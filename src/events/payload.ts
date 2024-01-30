@@ -5,6 +5,7 @@ export interface SSHSingleServer {
   name: string;
   color: string;
   access: AccessRegular;
+  jumpServer?: AccessRegular;
 }
 
 export interface EventNewSSHPayload {

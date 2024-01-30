@@ -7,10 +7,12 @@ import ServerCard from "@/components/ServerCard.tsx";
 interface ServerCardsVirtualScrollProps {
   servers: Server[];
   onClicked: (server: Server) => void;
+  onContextMenu?: (server: Server) => void;
 }
 const ServerCardsVirtualScroll = ({
   servers,
   onClicked,
+  onContextMenu,
 }: ServerCardsVirtualScrollProps) => {
   // Virtual scroll
   const virtualScrollParentRef = useRef<HTMLDivElement | null>(null);
@@ -58,6 +60,11 @@ const ServerCardsVirtualScroll = ({
               <ServerCard
                 server={servers[virtualItem.index]}
                 onClick={() => onClicked(servers[virtualItem.index])}
+                onContextMenu={
+                  onContextMenu
+                    ? () => onContextMenu(servers[virtualItem.index])
+                    : undefined
+                }
               />
             </Box>
           ))}

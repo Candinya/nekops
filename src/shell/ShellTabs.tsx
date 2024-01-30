@@ -91,9 +91,8 @@ const ShellPanel = ({
   <Tabs.Panel value={data.nonce} h="100%">
     <ShellTerminal
       nonce={data.nonce}
-      user={data.access.user}
-      address={data.access.address}
-      port={data.access.port}
+      server={data.access}
+      jumpServer={data.jumpServer}
       setShellState={setShellState}
       setNewMessage={setNewMessage}
     />

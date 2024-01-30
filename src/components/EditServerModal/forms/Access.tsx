@@ -1,6 +1,7 @@
 import type { InputFormProps } from "../inputFormProps.ts";
 import {
   Autocomplete,
+  Checkbox,
   Fieldset,
   Flex,
   Group,
@@ -31,24 +32,37 @@ const AccessForm = ({
   return (
     <>
       <Fieldset legend="Regular Access (SSH)">
-        <Autocomplete
-          label="Address"
-          placeholder="Pick one or enter new"
-          data={[
-            {
-              group: "Public",
-              items: publicAccessEndpoints,
-            },
-            {
-              group: "Private",
-              items: privateAccessEndpoints,
-            },
-          ]}
-          style={{
-            flexGrow: 1,
-          }}
-          {...form.getInputProps("access.regular.address")}
-        />
+        <Group>
+          <Autocomplete
+            label="Address"
+            placeholder="Pick one or enter new"
+            data={[
+              {
+                group: "Public",
+                items: publicAccessEndpoints,
+              },
+              {
+                group: "Private",
+                items: privateAccessEndpoints,
+              },
+            ]}
+            style={{
+              flexGrow: 1,
+            }}
+            {...form.getInputProps("access.regular.address")}
+          />
+          <Flex direction="column" justify="end">
+            <Text size="sm" fw={500} mb={1}>
+              Jump Server
+            </Text>
+            <Checkbox
+              size="xl"
+              {...form.getInputProps("access.regular.is_jump_server", {
+                type: "checkbox",
+              })}
+            />
+          </Flex>
+        </Group>
         <Group mt="md">
           <NumberInput
             label="Port"

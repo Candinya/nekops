@@ -20,8 +20,9 @@ import RAM from "@/icons/RAM.tsx";
 interface ServerCardProps {
   server: Server;
   onClick?: () => void;
+  onContextMenu?: () => void;
 }
-const ServerCard = ({ server, onClick }: ServerCardProps) => {
+const ServerCard = ({ server, onClick, onContextMenu }: ServerCardProps) => {
   const { hovered, ref } = useHover();
   return (
     <Card
@@ -38,6 +39,14 @@ const ServerCard = ({ server, onClick }: ServerCardProps) => {
             : undefined,
       }}
       onClick={onClick}
+      onContextMenu={
+        onContextMenu
+          ? (e) => {
+              e.preventDefault(); // Prevent default context menu
+              onContextMenu();
+            }
+          : undefined
+      }
       ref={ref}
     >
       <Box
