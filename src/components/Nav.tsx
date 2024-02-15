@@ -3,8 +3,10 @@ import { NavLink as RouterNavLink, useLocation } from "react-router-dom";
 import { navs } from "@/routes";
 import { IconChevronRight } from "@tabler/icons-react";
 
+const iconStyle = { width: "1rem", height: "1rem" };
+
 const NavsWithSubsExpandIcon = () => (
-  <IconChevronRight size="1rem" stroke={1.5} />
+  <IconChevronRight style={iconStyle} stroke={1.5} />
 );
 
 const Nav = () => {
@@ -16,7 +18,7 @@ const Nav = () => {
           <NavLink
             key={route.path}
             label={route.label}
-            leftSection={<route.icon size="1rem" stroke={1.5} />}
+            leftSection={<route.icon style={iconStyle} stroke={1.5} />}
             rightSection={<NavsWithSubsExpandIcon />}
             defaultOpened
           >
@@ -24,7 +26,7 @@ const Nav = () => {
               <NavLink
                 key={route.path}
                 label={route.label}
-                leftSection={<route.icon size="1rem" stroke={1.5} />}
+                leftSection={<route.icon style={iconStyle} stroke={1.5} />}
                 component={RouterNavLink}
                 to={route.path}
                 active={location.pathname === route.path} // TODO: Find a better way to use react-router-dom's NavLink's isActive status
@@ -35,7 +37,7 @@ const Nav = () => {
           <NavLink
             key={route.path}
             label={route.label}
-            leftSection={<route.icon size="1rem" stroke={1.5} />}
+            leftSection={<route.icon style={iconStyle} stroke={1.5} />}
             component={RouterNavLink}
             to={route.path}
             active={location.pathname === route.path} // TODO: Find a better way to use react-router-dom's NavLink's isActive status
