@@ -1,6 +1,6 @@
 {
-  "identifier": "migrated",
-  "description": "permissions that were migrated from v1",
+  "identifier": "nekops",
+  "description": "base permissions for Nekops",
   "context": "local",
   "windows": [
     "main"

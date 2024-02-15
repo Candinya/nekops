@@ -1,0 +1,28 @@
+{
+    "identifier": "fs-all",
+    "description": "fs write permissions",
+    "context": "local",
+    "windows": [
+      "main"
+    ],
+    "permissions": [
+      "fs:read-all",
+      "fs:write-all",
+      {
+        "identifier": "scope-fs-full-access",
+        "description": "This scope grant tauri app the accessibility to anywhere on the device.",
+        "scope": {
+            "allow": {
+                "path": "**"
+            }
+        }
+      }
+    ],
+    "platforms": [
+      "linux",
+      "macOS",
+      "windows",
+      "android",
+      "iOS"
+    ]
+  }
