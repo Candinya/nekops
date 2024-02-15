@@ -8,7 +8,7 @@ import {
 } from "@tabler/icons-react";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/store.ts";
-import { actionIconStyle } from "@/common/actionStyles.ts";
+import { actionIconStyle, menuIconStyle } from "@/common/actionStyles.ts";
 import {
   saveSettings,
   setCurrentWorkspaceByID,
@@ -46,9 +46,9 @@ const WorkspaceSelector = () => {
             key={w.id}
             leftSection={
               w.id === settings.current_workspace.id ? (
-                <IconCheck style={actionIconStyle} />
+                <IconCheck style={menuIconStyle} />
               ) : (
-                <IconStack style={actionIconStyle} />
+                <IconStack style={menuIconStyle} />
               )
             }
             disabled={w.id === settings.current_workspace.id}

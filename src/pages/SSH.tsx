@@ -24,7 +24,7 @@ import {
 } from "@/notifications/shell.tsx";
 import { writeText } from "@tauri-apps/plugin-clipboard-manager";
 import { IconCode, IconRocket } from "@tabler/icons-react";
-import { actionIconStyle } from "@/common/actionStyles.ts";
+import { menuIconStyle } from "@/common/actionStyles.ts";
 
 const startSSHSession = async (
   server: Server,
@@ -184,13 +184,13 @@ const SSHContextMenu = ({
       <Menu.Dropdown>
         <Menu.Label>Connect Directly</Menu.Label>
         <Menu.Item
-          leftSection={<IconCode style={actionIconStyle} />}
+          leftSection={<IconCode style={menuIconStyle} />}
           onClick={onClickCopy}
         >
           Copy Code
         </Menu.Item>
         <Menu.Item
-          leftSection={<IconRocket style={actionIconStyle} />}
+          leftSection={<IconRocket style={menuIconStyle} />}
           onClick={onClickStart}
         >
           Start Session
