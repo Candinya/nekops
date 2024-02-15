@@ -24,3 +24,5 @@ dist-ssr
 *.sw?
 
 nekops_data/
+
+src-tauri/gen
