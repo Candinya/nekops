@@ -35,12 +35,7 @@
   },
   "plugins": {
     "shell": {
-      "open": true,
-      "scope": [{
-        "name": "ssh",
-        "cmd": "ssh",
-        "args": true
-      }]
+      "open": true
     },
     "fs": {
       "scope": {
