@@ -1,3 +1,4 @@
+import type { PayloadAction } from "@reduxjs/toolkit";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { exists, readTextFile, writeTextFile } from "@tauri-apps/plugin-fs";
 import type { Server } from "@/types/server.ts";
@@ -83,22 +84,37 @@ export const serversSlice = createSlice({
   name: "servers",
   initialState: noServer,
   reducers: {
-    addServer: (state, action) => {
+    addServer: (state, action: PayloadAction<Server>) => {
       state.push(action.payload);
     },
-    updateServerByIndex: (state, action) => {
+    updateServerByIndex: (
+      state,
+      action: PayloadAction<{
+        index: number;
+        server: Server;
+      }>,
+    ) => {
       state.splice(action.payload.index, 1, action.payload.server);
     },
-    removeServerByIndex: (state, action) => {
+    removeServerByIndex: (state, action: PayloadAction<number>) => {
       state.splice(action.payload, 1);
     },
-    reorderServer: (state, action) => {
+    reorderServer: (
+      state,
+      action: PayloadAction<{
+        sourceIndex: number;
+        destinationIndex: number;
+      }>,
+    ) => {
       const moved = state.splice(action.payload.sourceIndex, 1);
       state.splice(action.payload.destinationIndex, 0, ...moved);
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(readServers.fulfilled, (_, action) => action.payload);
+    builder.addCase(
+      readServers.fulfilled,
+      (_, action: PayloadAction<Server[]>) => action.payload,
+    );
     builder.addCase(saveServers.fulfilled, () => {});
   },
 });

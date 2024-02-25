@@ -1,3 +1,4 @@
+import type { PayloadAction } from "@reduxjs/toolkit";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { exists, readTextFile, writeTextFile } from "@tauri-apps/plugin-fs";
 import type { Snippet } from "@/types/snippet.ts";
@@ -48,22 +49,37 @@ export const snippetsSlice = createSlice({
   name: "snippets",
   initialState: noSnippet,
   reducers: {
-    addSnippet: (state, action) => {
+    addSnippet: (state, action: PayloadAction<Snippet>) => {
       state.push(action.payload);
     },
-    updateSnippetByIndex: (state, action) => {
+    updateSnippetByIndex: (
+      state,
+      action: PayloadAction<{
+        index: number;
+        snippet: Snippet;
+      }>,
+    ) => {
       state.splice(action.payload.index, 1, action.payload.snippet);
     },
-    removeSnippetByIndex: (state, action) => {
+    removeSnippetByIndex: (state, action: PayloadAction<number>) => {
       state.splice(action.payload, 1);
     },
-    reorderSnippet: (state, action) => {
+    reorderSnippet: (
+      state,
+      action: PayloadAction<{
+        sourceIndex: number;
+        destinationIndex: number;
+      }>,
+    ) => {
       const moved = state.splice(action.payload.sourceIndex, 1);
       state.splice(action.payload.destinationIndex, 0, ...moved);
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(readSnippets.fulfilled, (_, action) => action.payload);
+    builder.addCase(
+      readSnippets.fulfilled,
+      (_, action: PayloadAction<Snippet[]>) => action.payload,
+    );
     builder.addCase(saveSnippets.fulfilled, () => {});
   },
 });

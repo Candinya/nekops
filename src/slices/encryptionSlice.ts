@@ -1,6 +1,7 @@
 // Using tweetnacl.js before Web Crypto API supports cv25519 or use a rust implementation later
 // https://github.com/dchest/tweetnacl-js#secret-key-authenticated-encryption-secretbox
 
+import type { PayloadAction } from "@reduxjs/toolkit";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { RootState } from "@/store.ts";
 import {
@@ -256,9 +257,18 @@ export const encryptionSlice = createSlice({
   initialState: noEncryption,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(readEncryption.fulfilled, (_, action) => action.payload);
-    builder.addCase(updatePassword.fulfilled, (_, action) => action.payload);
-    builder.addCase(unlock.fulfilled, (_, action) => action.payload);
+    builder.addCase(
+      readEncryption.fulfilled,
+      (_, action: PayloadAction<EncryptionState>) => action.payload,
+    );
+    builder.addCase(
+      updatePassword.fulfilled,
+      (_, action: PayloadAction<EncryptionState>) => action.payload,
+    );
+    builder.addCase(
+      unlock.fulfilled,
+      (_, action: PayloadAction<EncryptionState>) => action.payload,
+    );
   },
 });
 

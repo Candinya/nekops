@@ -1,3 +1,4 @@
+import type { PayloadAction } from "@reduxjs/toolkit";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type {
   SettingsSave,
@@ -78,7 +79,7 @@ export const settingsSlice = createSlice({
   name: "settings",
   initialState: defaultSettings,
   reducers: {
-    setCurrentWorkspaceByID: (state, action) => {
+    setCurrentWorkspaceByID: (state, action: PayloadAction<string>) => {
       const targetWorkspace = state.workspaces.find(
         (w) => w.id === action.payload,
       );
@@ -88,7 +89,13 @@ export const settingsSlice = createSlice({
         throw new Error("No such workspace");
       }
     },
-    updateWorkspaceByID: (state, action) => {
+    updateWorkspaceByID: (
+      state,
+      action: PayloadAction<{
+        id: string;
+        workspace: WorkSpace;
+      }>,
+    ) => {
       const { id, workspace } = action.payload;
       const targetWorkspaceIndex = state.workspaces.findIndex(
         (w) => w.id === id,
@@ -101,9 +108,12 @@ export const settingsSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(readSettings.fulfilled, (_, action) => {
-      return action.payload;
-    });
+    builder.addCase(
+      readSettings.fulfilled,
+      (_, action: PayloadAction<SettingsState>) => {
+        return action.payload;
+      },
+    );
     builder.addCase(saveSettings.fulfilled, (_, action) => {
       return action.payload;
     });
