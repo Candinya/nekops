@@ -6,7 +6,7 @@ import type {
 } from "@/types/settings.ts";
 import { defaultSettings } from "@/types/settings.ts";
 import { exists, readTextFile, writeTextFile } from "@tauri-apps/plugin-fs";
-import { checkParentDir } from "@/slices/common.ts";
+import { checkParentDir } from "@/slices/utils.ts";
 import { path } from "@tauri-apps/api";
 import { documentDir } from "@tauri-apps/api/path";
 import type { RootState } from "@/store.ts";

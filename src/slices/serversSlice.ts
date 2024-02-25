@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { exists, readTextFile, writeTextFile } from "@tauri-apps/plugin-fs";
 import type { Server } from "@/types/server.ts";
 import type { RootState } from "@/store.ts";
-import { checkParentDir } from "@/slices/common.ts";
+import { checkParentDir } from "@/slices/utils.ts";
 import { path } from "@tauri-apps/api";
 
 const ServersIndexFileName = "servers.json";

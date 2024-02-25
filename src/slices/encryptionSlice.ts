@@ -10,7 +10,7 @@ import {
   writeTextFile,
 } from "@tauri-apps/plugin-fs";
 import { box, verify } from "tweetnacl";
-import { checkParentDir } from "@/slices/common.ts";
+import { checkParentDir } from "@/slices/utils.ts";
 import { getKeyMaterial, getPrivateBits } from "@/encrypt/keyHandler.ts";
 import { arrayBufferToBase64, base64ToUint8Array } from "@/encrypt/helper.ts";
 import type { Server } from "@/types/server.ts";
