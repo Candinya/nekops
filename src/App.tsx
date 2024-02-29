@@ -1,6 +1,6 @@
 import { AppShell } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import Router from "@/router.tsx";
+import Router from "@/Router.tsx";
 import Header from "@/components/Header.tsx";
 import Nav from "@/components/Nav.tsx";
 import { useEffect } from "react";

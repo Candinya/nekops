@@ -5,7 +5,7 @@ import { createTheme, MantineProvider } from "@mantine/core";
 import { BrowserRouter } from "react-router-dom";
 import { Notifications } from "@mantine/notifications";
 
-import App from "@/app.tsx";
+import App from "@/App.tsx";
 
 const theme = createTheme({
   /** Put your mantine theme override here */
