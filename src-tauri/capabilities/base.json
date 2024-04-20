@@ -13,7 +13,8 @@
     "resources:default",
     "menu:default",
     "tray:default",
-    "clipboard-manager:allow-write-text"
+    "clipboard-manager:allow-write-text",
+    "window:allow-create"
   ],
   "platforms": [
     "linux",
