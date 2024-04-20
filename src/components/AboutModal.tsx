@@ -22,7 +22,7 @@ const AboutModal = ({ isOpen, close }: AboutModalProps) => {
   const [version, setVersion] = useState("Loading...");
 
   const clickVersion = () => {
-    open("https://pro.ncd.moe/nekops");
+    open("https://candymade.net/nekops");
     // TODO: replace with check-update actions
   };
 
