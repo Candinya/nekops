@@ -100,6 +100,7 @@ const ProductForm = ({
             style={{
               flexGrow: 1,
             }}
+            step={100}
             {...form.getInputProps("traffic.bandwidth")}
           />
         </Grid.Col>
