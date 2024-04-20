@@ -72,6 +72,9 @@ const ShellTab = ({ data, state, isNewMessage, close }: ShellTabProps) => {
         </ActionIcon>
       }
       component="div"
+      // style={{
+      //   backgroundColor: "var(--mantine-color-body)", // Conflict with the hover highlight
+      // }}
     >
       {data.name}
     </Tabs.Tab>
