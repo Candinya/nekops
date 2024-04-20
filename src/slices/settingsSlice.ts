@@ -11,14 +11,20 @@ import { checkParentDir } from "@/slices/utils.ts";
 import { path } from "@tauri-apps/api";
 import { documentDir } from "@tauri-apps/api/path";
 import type { RootState } from "@/store.ts";
+import { getName } from "@tauri-apps/api/app";
 
 const SettingsFileName = "settings.json";
+
+const AppName = "Nekops";
 
 export const readSettings = createAsyncThunk(
   "settings/read",
   async (): Promise<SettingsState> => {
     // read from local file
-    const parentDir = await path.join(await documentDir(), "nekops");
+    const parentDir = await path.join(
+      await documentDir(),
+      (await getName()) || AppName,
+    );
     const settingsFilePath = await path.join(parentDir, SettingsFileName);
     await checkParentDir(parentDir);
     if (await exists(settingsFilePath)) {
@@ -62,7 +68,10 @@ export const saveSettings = createAsyncThunk(
       state = (getState() as RootState).settings;
     }
     // save to local file
-    const parentDir = await path.join(await documentDir(), "nekops");
+    const parentDir = await path.join(
+      await documentDir(),
+      (await getName()) || AppName,
+    );
     const settingsFilePath = await path.join(parentDir, SettingsFileName);
     await checkParentDir(parentDir);
     const settingsSave: SettingsSave = {
