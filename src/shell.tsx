@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import { createTheme, MantineProvider } from "@mantine/core";
 
 import "@mantine/core/styles.css";
-import "xterm/css/xterm.css";
+import "@xterm/xterm/css/xterm.css";
 
 import "@/shell/style.css";
 
