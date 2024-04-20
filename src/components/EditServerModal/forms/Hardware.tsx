@@ -217,7 +217,7 @@ const HardwareForm = ({ form }: InputFormProps) => (
           <NumberInput
             label="Size"
             allowNegative={false}
-            decimalScale={1}
+            decimalScale={2}
             allowLeadingZeros={false}
             suffix="GB"
             step={0.5}
