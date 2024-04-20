@@ -5,6 +5,7 @@ import RescuePage from "@/pages/Rescue.tsx";
 import ServersPage from "@/pages/Servers.tsx";
 import SnippetsPage from "@/pages/Snippets.tsx";
 import Settings from "@/pages/Settings.tsx";
+import Analysis from "@/pages/Analysis.tsx";
 
 import {
   IconCirclesRelation,
@@ -12,6 +13,7 @@ import {
   IconHeartbeat,
   IconHome,
   IconLibrary,
+  IconReport,
   IconServerCog,
   IconSettings,
   IconStars,
@@ -46,6 +48,10 @@ export const routes = [
   {
     path: "/settings",
     page: Settings,
+  },
+  {
+    path: "/analysis",
+    page: Analysis,
   },
 ];
 
@@ -93,6 +99,11 @@ export const navs = [
         path: "/snippets",
       },
     ],
+  },
+  {
+    label: "Analysis",
+    icon: IconReport,
+    path: "/analysis",
   },
   {
     label: "Settings",
