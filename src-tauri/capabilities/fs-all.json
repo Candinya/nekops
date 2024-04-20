@@ -6,14 +6,12 @@
       "main"
     ],
     "permissions": [
-      "fs:default",
       "fs:read-all",
-      "fs:read-dirs",
-      "fs:read-files",
-      "fs:read-meta",
       "fs:write-all",
-      "fs:write-files",
-      "fs:scope"
+      {
+        "identifier": "fs:scope",
+        "allow": [{ "path": "**" }]
+      }
     ],
     "platforms": [
       "linux",
