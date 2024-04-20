@@ -8,12 +8,12 @@ import Settings from "@/pages/Settings.tsx";
 import Analysis from "@/pages/Analysis.tsx";
 
 import {
+  IconChartBar,
   IconCirclesRelation,
   IconCodeAsterix,
   IconHeartbeat,
   IconHome,
   IconLibrary,
-  IconReport,
   IconServerCog,
   IconSettings,
   IconStars,
@@ -102,7 +102,7 @@ export const navs = [
   },
   {
     label: "Analysis",
-    icon: IconReport,
+    icon: IconChartBar,
     path: "/analysis",
   },
   {
