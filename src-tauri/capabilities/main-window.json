@@ -1,0 +1,35 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "main-window",
+  "description": "additional permissions for main window only",
+  "context": "local",
+  "windows": [
+    "main"
+  ],
+  "permissions": [
+    "path:default",
+    "app:default",
+    "fs:read-all",
+    "fs:write-all",
+    {
+      "identifier": "fs:scope",
+      "allow": [
+        {
+          "path": "**"
+        }
+      ]
+    },
+    "clipboard-manager:allow-write-text",
+    "webview:allow-create-webview-window",
+    "window:allow-set-focus",
+    "shell:allow-open",
+    "dialog:allow-open"
+  ],
+  "platforms": [
+    "linux",
+    "macOS",
+    "windows",
+    "android",
+    "iOS"
+  ]
+}

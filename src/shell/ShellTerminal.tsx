@@ -59,7 +59,7 @@ const ShellTerminal = ({
     };
 
     // Pipe message from ssh to terminal
-    const sshCommand = Command.create("ssh", sshArgs);
+    const sshCommand = Command.create("exec-ssh", sshArgs);
     sshCommand.on("close", (data) => {
       setShellState("terminated");
 

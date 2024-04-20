@@ -1,20 +1,15 @@
 {
+  "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "nekops",
-  "description": "base permissions for Nekops",
+  "description": "base permissions for every window of Nekops",
   "context": "local",
   "windows": [
-    "main"
+    "main",
+    "nekopshell"
   ],
   "permissions": [
-    "path:default",
     "event:default",
-    "window:default",
-    "app:default",
-    "resources:default",
-    "menu:default",
-    "tray:default",
-    "clipboard-manager:allow-write-text",
-    "webview:allow-create-webview-window"
+    "window:default"
   ],
   "platforms": [
     "linux",

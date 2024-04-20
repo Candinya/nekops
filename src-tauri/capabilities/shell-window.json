@@ -1,0 +1,33 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "shell-window",
+  "description": "additional permissions for shell window only",
+  "context": "local",
+  "windows": [
+    "nekopshell"
+  ],
+  "permissions": [
+    "window:allow-start-dragging",
+    "window:allow-close",
+    {
+      "identifier": "shell:allow-execute",
+      "allow": [
+        {
+          "name": "exec-ssh",
+          "cmd": "ssh",
+          "args": true,
+          "sidecar": false
+        }
+      ]
+    },
+    "shell:allow-stdin-write",
+    "shell:allow-kill"
+  ],
+  "platforms": [
+    "linux",
+    "macOS",
+    "windows",
+    "android",
+    "iOS"
+  ]
+}
