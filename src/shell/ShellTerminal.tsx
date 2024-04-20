@@ -133,13 +133,7 @@ const ShellTerminal = ({
         server.port === 0
       ) {
         // Start debug dummy server
-        startDummy({
-          nonce,
-          terminal,
-          setIsLoading,
-          setShellState,
-          setNewMessage,
-        });
+        startDummy(nonce, terminal, setIsLoading, setShellState, setNewMessage);
       } else {
         // Start normal server
         startSSH(terminal, server, jumpServer);

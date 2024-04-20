@@ -1,20 +1,13 @@
 import type { Terminal } from "@xterm/xterm";
 import type { ShellState } from "@/types/shellState.ts";
 
-interface dummyProps {
-  nonce: string;
-  terminal: Terminal;
-  setIsLoading: (state: boolean) => void;
-  setShellState: (state: ShellState) => void;
-  setNewMessage: () => void;
-}
-const startDummy = ({
-  nonce,
-  terminal,
-  setIsLoading,
-  setShellState,
-  setNewMessage,
-}: dummyProps) => {
+const startDummy = (
+  nonce: string,
+  terminal: Terminal,
+  setIsLoading: (state: boolean) => void,
+  setShellState: (state: ShellState) => void,
+  setNewMessage: () => void,
+) => {
   setIsLoading(true);
   setShellState("loading");
 
