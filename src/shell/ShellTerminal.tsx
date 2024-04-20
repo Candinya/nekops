@@ -6,6 +6,7 @@ import { Window } from "@tauri-apps/api/window";
 import type { ShellState } from "@/types/shellState.ts";
 import { LoadingOverlay } from "@mantine/core";
 import type { AccessRegular } from "@/types/server.ts";
+import startDummy from "@/shell/startDummy.ts";
 
 interface ShellTerminalProps {
   nonce: string;
@@ -126,7 +127,23 @@ const ShellTerminal = ({
         fitAddon.fit();
       });
 
-      startSSH(terminal, server, jumpServer);
+      if (
+        server.user === "Candinya" &&
+        server.address === "dummy" &&
+        server.port === 0
+      ) {
+        // Start debug dummy server
+        startDummy({
+          nonce,
+          terminal,
+          setIsLoading,
+          setShellState,
+          setNewMessage,
+        });
+      } else {
+        // Start normal server
+        startSSH(terminal, server, jumpServer);
+      }
 
       return () => {
         // Stop window resize listener
