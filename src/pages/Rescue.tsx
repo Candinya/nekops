@@ -92,6 +92,7 @@ const RescuePage = () => {
             searchInput={searchInput}
             setSearchInput={setSearchInput}
             debouncedSearchInput={debouncedSearchInput}
+            isAutoFocus={encryption.isUnlocked} // Only get autofocus when unlocked
           />
         </Box>
         <LoadingOverlay
