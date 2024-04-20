@@ -256,7 +256,9 @@ const ShellTabs = () => {
         // variant="unstyled"
         // classNames={classes}
         h="100%"
+        w="100%"
         display="flex"
+        pos="absolute"
         style={{
           flexDirection: "column",
         }}
