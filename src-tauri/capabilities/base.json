@@ -14,7 +14,7 @@
     "menu:default",
     "tray:default",
     "clipboard-manager:allow-write-text",
-    "window:allow-create"
+    "webview:allow-create-webview-window"
   ],
   "platforms": [
     "linux",

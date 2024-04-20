@@ -1,4 +1,4 @@
-import { Window } from "@tauri-apps/api/window";
+import { WebviewWindow } from "@tauri-apps/api/webviewWindow";
 
 const ShellWindowLabel = "nekopshell"; // Nekops Shell
 
@@ -9,10 +9,10 @@ const ShellWindowLabel = "nekopshell"; // Nekops Shell
 export const openShellWindow = async (
   disableContentProtection: boolean = false,
 ) => {
-  let shellWindow = Window.getByLabel(ShellWindowLabel);
+  let shellWindow = WebviewWindow.getByLabel(ShellWindowLabel);
   if (shellWindow === null) {
     // Open new
-    shellWindow = new Window(ShellWindowLabel, {
+    shellWindow = new WebviewWindow(ShellWindowLabel, {
       title: "Shell",
       url: "shell.html",
       width: 1200,
