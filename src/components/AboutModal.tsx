@@ -22,7 +22,8 @@ const AboutModal = ({ isOpen, close }: AboutModalProps) => {
   const [version, setVersion] = useState("Loading...");
 
   const clickVersion = () => {
-    open("https://nekops.app");
+    open("https://pro.ncd.moe/nekops");
+    // TODO: replace with check-update actions
   };
 
   useEffect(() => {
