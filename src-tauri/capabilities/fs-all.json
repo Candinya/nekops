@@ -1,22 +1,19 @@
 {
     "identifier": "fs-all",
-    "description": "fs write permissions",
+    "description": "full disk operation permission",
     "context": "local",
     "windows": [
       "main"
     ],
     "permissions": [
+      "fs:default",
       "fs:read-all",
+      "fs:read-dirs",
+      "fs:read-files",
+      "fs:read-meta",
       "fs:write-all",
-      {
-        "identifier": "scope-fs-full-access",
-        "description": "This scope grant tauri app the accessibility to anywhere on the device.",
-        "scope": {
-            "allow": {
-                "path": "**"
-            }
-        }
-      }
+      "fs:write-files",
+      "fs:scope"
     ],
     "platforms": [
       "linux",
