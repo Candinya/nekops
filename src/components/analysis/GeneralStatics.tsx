@@ -4,7 +4,6 @@ import {
   IconLockOpen,
   IconLockOpenOff,
   IconServer,
-  TablerIconsProps,
 } from "@tabler/icons-react";
 import type { DefaultMantineColor } from "@mantine/core";
 import {
@@ -29,7 +28,7 @@ interface Section {
 }
 
 interface StatCardProps {
-  Icon: (props: TablerIconsProps) => ReactNode;
+  Icon: (props: any) => ReactNode;
   sections: Section[];
   label: string;
   stats: string | number;

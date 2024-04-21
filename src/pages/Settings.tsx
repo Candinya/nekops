@@ -21,7 +21,6 @@ import {
   Tooltip,
   useMantineColorScheme,
 } from "@mantine/core";
-import type { TablerIconsProps } from "@tabler/icons-react";
 import {
   IconBolt,
   IconCode,
@@ -54,6 +53,7 @@ import {
 import { open } from "@tauri-apps/plugin-dialog";
 import DeleteItemButton from "@/components/DeleteItemButton.tsx";
 import { readSnippets } from "@/slices/snippetsSlice.ts";
+import type { ReactNode } from "react";
 
 const colorSchemeData = [
   {
@@ -75,7 +75,7 @@ const colorSchemeData = [
 
 const transformSegmentedControlOptions = (
   data: {
-    icon: (props: TablerIconsProps) => JSX.Element;
+    icon: (props: any) => ReactNode;
     text: string;
     value: string;
   }[],
