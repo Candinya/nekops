@@ -16,10 +16,12 @@ struct Payload {
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_single_instance::init(|app, argv, cwd| {
-            // Focus on the already created instance
-            let window = app.get_webview_window("main").unwrap();
-            window.unminimize().unwrap();
-            window.set_focus().unwrap();
+            // Find main window of existing instance
+            let main_window = app.get_webview_window("main").unwrap();
+
+            // Focus on main window
+            main_window.unminimize().expect("Can't un-minimize Window");
+            main_window.set_focus().expect("Can't focus Window");
 
             // Print message
             println!("{}, {argv:?}, {cwd}", app.package_info().name);
@@ -31,6 +33,18 @@ pub fn run() {
         .plugin(tauri_plugin_clipboard_manager::init())
         .plugin(tauri_plugin_dialog::init())
         .invoke_handler(tauri::generate_handler![greet])
+        .on_window_event(|window, event| match event {
+            tauri::WindowEvent::CloseRequested { api, .. } => {
+                // Window state control: only destroy main window when there's no other windows
+                if window.label() == "main" && // Is main window
+                    window.app_handle().webview_windows().len() > 1 { // Is not the only window
+
+                    window.minimize().unwrap(); // Minimize main window
+                    api.prevent_close(); // And prevent close
+                }
+            }
+            _ => {}
+        })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
