@@ -1,4 +1,4 @@
-// use tauri::{Manager};
+use tauri::{Manager};
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
@@ -16,8 +16,14 @@ struct Payload {
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_single_instance::init(|app, argv, cwd| {
+            // Focus on the already created instance
+            let window = app.get_webview_window("main").unwrap();
+            window.unminimize().unwrap();
+            window.set_focus().unwrap();
+
+            // Print message
             println!("{}, {argv:?}, {cwd}", app.package_info().name);
-            // app.emit_all("single-instance", Payload { args: argv, cwd }).unwrap(); // Not working for tauri v2
+            app.emit("single-instance", Payload { args: argv, cwd }).unwrap();
         }))
         // .plugin(tauri_plugin_window::init())
         .plugin(tauri_plugin_shell::init())
