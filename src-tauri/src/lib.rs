@@ -8,8 +8,8 @@ fn greet(name: &str) -> String {
 
 #[derive(Clone, serde::Serialize)]
 struct Payload {
-  args: Vec<String>,
-  cwd: String,
+    args: Vec<String>,
+    cwd: String,
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
