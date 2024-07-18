@@ -1,4 +1,6 @@
+/* Required by Payload
 use tauri::Manager;
+*/
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
@@ -6,17 +8,20 @@ fn greet(name: &str) -> String {
     format!("Hello, {}! You've been greeted from Rust!", name)
 }
 
+/* Required by tauri_plugin_single_instance
 #[derive(Clone, serde::Serialize)]
 struct Payload {
     args: Vec<String>,
     cwd: String,
 }
+*/
 
 static MAIN_WINDOW_LABEL: &str = "main";
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        /* Disabled due to lack of stability
         .plugin(tauri_plugin_single_instance::init(|app, argv, cwd| {
             // Find main window of existing instance
             let main_window_option = app.get_webview_window(MAIN_WINDOW_LABEL);
@@ -44,6 +49,7 @@ pub fn run() {
             println!("{}, {argv:?}, {cwd}", app.package_info().name);
             app.emit("single-instance", Payload { args: argv, cwd }).unwrap();
         }))
+        */
         // .plugin(tauri_plugin_window::init())
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_fs::init())
