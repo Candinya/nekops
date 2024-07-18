@@ -17,9 +17,12 @@ import type { Event } from "@tauri-apps/api/event";
 import { emit, listen } from "@tauri-apps/api/event";
 import { useEffect, useRef, useState } from "react";
 import {
-  EventAckSSHWindowReady,
-  EventIsSSHWindowReady,
   EventNewSSHName,
+  EventRequestSSHWindowReadyName,
+  EventRequestTabsListName,
+  EventResponseSSHWindowReadyName,
+  EventResponseTabsListName,
+  EventSetActiveTabByNonceName,
 } from "@/events/name.ts";
 import type { EventNewSSHPayload, SSHSingleServer } from "@/events/payload.ts";
 import { Window } from "@tauri-apps/api/window";
@@ -165,13 +168,28 @@ const ShellTabs = () => {
     currentActiveTabRef.current = currentActiveTab;
   }, [currentActiveTab]);
 
+  // Response tabs data event (initialize / update)
+  const responseTabsList = () => {
+    emit(EventResponseTabsListName, tabsDataRef.current);
+  };
+  useEffect(responseTabsList, [tabsData]);
+
+  // Event listeners
   const newSSHEventListener = (ev: Event<EventNewSSHPayload>) => {
-    for (const server of ev.payload.servers) {
+    for (const server of ev.payload.server) {
       tabsDataHandlers.append(server);
       tabsStateHandlers.append("loading");
       tabsNewMessageHandlers.append(false);
       setCurrentActiveTab(server.nonce);
     }
+  };
+
+  const setActiveTabByNonceListener = (ev: Event<string>) => {
+    setCurrentActiveTab(ev.payload);
+  };
+
+  const requestTabsListListener = () => {
+    responseTabsList();
   };
 
   // Close (terminate) confirm
@@ -235,20 +253,30 @@ const ShellTabs = () => {
 
   useEffect(() => {
     const stopSSHWindowReadyPromise = listen<string>(
-      EventIsSSHWindowReady,
+      EventRequestSSHWindowReadyName,
       async (ev) => {
-        await emit(EventAckSSHWindowReady, ev.payload);
+        await emit(EventResponseSSHWindowReadyName, ev.payload);
       },
     );
     const stopSSHListenPromise = listen<EventNewSSHPayload>(
       EventNewSSHName,
       newSSHEventListener,
     );
+    const stopSetActiveTabByNoncePromise = listen<string>(
+      EventSetActiveTabByNonceName,
+      setActiveTabByNonceListener,
+    );
+    const stopRequestTabsListPromise = listen(
+      EventRequestTabsListName,
+      requestTabsListListener,
+    );
 
     return () => {
       (async () => {
         (await stopSSHWindowReadyPromise)();
         (await stopSSHListenPromise)();
+        (await stopSetActiveTabByNoncePromise)();
+        (await stopRequestTabsListPromise)();
       })();
     };
   }, []);

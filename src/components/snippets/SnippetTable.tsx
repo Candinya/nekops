@@ -17,7 +17,7 @@ const SnippetTableHead = () => (
     <Table.Th style={{ width: rem(40) }} />
     <Table.Th>Snippet Name</Table.Th>
     <Table.Th>Tags</Table.Th>
-    <Table.Th style={actionRowStyle}>Actions</Table.Th>
+    <Table.Th style={actionRowStyle()}>Actions</Table.Th>
   </Table.Tr>
 );
 
@@ -53,8 +53,8 @@ const SnippetTableRow = ({
         <Table.Td hidden={snapshot.isDragging}>
           {snippet.tags.join(", ")}
         </Table.Td>
-        <Table.Td style={actionRowStyle} hidden={snapshot.isDragging}>
-          <Group gap="xs" justify="center">
+        <Table.Td style={actionRowStyle()} hidden={snapshot.isDragging}>
+          <Group gap="xs">
             {/*Copy*/}
             <CopyButton value={snippet.code}>
               {({ copied, copy }) => (

@@ -11,9 +11,9 @@ import { emit, listen } from "@tauri-apps/api/event";
 import type { EventNewSSHPayload } from "@/events/payload.ts";
 import { notifications } from "@mantine/notifications";
 import {
-  EventAckSSHWindowReady,
-  EventIsSSHWindowReady,
   EventNewSSHName,
+  EventRequestSSHWindowReadyName,
+  EventResponseSSHWindowReadyName,
 } from "@/events/name.ts";
 import { randomString } from "@/utils/randomString.ts";
 import ServerCardsVirtualScroll from "@/components/ServerCardsVirtualScroll.tsx";
@@ -45,7 +45,7 @@ const startSSHSession = async (
 
   // Wait till window is ready
   const isReadyListenerStopFn = await listen<string>(
-    EventAckSSHWindowReady,
+    EventResponseSSHWindowReadyName,
     async (ev) => {
       if (ev.payload !== nonce) {
         // Not for this session
@@ -68,7 +68,7 @@ const startSSHSession = async (
 
       // Emit SSH event
       const newSSHEvent: EventNewSSHPayload = {
-        servers: [
+        server: [
           {
             nonce,
             name: server.name,
@@ -87,7 +87,7 @@ const startSSHSession = async (
 
   // Start check interval
   isReadyChecker = setInterval(() => {
-    emit(EventIsSSHWindowReady, nonce);
+    emit(EventRequestSSHWindowReadyName, nonce);
   }, 200);
 
   // Set timeout notice

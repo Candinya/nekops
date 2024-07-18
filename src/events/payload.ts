@@ -9,6 +9,10 @@ export interface SSHSingleServer {
 }
 
 export interface EventNewSSHPayload {
-  servers: SSHSingleServer[];
-  code?: string;
+  server: SSHSingleServer[];
+}
+
+export interface EventSendCommandByNoncePayload {
+  nonce: string[];
+  command: string;
 }

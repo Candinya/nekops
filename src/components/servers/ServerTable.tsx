@@ -12,7 +12,7 @@ const ServerTableHead = () => (
     <Table.Th>Server Name</Table.Th>
     <Table.Th>Server ID</Table.Th>
     <Table.Th>Tags</Table.Th>
-    <Table.Th style={actionRowStyle}>Actions</Table.Th>
+    <Table.Th style={actionRowStyle()}>Actions</Table.Th>
   </Table.Tr>
 );
 
@@ -51,8 +51,8 @@ const ServerTableRow = ({
         <Table.Td hidden={snapshot.isDragging}>
           {server.tags.join(", ")}
         </Table.Td>
-        <Table.Td style={actionRowStyle} hidden={snapshot.isDragging}>
-          <Group gap="xs" justify="center">
+        <Table.Td style={actionRowStyle()} hidden={snapshot.isDragging}>
+          <Group gap="xs">
             {/*Show Card*/}
             <Tooltip label={"Show"} openDelay={500}>
               <ActionIcon color={server.color} onClick={show}>

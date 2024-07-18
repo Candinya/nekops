@@ -7,6 +7,9 @@ import type { ShellState } from "@/types/shellState.ts";
 import { LoadingOverlay } from "@mantine/core";
 import type { AccessRegular } from "@/types/server.ts";
 import startDummy from "@/shell/startDummy.ts";
+import { EventSendCommandByNoncePayload } from "@/events/payload.ts";
+import { Event, listen } from "@tauri-apps/api/event";
+import { EventSendCommandByNonceName } from "@/events/name.ts";
 
 interface ShellTerminalProps {
   nonce: string;
@@ -139,7 +142,28 @@ const ShellTerminal = ({
         startSSH(terminal, server, jumpServer);
       }
 
+      // Listen to multirun commands
+      const sendCommandByNonceListener = (
+        ev: Event<EventSendCommandByNoncePayload>,
+      ) => {
+        if (ev.payload.nonce.includes(nonce)) {
+          // TODO: send command to process (SSH or dummy)
+          console.log(ev.payload.command);
+          terminal.writeln(ev.payload.command);
+        }
+      };
+      const stopSendCommandByNoncePromise =
+        listen<EventSendCommandByNoncePayload>(
+          EventSendCommandByNonceName,
+          sendCommandByNonceListener,
+        );
+
       return () => {
+        // Stop event listeners
+        (async () => {
+          (await stopSendCommandByNoncePromise)();
+        })();
+
         // Stop window resize listener
         (async () => {
           (await stopListenWindowResizeEvent)();
