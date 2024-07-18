@@ -1,6 +1,4 @@
-/* Required by Payload
 use tauri::Manager;
-*/
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
@@ -56,18 +54,18 @@ pub fn run() {
         .plugin(tauri_plugin_clipboard_manager::init())
         .plugin(tauri_plugin_dialog::init())
         .invoke_handler(tauri::generate_handler![greet])
-        // .on_window_event(|window, event| match event {
-        //     tauri::WindowEvent::CloseRequested { api, .. } => {
-        //         // Window state control: only destroy main window when there's no other windows
-        //         if window.label() == MAIN_WINDOW_LABEL && // Is main window
-        //             window.app_handle().webview_windows().len() > 1 { // Is not the only window
-        //
-        //             window.minimize().unwrap(); // Minimize main window
-        //             api.prevent_close(); // And prevent close
-        //         }
-        //     }
-        //     _ => {}
-        // })
+        .on_window_event(|window, event| match event {
+            tauri::WindowEvent::CloseRequested { api, .. } => {
+                // Window state control: only destroy main window when there's no other windows
+                if window.label() == MAIN_WINDOW_LABEL && // Is main window
+                    window.app_handle().webview_windows().len() > 1 { // Is not the only window
+
+                    window.minimize().unwrap(); // Minimize main window
+                    api.prevent_close(); // And prevent close
+                }
+            }
+            _ => {}
+        })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
