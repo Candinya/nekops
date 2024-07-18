@@ -1,7 +1,7 @@
 import type { Terminal } from "@xterm/xterm";
 import type { ShellState } from "@/types/shellState.ts";
 
-const startDummy = (
+export const startDummy = (
   nonce: string,
   terminal: Terminal,
   setIsLoading: (state: boolean) => void,
@@ -141,5 +141,3 @@ const startDummy = (
     prompt();
   }, 3_000);
 };
-
-export default startDummy;
