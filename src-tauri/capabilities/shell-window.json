@@ -10,7 +10,7 @@
     "window:allow-start-dragging",
     "window:allow-close",
     {
-      "identifier": "shell:allow-execute",
+      "identifier": "shell:allow-spawn",
       "allow": [
         {
           "name": "exec-ssh",
