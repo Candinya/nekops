@@ -1,5 +1,4 @@
-import { ActionIcon, Burger, Group, Menu, Title } from "@mantine/core";
-import type { MouseEventHandler } from "react";
+import { ActionIcon, Group, Menu, Title } from "@mantine/core";
 import {
   IconCheck,
   IconHeart,
@@ -63,13 +62,10 @@ const WorkspaceSelector = () => {
 };
 
 interface HeaderProps {
-  isNavOpen: boolean;
-  toggleNav: MouseEventHandler<HTMLButtonElement>;
   openAboutModal: () => void;
 }
-const Header = ({ isNavOpen, toggleNav, openAboutModal }: HeaderProps) => (
+const Header = ({ openAboutModal }: HeaderProps) => (
   <Group h="100%" px="md">
-    <Burger opened={isNavOpen} onClick={toggleNav} size="sm" />
     <Group justify="space-between" style={{ flex: 1 }}>
       <Group>
         <img alt="Nekops" src="/icon.png" width={40} height={40} />

@@ -13,7 +13,6 @@ import { readEncryption } from "@/slices/encryptionSlice.ts";
 import AboutModal from "@/components/AboutModal.tsx";
 
 const App = () => {
-  const [isNavOpen, { toggle: toggleNav }] = useDisclosure(true);
   const [isAboutModalOpen, { open: openAboutModal, close: closeAboutModal }] =
     useDisclosure(false);
 
@@ -34,19 +33,15 @@ const App = () => {
         header={{ height: 60 }}
         navbar={{
           width: 200,
-          breakpoint: "sm",
+          breakpoint: 0,
           collapsed: {
-            mobile: !isNavOpen,
-            desktop: !isNavOpen,
+            mobile: false,
+            desktop: false,
           },
         }}
       >
         <AppShell.Header>
-          <Header
-            isNavOpen={isNavOpen}
-            toggleNav={toggleNav}
-            openAboutModal={openAboutModal}
-          />
+          <Header openAboutModal={openAboutModal} />
         </AppShell.Header>
 
         <AppShell.Navbar>
