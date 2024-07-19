@@ -88,34 +88,37 @@ export const startDummy = (
       // Do nothing
       return;
     }
-    switch (data) {
-      case "\u0003": // Ctrl+C
-        terminal.writeln("^C");
-        prompt();
-        break;
-      case "\u0004": // Ctrl+D
-        terminal.writeln("logout");
-        terminate();
-        break;
-      case "\r": // Enter
-        runCommand();
-        commandBuf = "";
-        break;
-      case "\u007F": // Backspace (DEL)
-        if (commandBuf.length > 0) {
-          terminal.write("\b \b");
-          commandBuf = commandBuf.substring(0, commandBuf.length - 1);
-        }
-        break;
-      default:
-        if (
-          (data >= String.fromCharCode(0x20) &&
-            data <= String.fromCharCode(0x7e)) ||
-          data >= "\u00a0"
-        ) {
-          commandBuf += data;
-          terminal.write(data);
-        }
+    console.log("New data: ", JSON.stringify(data));
+    for (const char of data) {
+      switch (char) {
+        case "\u0003": // Ctrl+C
+          terminal.writeln("^C");
+          prompt();
+          break;
+        case "\u0004": // Ctrl+D
+          terminal.writeln("logout");
+          terminate();
+          break;
+        case "\r": // Enter
+          runCommand();
+          commandBuf = "";
+          break;
+        case "\u007F": // Backspace (DEL)
+          if (commandBuf.length > 0) {
+            terminal.write("\b \b");
+            commandBuf = commandBuf.substring(0, commandBuf.length - 1);
+          }
+          break;
+        default:
+          if (
+            (char >= String.fromCharCode(0x20) &&
+              char <= String.fromCharCode(0x7e)) ||
+            char >= "\u00a0"
+          ) {
+            commandBuf += char;
+            terminal.write(char);
+          }
+      }
     }
   });
 

@@ -205,8 +205,11 @@ const ShellTabs = () => {
     tabsNewMessageHandlers.remove(index);
 
     if (newTabsLength === 0) {
-      // Close window
-      Window.getCurrent().close();
+      // After events emitted
+      requestIdleCallback(() => {
+        // Close window
+        Window.getCurrent().close();
+      });
     }
   };
 

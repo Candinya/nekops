@@ -85,9 +85,7 @@ const ShellTerminal = ({
         ev: Event<EventSendCommandByNoncePayload>,
       ) => {
         if (ev.payload.nonce.includes(nonce)) {
-          // TODO: send command to process (SSH or dummy)
-          console.log(ev.payload.command);
-          terminal.writeln(ev.payload.command);
+          terminal.input(ev.payload.command);
         }
       };
       const stopSendCommandByNoncePromise =
