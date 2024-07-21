@@ -206,15 +206,37 @@ const WorkspaceGroup = ({ form }: WorkspaceGroupProps) => {
   );
 };
 
+const ColorSchemeSelector = () => {
+  const { colorScheme, setColorScheme, clearColorScheme } =
+    useMantineColorScheme();
+
+  return (
+    <Flex direction="column">
+      <Text size="sm" fw={500} mb={2}>
+        Color Scheme
+      </Text>
+      <SegmentedControl
+        data={transformSegmentedControlOptions(colorSchemeData)}
+        value={colorScheme}
+        onChange={(newScheme) => {
+          if (["light", "dark", "auto"].includes(newScheme)) {
+            setColorScheme(newScheme as MantineColorScheme);
+          } else {
+            // Unknown value
+            clearColorScheme();
+          }
+        }}
+      />
+    </Flex>
+  );
+};
+
 const SettingsPage = () => {
   // Redux related
   const settings = useSelector((state: RootState) => state.settings);
   const encryption = useSelector((state: RootState) => state.encryption);
   const servers = useSelector((state: RootState) => state.servers);
   const dispatch = useDispatch<AppDispatch>();
-
-  const { colorScheme, setColorScheme, clearColorScheme } =
-    useMantineColorScheme();
 
   const form = useForm<SettingsExtended>({
     initialValues: {
@@ -289,23 +311,7 @@ const SettingsPage = () => {
         <form onSubmit={form.onSubmit(save)}>
           <Flex direction="column" gap="md">
             <Fieldset legend="Global">
-              <Flex direction="column">
-                <Text size="sm" fw={500} mb={2}>
-                  Color Scheme
-                </Text>
-                <SegmentedControl
-                  data={transformSegmentedControlOptions(colorSchemeData)}
-                  value={colorScheme}
-                  onChange={(newScheme) => {
-                    if (["light", "dark", "auto"].includes(newScheme)) {
-                      setColorScheme(newScheme as MantineColorScheme);
-                    } else {
-                      // Unknown value
-                      clearColorScheme();
-                    }
-                  }}
-                />
-              </Flex>
+              <ColorSchemeSelector />
               <Flex direction="column" mt="md">
                 <Text size="sm" fw={500} mb={2}>
                   Default SSH Action
