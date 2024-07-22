@@ -67,12 +67,14 @@ const MultirunPage = () => {
   const setCode = (code: string) => {
     if (codeInputRef.current) {
       codeInputRef.current.value = code;
+      codeInputRef.current.focus();
     }
   };
 
   const appendCode = (code: string) => {
     if (codeInputRef.current) {
       codeInputRef.current.value += code;
+      codeInputRef.current.focus();
     }
   };
 
@@ -152,7 +154,7 @@ const MultirunPage = () => {
 
           <Flex direction="row" w="100%" gap="md" align="center">
             {/*Special chars*/}
-            <HoverCard withArrow>
+            <HoverCard position="left-end" withArrow arrowPosition="center">
               <HoverCard.Target>
                 <ActionIcon>
                   <IconWand style={actionIconStyle} />
