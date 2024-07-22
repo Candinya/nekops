@@ -1,0 +1,24 @@
+.editor {
+  counter-reset: line;
+}
+
+.editor textarea {
+  outline: none;
+}
+
+.editor textarea,
+.editor pre {
+  padding-left: 3rem !important; /* 3.6rem for 1000 line codes */
+}
+
+.editor .line-number {
+  position: absolute;
+  left: 0;
+  color: var(--mantine-color-text);
+  text-align: right;
+  width: 2.4rem; /* 3rem for 1000 line codes */
+  font-weight: 100;
+  padding-right: 0.3rem;
+  border-right: 1px solid;
+  opacity: 0.5;
+}

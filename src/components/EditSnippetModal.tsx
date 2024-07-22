@@ -1,7 +1,8 @@
-import { Button, Modal, TagsInput, Textarea, TextInput } from "@mantine/core";
+import { Button, Modal, TagsInput, TextInput } from "@mantine/core";
 import { defaultSnippet, type Snippet } from "@/types/snippet.ts";
 import { useForm } from "@mantine/form";
 import { useEffect } from "react";
+import CodeHighlightEditor from "@/components/CodeHighlightEditor";
 
 interface EditSnippetModalProps {
   isOpen: boolean;
@@ -55,11 +56,9 @@ const EditSnippetModal = ({
 
         <TagsInput label="Tags" clearable {...form.getInputProps("tags")} />
 
-        <Textarea
-          label="Code"
-          autosize
-          minRows={8}
-          {...form.getInputProps("code")}
+        <CodeHighlightEditor
+          value={form.getInputProps("code").value}
+          onChange={form.getInputProps("code").onChange}
         />
 
         <Button mt="lg" type="submit">

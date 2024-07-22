@@ -6,7 +6,6 @@ import {
   HoverCard,
   ScrollArea,
   SimpleGrid,
-  Textarea,
 } from "@mantine/core";
 import { useEffect, useRef, useState } from "react";
 import TabsTable from "@/components/multirun/TabsTable.tsx";
@@ -30,6 +29,7 @@ import { notifications } from "@mantine/notifications";
 import { SpecialCharsMapping } from "@/components/multirun/specialCharsMapping.ts";
 import { actionIconStyle } from "@/common/actionStyles.ts";
 import SpecialCharsTable from "@/components/multirun/SpecialCharsTable.tsx";
+import CodeHighlightEditor from "@/components/CodeHighlightEditor";
 
 const MultirunPage = () => {
   const snippets = useSelector((state: RootState) => state.snippets);
@@ -37,8 +37,8 @@ const MultirunPage = () => {
   const [selectedTabsNonce, setSelectedTabsNonce] = useState<string[]>([]);
   const [tabs, setTabs] = useState<SSHSingleServer[]>([]);
 
-  const codeInputRef = useRef<HTMLTextAreaElement>(null);
   const includesEnterCheckboxRef = useRef<HTMLInputElement>(null);
+  const [code, setCode] = useState("");
 
   const setActivatedTabByNonce = (nonce: string) => {
     emit(EventSetActiveTabByNonceName, nonce);
@@ -64,23 +64,13 @@ const MultirunPage = () => {
     }
   }, [tabs]);
 
-  const setCode = (code: string) => {
-    if (codeInputRef.current) {
-      codeInputRef.current.value = code;
-      codeInputRef.current.focus();
-    }
-  };
-
-  const appendCode = (code: string) => {
-    if (codeInputRef.current) {
-      codeInputRef.current.value += code;
-      codeInputRef.current.focus();
-    }
+  const appendCode = (input: string) => {
+    setCode(code + input);
   };
 
   const sendCommand = () => {
-    if (codeInputRef.current?.value) {
-      let rawCommand = codeInputRef.current.value;
+    if (code) {
+      let rawCommand = code;
       // Replace commands
       for (const m of SpecialCharsMapping) {
         rawCommand = rawCommand.replaceAll(m.key, m.value);
@@ -144,12 +134,11 @@ const MultirunPage = () => {
           </ScrollArea>
 
           {/*Code Input*/}
-          <Textarea
-            ref={codeInputRef}
-            autosize
-            minRows={6}
-            maxRows={10}
-            placeholder={"# Codes here...\necho 'Hello Nekops!'"}
+          <CodeHighlightEditor
+            label="Command"
+            value={code}
+            onChange={setCode}
+            placeholder={"echo 'Hello Nekops!'"}
           />
 
           <Flex direction="row" w="100%" gap="md" align="center">

@@ -1,0 +1,9 @@
+.wrapper {
+  max-height: 12rem;
+  overflow-y: auto;
+}
+
+.input {
+  font-family: "Fira code", "Fira Mono", monospace;
+  min-height: 12rem;
+}
