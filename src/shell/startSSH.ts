@@ -30,7 +30,9 @@ export const startSSH = (
   console.log("Args", sshArgs.join(" "));
 
   // Pipe message from ssh to terminal
-  const sshCommand = Command.create("exec-ssh", sshArgs);
+  const sshCommand = Command.create("exec-ssh", sshArgs, {
+    encoding: "raw",
+  });
   sshCommand.on("close", (data) => {
     setShellState("terminated");
 
@@ -54,13 +56,15 @@ export const startSSH = (
     stateUpdateOnNewMessage();
 
     terminal.write(data);
-    console.log("stdout", data);
+    // console.log("stdout", data);
   });
   sshCommand.stderr.on("data", (data) => {
     stateUpdateOnNewMessage();
 
-    terminal.write(`\x1B[0;0;31m${data}\x1B[0m`);
-    console.log("stderr", data);
+    terminal.write("\x1B[0;0;31m"); // Write color control bytes to change output color to red
+    terminal.write(data); // Write Uint8Array data in raw mode
+    terminal.write("\x1B[0m"); // Write color reset bytes to recover color to default (white)
+    // console.log("stderr", data);
   });
 
   // Start SSH process
