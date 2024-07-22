@@ -15,6 +15,7 @@ const SpecialCharsTable = ({ append }: SpecialCharsTableProps) => (
     <Table.Tbody>
       {SpecialCharsMapping.map((char) => (
         <Table.Tr
+          key={char.key}
           onClick={() => append(char.key)}
           style={{
             cursor: "pointer",
