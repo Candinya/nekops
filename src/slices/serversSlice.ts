@@ -1,6 +1,11 @@
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { exists, readTextFile, writeTextFile } from "@tauri-apps/plugin-fs";
+import {
+  exists,
+  readTextFile,
+  remove,
+  writeTextFile,
+} from "@tauri-apps/plugin-fs";
 import type { Server } from "@/types/server.ts";
 import type { RootState } from "@/store.ts";
 import { checkParentDir } from "@/slices/utils.ts";
@@ -80,6 +85,18 @@ export const saveServers = createAsyncThunk(
   },
 );
 
+export const deleteServerFile = createAsyncThunk(
+  "servers/delete-server-file",
+  async (id: string, { getState }) => {
+    const state: any = getState() as RootState;
+    const serversDirectoryPath = await path.join(
+      state.settings.current_workspace.data_dir,
+      ServersBaseDir,
+    );
+    await remove(await path.join(serversDirectoryPath, id + ServersFileSuffix));
+  },
+);
+
 export const serversSlice = createSlice({
   name: "servers",
   initialState: noServer,
@@ -116,6 +133,7 @@ export const serversSlice = createSlice({
       (_, action: PayloadAction<Server[]>) => action.payload,
     );
     builder.addCase(saveServers.fulfilled, () => {});
+    builder.addCase(deleteServerFile.fulfilled, () => {});
   },
 });
 

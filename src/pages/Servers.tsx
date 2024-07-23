@@ -16,6 +16,7 @@ import EditServerModal from "@/components/EditServerModal";
 import type { AppDispatch, RootState } from "@/store.ts";
 import {
   addServer,
+  deleteServerFile,
   removeServerByIndex,
   reorderServer,
   saveServers,
@@ -91,6 +92,7 @@ const ServersPage = () => {
 
   const del = (server: Server) => {
     dispatch(removeServerByIndex(servers.findIndex((s) => s.id === server.id)));
+    dispatch(deleteServerFile(server.id));
     dispatch(saveServers([]));
   };
 
