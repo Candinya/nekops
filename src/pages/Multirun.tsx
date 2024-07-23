@@ -1,13 +1,13 @@
 import {
   ActionIcon,
+  ActionIconGroup,
   Button,
-  Checkbox,
   Flex,
   HoverCard,
   ScrollArea,
   SimpleGrid,
 } from "@mantine/core";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import TabsTable from "@/components/multirun/TabsTable.tsx";
 import type { Event } from "@tauri-apps/api/event";
 import { emit, listen } from "@tauri-apps/api/event";
@@ -21,7 +21,12 @@ import type {
   EventSendCommandByNoncePayload,
   SSHSingleServer,
 } from "@/events/payload.ts";
-import { IconSend, IconWand } from "@tabler/icons-react";
+import {
+  IconInputCheck,
+  IconSend,
+  IconTrash,
+  IconWand,
+} from "@tabler/icons-react";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/store.ts";
 import SnippetsTable from "@/components/multirun/SnippetsTable.tsx";
@@ -30,6 +35,8 @@ import { SpecialCharsMapping } from "@/components/multirun/specialCharsMapping.t
 import { actionIconStyle } from "@/common/actionStyles.ts";
 import SpecialCharsTable from "@/components/multirun/SpecialCharsTable.tsx";
 import CodeHighlightEditor from "@/components/CodeHighlightEditor";
+import { getHotkeyHandler } from "@mantine/hooks";
+import SwitchButton from "@/components/multirun/SwitchButton.tsx";
 
 const MultirunPage = () => {
   const snippets = useSelector((state: RootState) => state.snippets);
@@ -37,8 +44,12 @@ const MultirunPage = () => {
   const [selectedTabsNonce, setSelectedTabsNonce] = useState<string[]>([]);
   const [tabs, setTabs] = useState<SSHSingleServer[]>([]);
 
-  const includesEnterCheckboxRef = useRef<HTMLInputElement>(null);
-  const [code, setCode] = useState("");
+  const [command, setCommand] = useState("");
+
+  const [isAddAdditionalEnterEnabled, setIsAddAdditionalEnterEnabled] =
+    useState<boolean>(true);
+  const [isClearCommandInputEnabled, setIsClearCommandInputEnabled] =
+    useState<boolean>(false);
 
   const setActivatedTabByNonce = (nonce: string) => {
     emit(EventSetActiveTabByNonceName, nonce);
@@ -65,18 +76,18 @@ const MultirunPage = () => {
   }, [tabs]);
 
   const appendCode = (input: string) => {
-    setCode(code + input);
+    setCommand(command + input);
   };
 
   const sendCommand = () => {
-    if (code) {
-      let rawCommand = code;
+    if (selectedTabsNonce.length > 0 && command) {
+      let rawCommand = command;
       // Replace commands
       for (const m of SpecialCharsMapping) {
         rawCommand = rawCommand.replaceAll(m.key, m.value);
       }
-      // Add additional enter key (optional)
-      if (includesEnterCheckboxRef.current?.checked) {
+      // Add additional enter key
+      if (isAddAdditionalEnterEnabled && !rawCommand.endsWith("\r")) {
         rawCommand += "\r";
       }
       const sendCommandEventPayload: EventSendCommandByNoncePayload = {
@@ -89,6 +100,9 @@ const MultirunPage = () => {
         title: "Command sent!",
         message: "Feel free to view results in Shell window :D",
       });
+      if (isClearCommandInputEnabled) {
+        setCommand("");
+      }
     }
   };
 
@@ -130,15 +144,16 @@ const MultirunPage = () => {
               flexGrow: 1,
             }}
           >
-            <SnippetsTable snippets={snippets} show={setCode} />
+            <SnippetsTable snippets={snippets} show={setCommand} />
           </ScrollArea>
 
           {/*Code Input*/}
           <CodeHighlightEditor
             label="Command"
-            value={code}
-            onChange={setCode}
+            value={command}
+            onChange={setCommand}
             placeholder={"echo 'Hello Nekops!'"}
+            onKeyDown={getHotkeyHandler([["mod+Enter", sendCommand]])}
           />
 
           <Flex direction="row" w="100%" gap="md" align="center">
@@ -154,12 +169,31 @@ const MultirunPage = () => {
               </HoverCard.Dropdown>
             </HoverCard>
 
-            {/*Additional ending enter*/}
-            <Checkbox
-              ref={includesEnterCheckboxRef}
-              defaultChecked
-              label="Enter"
-            />
+            {/*Additional options*/}
+            <ActionIconGroup>
+              {/*Add additional enter*/}
+              <SwitchButton
+                isEnabled={isAddAdditionalEnterEnabled}
+                setIsEnabled={setIsAddAdditionalEnterEnabled}
+                description={
+                  <>
+                    Add additional enter to <br />
+                    the end of command (if not present)
+                  </>
+                }
+                color={"yellow"}
+                icon={IconInputCheck}
+              />
+
+              {/*Clear command input after send*/}
+              <SwitchButton
+                isEnabled={isClearCommandInputEnabled}
+                setIsEnabled={setIsClearCommandInputEnabled}
+                description={<>Clear command input after send</>}
+                color={"red"}
+                icon={IconTrash}
+              />
+            </ActionIconGroup>
 
             {/*Send*/}
             <Button

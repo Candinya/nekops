@@ -5,6 +5,7 @@ import "prismjs/themes/prism-tomorrow.css";
 import { Input } from "@mantine/core";
 import classes from "./styles.module.css";
 import "./line-number.css";
+import type { KeyboardEventHandler } from "react";
 
 const highlightWithLineNumbers = (input: string) =>
   highlight(input, languages.bash, "bash")
@@ -17,12 +18,15 @@ interface CodeHighlightEditorProps {
   value: string;
   onChange: (code: string) => void;
   placeholder?: string;
+  onKeyDown?: KeyboardEventHandler<HTMLDivElement> &
+    KeyboardEventHandler<HTMLTextAreaElement>;
 }
 const CodeHighlightEditor = ({
   label,
   value,
   onChange,
   placeholder,
+  onKeyDown,
 }: CodeHighlightEditorProps) => (
   <Input.Wrapper label={label || "Code"}>
     <Input
@@ -38,6 +42,7 @@ const CodeHighlightEditor = ({
       }}
       multiline
       placeholder={placeholder}
+      onKeyDown={onKeyDown}
     />
   </Input.Wrapper>
 );
