@@ -3,6 +3,7 @@ import settingsReducer from "@/slices/settingsSlice.ts";
 import serversReducer from "@/slices/serversSlice.ts";
 import snippetsReducer from "@/slices/snippetsSlice.ts";
 import encryptionReducer from "@/slices/encryptionSlice.ts";
+import connectHistoryReducer from "@/slices/connectHistorySlice.ts";
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     servers: serversReducer,
     snippets: snippetsReducer,
     encryption: encryptionReducer,
+    connect_history: connectHistoryReducer,
   },
 });
 

@@ -1,6 +1,6 @@
 import { Box, Flex, Menu } from "@mantine/core";
-import { useSelector } from "react-redux";
-import type { RootState } from "@/store.ts";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "@/store.ts";
 import SearchBar from "@/components/SearchBar.tsx";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useDebouncedValue, useMouse } from "@mantine/hooks";
@@ -25,6 +25,10 @@ import {
 import { writeText } from "@tauri-apps/plugin-clipboard-manager";
 import { IconCode, IconRocket } from "@tabler/icons-react";
 import { menuIconStyle } from "@/common/actionStyles.ts";
+import {
+  appendConnectHistory,
+  saveConnectHistory,
+} from "@/slices/connectHistorySlice.ts";
 
 const startSSHSession = async (
   server: Server,
@@ -220,6 +224,8 @@ const SSHPage = () => {
   const encryption = useSelector((state: RootState) => state.encryption);
   const settings = useSelector((state: RootState) => state.settings);
 
+  const dispatch = useDispatch<AppDispatch>();
+
   const clickServerCard = (server: Server, jumpServer?: Server) => {
     switch (settings.default_ssh_action) {
       case "start":
@@ -230,6 +236,7 @@ const SSHPage = () => {
         copySSHCommand(server, jumpServer);
         break;
     }
+    dispatch(appendConnectHistory(server.id));
   };
 
   const currentSelectedServer = useRef<Server | null>(null);
@@ -243,6 +250,13 @@ const SSHPage = () => {
   const [debouncedSearchInput] = useDebouncedValue(searchInput, 500);
 
   const [isSSHContextMenuOpen, setIsSSHContextMenuOpen] = useState(false);
+
+  // Save connect history when page destroy
+  useEffect(() => {
+    return () => {
+      dispatch(saveConnectHistory());
+    };
+  }, []);
 
   return (
     <>
