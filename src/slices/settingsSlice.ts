@@ -119,13 +119,9 @@ export const settingsSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(
       readSettings.fulfilled,
-      (_, action: PayloadAction<SettingsState>) => {
-        return action.payload;
-      },
+      (_, action: PayloadAction<SettingsState>) => action.payload,
     );
-    builder.addCase(saveSettings.fulfilled, (_, action) => {
-      return action.payload;
-    });
+    builder.addCase(saveSettings.fulfilled, (_, action) => action.payload);
   },
 });
 
