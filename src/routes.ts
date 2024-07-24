@@ -1,4 +1,3 @@
-import HomePage from "@/pages/Home.tsx";
 import SSHPage from "@/pages/SSH.tsx";
 import MultirunPage from "@/pages/Multirun.tsx";
 import RescuePage from "@/pages/Rescue.tsx";
@@ -12,7 +11,6 @@ import {
   IconCirclesRelation,
   IconCodeAsterix,
   IconHeartbeat,
-  IconHome,
   IconLibrary,
   IconServerCog,
   IconSettings,
@@ -23,10 +21,6 @@ import {
 export const routes = [
   {
     path: "/",
-    page: HomePage,
-  },
-  {
-    path: "/ssh",
     page: SSHPage,
   },
   {
@@ -57,11 +51,6 @@ export const routes = [
 
 export const navs = [
   {
-    label: "Home",
-    icon: IconHome,
-    path: "/",
-  },
-  {
     label: "Connect",
     icon: IconCirclesRelation,
     path: "#/connect",
@@ -69,7 +58,7 @@ export const navs = [
       {
         label: "SSH",
         icon: IconTerminal2,
-        path: "/ssh",
+        path: "/",
       },
       {
         label: "Multirun",
