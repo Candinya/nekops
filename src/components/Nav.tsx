@@ -29,7 +29,7 @@ const Nav = () => {
                 leftSection={<route.icon style={iconStyle} stroke={1.5} />}
                 component={RouterNavLink}
                 to={route.path}
-                active={location.pathname === route.path} // TODO: Find a better way to use react-router-dom's NavLink's isActive status
+                active={location.pathname === route.path}
               />
             ))}
           </NavLink>
@@ -40,7 +40,7 @@ const Nav = () => {
             leftSection={<route.icon style={iconStyle} stroke={1.5} />}
             component={RouterNavLink}
             to={route.path}
-            active={location.pathname === route.path} // TODO: Find a better way to use react-router-dom's NavLink's isActive status
+            active={location.pathname === route.path}
           />
         ),
       )}
