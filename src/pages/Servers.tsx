@@ -12,7 +12,7 @@ import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import type { Server } from "@/types/server.ts";
-import EditServerModal from "@/components/EditServerModal";
+import EditServerModal from "@/components/servers/EditServerModal";
 import type { AppDispatch, RootState } from "@/store.ts";
 import {
   addServer,

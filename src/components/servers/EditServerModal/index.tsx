@@ -29,7 +29,7 @@ import BasicInfoForm from "./forms/BasicInfo.tsx";
 import ProductForm from "./forms/Product.tsx";
 import HardwareForm from "./forms/Hardware.tsx";
 import NetworksForm from "./forms/Networks.tsx";
-import AccessForm from "@/components/EditServerModal/forms/Access.tsx";
+import AccessForm from "./forms/Access.tsx";
 
 const serverIDRegexp = /^\w+([-.]\w+)*$/;
 
