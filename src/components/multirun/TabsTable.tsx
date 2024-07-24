@@ -1,14 +1,10 @@
-import {
-  ActionIcon,
-  Checkbox,
-  Group,
-  rem,
-  Table,
-  Tooltip,
-} from "@mantine/core";
-import { IconClick } from "@tabler/icons-react";
-import { actionIconStyle, actionRowStyle } from "@/common/actionStyles.ts";
-import type { SSHSingleServer } from "@/events/payload.ts";
+import { Checkbox, rem, Table } from "@mantine/core";
+import { actionRowStyle } from "@/common/actionStyles.ts";
+import type {
+  EventResponseTabsListPayload,
+  EventResponseTabsListPayloadSingleTab,
+} from "@/events/payload.ts";
+import TabStateIcon from "@/components/TabStateIcon.tsx";
 
 interface TabsTableHeadProps {
   selectedState: "all" | "partial" | "none";
@@ -21,49 +17,52 @@ const TabsTableHead = ({ selectedState, selectAll }: TabsTableHeadProps) => {
         <Checkbox
           checked={selectedState === "all"}
           indeterminate={selectedState === "partial"}
-          onChange={(event) => selectAll(event.currentTarget.checked)}
+          onChange={(ev) => selectAll(ev.currentTarget.checked)}
         />
       </Table.Th>
       <Table.Th>Server Name</Table.Th>
-      <Table.Th style={actionRowStyle(1)}>Show</Table.Th>
+      <Table.Th style={actionRowStyle(1)}>State</Table.Th>
     </Table.Tr>
   );
 };
 
 interface TabsTableRowProps {
-  tab: SSHSingleServer;
+  tab: EventResponseTabsListPayloadSingleTab;
   show: () => void;
   isSelected: boolean;
   setIsSelected: (state: boolean) => void;
+  isCurrentActive: boolean;
 }
 const TabsTableRow = ({
   tab,
   show,
   isSelected,
   setIsSelected,
+  isCurrentActive,
 }: TabsTableRowProps) => (
-  <Table.Tr>
+  <Table.Tr
+    onClick={show}
+    style={{
+      cursor: "pointer",
+      backgroundColor: isCurrentActive ? "var(--table-hover-color)" : undefined,
+    }}
+  >
     <Table.Td>
       <Checkbox
         checked={isSelected}
-        onChange={(event) => setIsSelected(event.currentTarget.checked)}
+        onChange={(ev) => setIsSelected(ev.currentTarget.checked)}
+        color={tab.server.color}
       />
     </Table.Td>
-    <Table.Td>{tab.name}</Table.Td>
-    <Table.Td style={actionRowStyle(1)}>
-      <Group gap="xs">
-        <Tooltip label={"Show"} openDelay={500}>
-          <ActionIcon color={tab.color} onClick={show}>
-            <IconClick style={actionIconStyle} />
-          </ActionIcon>
-        </Tooltip>
-      </Group>
+    <Table.Td>{tab.server.name}</Table.Td>
+    <Table.Td ta="center">
+      <TabStateIcon state={tab.state} isNewMessage={tab.isNewMessage} />
     </Table.Td>
   </Table.Tr>
 );
 
 interface TabsTableProps {
-  tabs: SSHSingleServer[];
+  tabs: EventResponseTabsListPayload;
   show: (nonce: string) => void;
   selectedTabsNonce: string[];
   setSelectedTabsNonce: (state: string[]) => void;
@@ -74,13 +73,7 @@ const TabsTable = ({
   selectedTabsNonce,
   setSelectedTabsNonce,
 }: TabsTableProps) => (
-  <Table
-    stickyHeader
-    stickyHeaderOffset={-1}
-    highlightOnHover
-    withTableBorder
-    striped
-  >
+  <Table stickyHeader stickyHeaderOffset={-1} highlightOnHover withTableBorder>
     <Table.Thead
       style={{
         zIndex: 1,
@@ -89,7 +82,7 @@ const TabsTable = ({
       <TabsTableHead
         selectAll={(state) => {
           if (state) {
-            setSelectedTabsNonce(tabs.map((tab) => tab.nonce));
+            setSelectedTabsNonce(tabs.tabs.map((tab) => tab.server.nonce));
           } else {
             setSelectedTabsNonce([]);
           }
@@ -97,27 +90,29 @@ const TabsTable = ({
         selectedState={
           selectedTabsNonce.length === 0
             ? "none"
-            : selectedTabsNonce.length === tabs.length
+            : selectedTabsNonce.length === tabs.tabs.length
               ? "all"
               : "partial"
         }
       />
     </Table.Thead>
     <Table.Tbody>
-      {tabs.map((tab) => (
+      {tabs.tabs.map((tab) => (
         <TabsTableRow
-          key={tab.nonce}
+          key={tab.server.nonce}
           tab={tab}
-          show={() => show(tab.nonce)}
-          isSelected={selectedTabsNonce.includes(tab.nonce)}
+          show={() => show(tab.server.nonce)}
+          isSelected={selectedTabsNonce.includes(tab.server.nonce)}
           setIsSelected={(state) => {
             if (state) {
-              if (!selectedTabsNonce.includes(tab.nonce)) {
-                setSelectedTabsNonce(selectedTabsNonce.concat(tab.nonce));
+              if (!selectedTabsNonce.includes(tab.server.nonce)) {
+                setSelectedTabsNonce(
+                  selectedTabsNonce.concat(tab.server.nonce),
+                );
               }
             } else {
               const keyIndex = selectedTabsNonce.findIndex(
-                (i) => i === tab.nonce,
+                (i) => i === tab.server.nonce,
               );
               if (keyIndex > -1) {
                 setSelectedTabsNonce([
@@ -127,12 +122,13 @@ const TabsTable = ({
               }
             }
           }}
+          isCurrentActive={tabs.currentActive === tab.server.nonce}
         />
       ))}
     </Table.Tbody>
     <Table.Caption>
-      {tabs.length > 0
-        ? `Total ${tabs.length} tabs.`
+      {tabs.tabs.length > 0
+        ? `Total ${tabs.tabs.length} tabs.`
         : "Let's open a server tab!"}
     </Table.Caption>
   </Table>

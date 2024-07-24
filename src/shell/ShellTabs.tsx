@@ -9,9 +9,8 @@ import {
   Tabs,
   Text,
   Title,
-  useMantineTheme,
 } from "@mantine/core";
-import { IconBellFilled, IconCircleFilled, IconX } from "@tabler/icons-react";
+import { IconX } from "@tabler/icons-react";
 import ShellTerminal from "@/shell/ShellTerminal.tsx";
 import type { Event } from "@tauri-apps/api/event";
 import { emit, listen } from "@tauri-apps/api/event";
@@ -24,11 +23,16 @@ import {
   EventResponseTabsListName,
   EventSetActiveTabByNonceName,
 } from "@/events/name.ts";
-import type { EventNewSSHPayload, SSHSingleServer } from "@/events/payload.ts";
+import type {
+  EventNewSSHPayload,
+  EventResponseTabsListPayload,
+  SSHSingleServer,
+} from "@/events/payload.ts";
 import { Window } from "@tauri-apps/api/window";
 import type { ShellState } from "@/types/shellState.ts";
 import { useDisclosure, useListState } from "@mantine/hooks";
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
+import TabStateIcon from "@/components/TabStateIcon.tsx";
 
 interface ShellTabProps {
   data: SSHSingleServer;
@@ -36,53 +40,32 @@ interface ShellTabProps {
   isNewMessage?: boolean;
   close: () => void;
 }
-const ShellTab = ({ data, state, isNewMessage, close }: ShellTabProps) => {
-  const theme = useMantineTheme();
-  const colorState =
-    state === "loading"
-      ? theme.colors.yellow[6]
-      : state === "active"
-        ? theme.colors.green[6]
-        : state === "terminated"
-          ? theme.colors.red[6]
-          : theme.colors.gray[6];
-
-  const LeftIcon = isNewMessage ? IconBellFilled : IconCircleFilled;
-
-  return (
-    <Tabs.Tab
-      value={data.nonce}
-      color={data.color}
-      leftSection={
-        <LeftIcon
-          size={12}
-          style={{
-            color: colorState,
-          }}
-        />
-      }
-      rightSection={
-        <ActionIcon
-          size="xs"
-          variant="subtle"
-          color={data.color}
-          onClick={(e) => {
-            e.stopPropagation();
-            close();
-          }}
-        >
-          <IconX />
-        </ActionIcon>
-      }
-      component="div"
-      // style={{
-      //   backgroundColor: "var(--mantine-color-body)", // Conflict with the hover highlight
-      // }}
-    >
-      {data.name}
-    </Tabs.Tab>
-  );
-};
+const ShellTab = ({ data, state, isNewMessage, close }: ShellTabProps) => (
+  <Tabs.Tab
+    value={data.nonce}
+    color={data.color}
+    leftSection={<TabStateIcon state={state} isNewMessage={isNewMessage} />}
+    rightSection={
+      <ActionIcon
+        size="xs"
+        variant="subtle"
+        color={data.color}
+        onClick={(e) => {
+          e.stopPropagation();
+          close();
+        }}
+      >
+        <IconX />
+      </ActionIcon>
+    }
+    component="div"
+    // style={{
+    //   backgroundColor: "var(--mantine-color-body)", // Conflict with the hover highlight
+    // }}
+  >
+    {data.name}
+  </Tabs.Tab>
+);
 
 interface ShellPanelProps {
   data: SSHSingleServer;
@@ -170,9 +153,26 @@ const ShellTabs = () => {
 
   // Response tabs data event (initialize / update)
   const responseTabsList = () => {
-    emit(EventResponseTabsListName, tabsDataRef.current);
+    const payload: EventResponseTabsListPayload = {
+      tabs: tabsDataRef.current.map((server, i) => ({
+        server: {
+          nonce: server.nonce,
+          name: server.name,
+          color: server.color,
+        },
+        state: tabsStateRef.current[i],
+        isNewMessage: tabsNewMessageRef.current[i],
+      })),
+      currentActive: currentActiveTabRef.current,
+    };
+    emit(EventResponseTabsListName, payload);
   };
-  useEffect(responseTabsList, [tabsData]);
+  useEffect(responseTabsList, [
+    tabsData,
+    tabsState,
+    tabsNewMessage,
+    currentActiveTab,
+  ]);
 
   // Event listeners
   const newSSHEventListener = (ev: Event<EventNewSSHPayload>) => {
@@ -186,6 +186,7 @@ const ShellTabs = () => {
 
   const setActiveTabByNonceListener = (ev: Event<string>) => {
     setCurrentActiveTab(ev.payload);
+    clearTabNewMessageState(ev.payload);
   };
 
   const requestTabsListListener = () => {

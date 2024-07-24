@@ -18,8 +18,8 @@ import {
   EventSetActiveTabByNonceName,
 } from "@/events/name.ts";
 import type {
+  EventResponseTabsListPayload,
   EventSendCommandByNoncePayload,
-  SSHSingleServer,
 } from "@/events/payload.ts";
 import {
   IconInputCheck,
@@ -42,7 +42,10 @@ const MultirunPage = () => {
   const snippets = useSelector((state: RootState) => state.snippets);
 
   const [selectedTabsNonce, setSelectedTabsNonce] = useState<string[]>([]);
-  const [tabs, setTabs] = useState<SSHSingleServer[]>([]);
+  const [tabs, setTabs] = useState<EventResponseTabsListPayload>({
+    tabs: [],
+    currentActive: null,
+  });
 
   const [command, setCommand] = useState("");
 
@@ -59,13 +62,15 @@ const MultirunPage = () => {
     emit(EventRequestTabsListName);
   };
 
-  const responseTabsListListener = (ev: Event<SSHSingleServer[]>) => {
+  const responseTabsListListener = (
+    ev: Event<EventResponseTabsListPayload>,
+  ) => {
     setTabs(ev.payload);
   };
 
   useEffect(() => {
     // Remove non-exist nonce when tabs change
-    const allNonce = tabs.map((tab) => tab.nonce);
+    const allNonce = tabs.tabs.map((tab) => tab.server.nonce);
     const existSelectedNonce = selectedTabsNonce.filter((nonce) =>
       allNonce.includes(nonce),
     );
@@ -108,7 +113,7 @@ const MultirunPage = () => {
 
   useEffect(() => {
     // Prepare event listener for tabs update
-    const stopTabsListPromise = listen<SSHSingleServer[]>(
+    const stopTabsListPromise = listen<EventResponseTabsListPayload>(
       EventResponseTabsListName,
       responseTabsListListener,
     );
