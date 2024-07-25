@@ -1,11 +1,11 @@
 import {
-  ActionIcon,
   ActionIconGroup,
   Button,
   Flex,
   HoverCard,
   ScrollArea,
   SimpleGrid,
+  ThemeIcon,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import TabsTable from "@/components/multirun/TabsTable.tsx";
@@ -165,9 +165,9 @@ const MultirunPage = () => {
             {/*Special chars*/}
             <HoverCard position="left-end" withArrow arrowPosition="center">
               <HoverCard.Target>
-                <ActionIcon>
+                <ThemeIcon>
                   <IconWand style={actionIconStyle} />
-                </ActionIcon>
+                </ThemeIcon>
               </HoverCard.Target>
               <HoverCard.Dropdown>
                 <SpecialCharsTable append={appendCode} />
