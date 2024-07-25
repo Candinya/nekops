@@ -2,8 +2,8 @@ import { Box, Flex, Menu } from "@mantine/core";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/store.ts";
 import SearchBar from "@/components/SearchBar.tsx";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { useDebouncedValue, useMouse } from "@mantine/hooks";
+import { type MouseEvent, useMemo, useRef, useState } from "react";
+import { useDebouncedValue } from "@mantine/hooks";
 import { searchServers } from "@/search/servers.ts";
 import type { Server } from "@/types/server.ts";
 import { openShellWindow } from "@/utils/openShellWindow.ts";
@@ -140,6 +140,11 @@ const copySSHCommand = async (server: Server, jumpServer?: Server) => {
 interface SSHContextMenuProps {
   isOpen: boolean;
   setIsOpen: (state: boolean) => void;
+  pos: {
+    x: number;
+    y: number;
+  };
+
   jumpServers: Server[];
 
   onClickCopy: () => void;
@@ -149,63 +154,48 @@ interface SSHContextMenuProps {
 const SSHContextMenu = ({
   isOpen,
   setIsOpen,
+  pos,
+
   jumpServers,
 
   onClickCopy,
   onClickStart,
   onClickJumpServer,
-}: SSHContextMenuProps) => {
-  const { x, y } = useMouse();
-
-  const [menuLocation, setMenuLocation] = useState({
-    left: 0,
-    top: 0,
-  });
-
-  useEffect(() => {
-    if (isOpen) {
-      setMenuLocation({
-        left: x,
-        top: y,
-      });
-    }
-  }, [isOpen]);
-
-  return (
-    <Menu opened={isOpen} onChange={setIsOpen} position="bottom-start">
-      <Menu.Target>
-        <div
-          style={{
-            ...menuLocation,
-            position: "absolute",
-          }}
-        />
-      </Menu.Target>
-      <Menu.Dropdown>
-        <Menu.Label>Connect Directly</Menu.Label>
-        <Menu.Item
-          leftSection={<IconCode style={menuIconStyle} />}
-          onClick={onClickCopy}
-        >
-          Copy Code
+}: SSHContextMenuProps) => (
+  <Menu opened={isOpen} onChange={setIsOpen} position="bottom-start">
+    <Menu.Target>
+      <div
+        style={{
+          left: pos.x,
+          top: pos.y,
+          position: "absolute",
+        }}
+      />
+    </Menu.Target>
+    <Menu.Dropdown>
+      <Menu.Label>Connect Directly</Menu.Label>
+      <Menu.Item
+        leftSection={<IconCode style={menuIconStyle} />}
+        onClick={onClickCopy}
+      >
+        Copy Code
+      </Menu.Item>
+      <Menu.Item
+        leftSection={<IconRocket style={menuIconStyle} />}
+        onClick={onClickStart}
+      >
+        Start Session
+      </Menu.Item>
+      <Menu.Divider />
+      <Menu.Label>Connect w/ Jump Server</Menu.Label>
+      {jumpServers.map((js) => (
+        <Menu.Item key={js.id} onClick={() => onClickJumpServer(js)}>
+          {js.name}
         </Menu.Item>
-        <Menu.Item
-          leftSection={<IconRocket style={menuIconStyle} />}
-          onClick={onClickStart}
-        >
-          Start Session
-        </Menu.Item>
-        <Menu.Divider />
-        <Menu.Label>Connect w/ Jump Server</Menu.Label>
-        {jumpServers.map((js) => (
-          <Menu.Item key={js.id} onClick={() => onClickJumpServer(js)}>
-            {js.name}
-          </Menu.Item>
-        ))}
-      </Menu.Dropdown>
-    </Menu>
-  );
-};
+      ))}
+    </Menu.Dropdown>
+  </Menu>
+);
 
 const SSHPage = () => {
   const servers = useSelector((state: RootState) => state.servers);
@@ -233,8 +223,15 @@ const SSHPage = () => {
   };
 
   const currentSelectedServer = useRef<Server | null>(null);
-  const rightClickServerCard = (server: Server) => {
+  const rightClickServerCard = (
+    ev: MouseEvent<HTMLDivElement>,
+    server: Server,
+  ) => {
     currentSelectedServer.current = server;
+    setSSHContextMenuPos({
+      x: ev.clientX,
+      y: ev.clientY,
+    });
     setIsSSHContextMenuOpen(true);
   };
 
@@ -242,6 +239,13 @@ const SSHPage = () => {
   const [searchInput, setSearchInput] = useState("");
   const [debouncedSearchInput] = useDebouncedValue(searchInput, 500);
 
+  const [sshContextMenuPos, setSSHContextMenuPos] = useState<{
+    x: number;
+    y: number;
+  }>({
+    x: 0,
+    y: 0,
+  });
   const [isSSHContextMenuOpen, setIsSSHContextMenuOpen] = useState(false);
 
   return (
@@ -273,6 +277,7 @@ const SSHPage = () => {
       <SSHContextMenu
         isOpen={isSSHContextMenuOpen}
         setIsOpen={setIsSSHContextMenuOpen}
+        pos={sshContextMenuPos}
         jumpServers={jumpServers}
         onClickCopy={() => {
           if (currentSelectedServer.current) {

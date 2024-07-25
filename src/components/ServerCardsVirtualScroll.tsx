@@ -1,5 +1,5 @@
 import { Box, Flex } from "@mantine/core";
-import { useRef } from "react";
+import { type MouseEvent, useRef } from "react";
 import type { Server } from "@/types/server.ts";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import ServerCard from "@/components/ServerCard.tsx";
@@ -7,7 +7,7 @@ import ServerCard from "@/components/ServerCard.tsx";
 interface ServerCardsVirtualScrollProps {
   servers: Server[];
   onClicked: (server: Server) => void;
-  onContextMenu?: (server: Server) => void;
+  onContextMenu?: (ev: MouseEvent<HTMLDivElement>, server: Server) => void;
 }
 const ServerCardsVirtualScroll = ({
   servers,
@@ -62,7 +62,7 @@ const ServerCardsVirtualScroll = ({
                 onClick={() => onClicked(servers[virtualItem.index])}
                 onContextMenu={
                   onContextMenu
-                    ? () => onContextMenu(servers[virtualItem.index])
+                    ? (ev) => onContextMenu(ev, servers[virtualItem.index])
                     : undefined
                 }
               />

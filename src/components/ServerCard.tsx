@@ -13,6 +13,7 @@ import {
 } from "@mantine/core";
 import { IconCloudComputing, IconServer, IconTag } from "@tabler/icons-react";
 import { useHover } from "@mantine/hooks";
+import type { MouseEvent } from "react";
 
 import CPU from "@/icons/CPU.tsx";
 import RAM from "@/icons/RAM.tsx";
@@ -20,7 +21,7 @@ import RAM from "@/icons/RAM.tsx";
 interface ServerCardProps {
   server: Server;
   onClick?: () => void;
-  onContextMenu?: () => void;
+  onContextMenu?: (ev: MouseEvent<HTMLDivElement>) => void;
 }
 const ServerCard = ({ server, onClick, onContextMenu }: ServerCardProps) => {
   const { hovered, ref } = useHover();
@@ -41,9 +42,9 @@ const ServerCard = ({ server, onClick, onContextMenu }: ServerCardProps) => {
       onClick={onClick}
       onContextMenu={
         onContextMenu
-          ? (e) => {
-              e.preventDefault(); // Prevent default context menu
-              onContextMenu();
+          ? (ev) => {
+              ev.preventDefault(); // Prevent default context menu
+              onContextMenu(ev);
             }
           : undefined
       }
