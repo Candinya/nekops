@@ -360,6 +360,7 @@ const ShellTabs = () => {
           style={{
             flexGrow: 1,
             overflow: "clip",
+            height: 0,
           }}
         >
           {tabsData.map((tabData) => (
