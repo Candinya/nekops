@@ -1,4 +1,7 @@
 use tauri::Manager;
+use enigo::{
+    Enigo, Keyboard, Settings,
+};
 
 /* Required by tauri_plugin_single_instance
 #[derive(Clone, serde::Serialize)]
@@ -7,6 +10,12 @@ struct Payload {
     cwd: String,
 }
 */
+
+#[tauri::command]
+fn keyboard_text(text: &str) {
+    let mut enigo = Enigo::new(&Settings::default()).unwrap();
+    enigo.text(text).unwrap();
+}
 
 static MAIN_WINDOW_LABEL: &str = "main";
 
@@ -47,6 +56,7 @@ pub fn run() {
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_clipboard_manager::init())
         .plugin(tauri_plugin_dialog::init())
+        .invoke_handler(tauri::generate_handler![keyboard_text])
         .on_window_event(|window, event| match event {
             tauri::WindowEvent::CloseRequested { api, .. } => {
                 // Window state control: only destroy main window when there's no other windows
