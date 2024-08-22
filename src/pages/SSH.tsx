@@ -21,13 +21,12 @@ const SSHPage = () => {
     () => servers.filter((server) => server.access.regular.is_jump_server),
     [servers],
   );
-  const encryption = useSelector((state: RootState) => state.encryption);
   const settings = useSelector((state: RootState) => state.settings);
 
   const clickServerCard = (server: Server, jumpServer?: Server) => {
     switch (settings.default_ssh_action) {
       case "start":
-        startSSHSession(server, encryption.isUnlocked, jumpServer);
+        startSSHSession(server, jumpServer);
         break;
       case "copy":
       default:
@@ -100,10 +99,7 @@ const SSHPage = () => {
         }}
         onClickStart={() => {
           if (currentSelectedServer.current) {
-            startSSHSession(
-              currentSelectedServer.current,
-              encryption.isUnlocked,
-            );
+            startSSHSession(currentSelectedServer.current);
           }
         }}
         onClickJumpServer={(jumpServer: Server) => {

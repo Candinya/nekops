@@ -15,13 +15,9 @@ import {
   SuccessNotification,
 } from "@/notifications/shell.tsx";
 
-export const startSSHSession = async (
-  server: Server,
-  disableContentProtection: boolean,
-  jumpServer?: Server,
-) => {
+export const startSSHSession = async (server: Server, jumpServer?: Server) => {
   // Create or open Shell window
-  await openShellWindow(disableContentProtection); // Disable content protection when unlocked
+  await openShellWindow();
 
   // Prepare checker
   let isReadyChecker: ReturnType<typeof setInterval> | null = null;

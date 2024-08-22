@@ -4,11 +4,8 @@ const ShellWindowLabel = "nekopshell"; // Nekops Shell
 
 /**
  * Open (or create if non-current) Shell Window
- * @param disableContentProtection Disable window content protection (means can be captured by other software)
  */
-export const openShellWindow = async (
-  disableContentProtection: boolean = false,
-) => {
+export const openShellWindow = async () => {
   let shellWindow = WebviewWindow.getByLabel(ShellWindowLabel);
   if (shellWindow === null) {
     // Open new
@@ -17,7 +14,6 @@ export const openShellWindow = async (
       url: "shell.html",
       width: 1200,
       height: 800,
-      contentProtected: !disableContentProtection,
       decorations: false,
     });
   } else {
