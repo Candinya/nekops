@@ -50,7 +50,7 @@
     "@types/novnc__novnc": "1.5.0",
     "@types/prismjs": "^1.26.5",
     "@types/react": "^19.2.2",
-    "@types/react-dom": "^19.2.1",
+    "@types/react-dom": "^19.2.2",
     "@vitejs/plugin-react": "^5.0.4",
     "husky": "^9.1.7",
     "internal-ip": "^8.0.1",
