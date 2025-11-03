@@ -61,7 +61,7 @@
     "prettier": "3.6.2",
     "react-scan": "^0.4.3",
     "typescript": "^5.9.3",
-    "vite": "^7.1.10"
+    "vite": "^7.1.11"
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"
