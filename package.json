@@ -54,7 +54,7 @@
     "@vitejs/plugin-react": "^5.0.4",
     "husky": "^9.1.7",
     "internal-ip": "^8.0.1",
-    "lint-staged": "^16.2.4",
+    "lint-staged": "^16.2.6",
     "postcss": "^8.5.6",
     "postcss-preset-mantine": "^1.18.0",
     "postcss-simple-vars": "^7.0.1",
