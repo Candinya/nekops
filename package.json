@@ -19,7 +19,7 @@
     "@mantine/modals": "^8.3.4",
     "@mantine/notifications": "^8.3.4",
     "@novnc/novnc": "1.5.0",
-    "@reduxjs/toolkit": "^2.9.2",
+    "@reduxjs/toolkit": "^2.11.2",
     "@tabler/icons-react": "^3.35.0",
     "@tanstack/react-virtual": "^3.13.12",
     "@tauri-apps/api": "2.9.1",
