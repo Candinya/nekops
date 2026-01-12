@@ -49,7 +49,7 @@
     "@types/node": "^25.0.3",
     "@types/novnc__novnc": "1.5.0",
     "@types/prismjs": "^1.26.5",
-    "@types/react": "^19.2.7",
+    "@types/react": "^19.2.8",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.2",
     "husky": "^9.1.7",
