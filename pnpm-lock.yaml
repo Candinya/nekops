@@ -36,8 +36,8 @@ importers:
         specifier: ^2.11.2
         version: 2.11.2(react-redux@9.2.0(@types/react@19.2.14)(react@19.2.4)(redux@5.0.1))(react@19.2.4)
       '@tabler/icons-react':
-        specifier: ^3.38.0
-        version: 3.38.0(react@19.2.4)
+        specifier: ^3.40.0
+        version: 3.40.0(react@19.2.4)
       '@tanstack/react-virtual':
         specifier: ^3.13.16
         version: 3.13.16(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -817,13 +817,13 @@ packages:
   '@standard-schema/utils@0.3.0':
     resolution: {integrity: sha512-e7Mew686owMaPJVNNLs55PUvgz371nKgwsc4vxE49zsODpJEnxgxRo2y/OKrqueavXgZNMDVj3DdHFlaSAeU8g==}
 
-  '@tabler/icons-react@3.38.0':
-    resolution: {integrity: sha512-kR5wv+m4+GgmnSszg3rQd6SrTFAQ/XnQC/yTwIfuRJSfqB12KoIC7fPbIijFgOHTFlBN5DARnN0IVrR7KYG6/A==}
+  '@tabler/icons-react@3.40.0':
+    resolution: {integrity: sha512-oO5+6QCnna4a//mYubx4euZfECtzQZFDGsDMIdzZUhbdyBCT+3bRVFBPueGIcemWld4Vb/0UQ39C/cmGfGylAg==}
     peerDependencies:
       react: '>= 16'
 
-  '@tabler/icons@3.38.0':
-    resolution: {integrity: sha512-FdETQSpQ3lN7BEjEUzjKhsfTDCamrvMDops4HEMphTm3DmkIFpThoODn8XXZ8Q9MhjshIvphIYVHHB7zpq167w==}
+  '@tabler/icons@3.40.0':
+    resolution: {integrity: sha512-V/Q4VgNPKubRTiLdmWjV/zscYcj5IIk+euicUtaVVqF6luSC9rDngYWgST5/yh3Mrg/mYUwRv1YVTk71Jp0twQ==}
 
   '@tanstack/react-virtual@3.13.16':
     resolution: {integrity: sha512-y4xLKvLu6UZWiGdNcgk3yYlzCznYIV0m8dSyUzr3eAC0dHLos5V74qhUHxutYddFGgGU8sWLkp6H5c2RCrsrXw==}
@@ -2260,12 +2260,12 @@ snapshots:
 
   '@standard-schema/utils@0.3.0': {}
 
-  '@tabler/icons-react@3.38.0(react@19.2.4)':
+  '@tabler/icons-react@3.40.0(react@19.2.4)':
     dependencies:
-      '@tabler/icons': 3.38.0
+      '@tabler/icons': 3.40.0
       react: 19.2.4
 
-  '@tabler/icons@3.38.0': {}
+  '@tabler/icons@3.40.0': {}
 
   '@tanstack/react-virtual@3.13.16(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
     dependencies:
