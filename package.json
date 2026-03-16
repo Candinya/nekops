@@ -46,7 +46,7 @@
   },
   "devDependencies": {
     "@tauri-apps/cli": "2.10.1",
-    "@types/node": "^25.2.3",
+    "@types/node": "^25.5.0",
     "@types/novnc__novnc": "1.5.0",
     "@types/prismjs": "^1.26.6",
     "@types/react": "^19.2.14",
