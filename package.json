@@ -51,7 +51,7 @@
     "@types/prismjs": "^1.26.6",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react": "^5.1.4",
+    "@vitejs/plugin-react": "^5.2.0",
     "husky": "^9.1.7",
     "internal-ip": "^9.0.0",
     "lint-staged": "^16.4.0",
