@@ -28,7 +28,7 @@
     "@tauri-apps/plugin-fs": "2.4.5",
     "@tauri-apps/plugin-process": "~2.3.1",
     "@tauri-apps/plugin-shell": "2.3.5",
-    "@tauri-apps/plugin-updater": "~2.10.0",
+    "@tauri-apps/plugin-updater": "~2.10.1",
     "dayjs": "^1.11.20",
     "dotted-map": "^3.1.0",
     "i18next": "^26.0.1",
