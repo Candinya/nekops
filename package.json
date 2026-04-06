@@ -31,7 +31,7 @@
     "@tauri-apps/plugin-updater": "~2.10.0",
     "dayjs": "^1.11.20",
     "dotted-map": "^3.1.0",
-    "i18next": "^26.0.1",
+    "i18next": "^26.0.3",
     "i18next-browser-languagedetector": "^8.2.1",
     "prismjs": "^1.30.0",
     "react": "^19.2.4",
