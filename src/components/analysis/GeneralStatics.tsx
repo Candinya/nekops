@@ -5,7 +5,7 @@ import {
   IconLockOpenOff,
   IconServer,
 } from "@tabler/icons-react";
-import type { DefaultMantineColor } from "@mantine/core";
+import type { RingProgressSection } from "@mantine/core";
 import {
   Center,
   Group,
@@ -23,15 +23,9 @@ import type { Server } from "@/types/server.ts";
 import type { Snippet } from "@/types/snippet.ts";
 import type { EncryptionState } from "@/types/encryption.ts";
 
-interface Section {
-  color: DefaultMantineColor;
-  value: number;
-  tooltip?: ReactNode;
-}
-
 interface StatCardProps {
   Icon: (props: any) => ReactNode;
-  sections: Section[];
+  sections: RingProgressSection[];
   label: string;
   stats: string | number;
 }

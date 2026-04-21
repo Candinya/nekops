@@ -6,8 +6,5 @@ export interface SettingsExtended extends SettingsState {
 }
 
 export interface SettingsFormProps {
-  form: UseFormReturnType<
-    SettingsExtended,
-    (values: SettingsExtended) => SettingsExtended
-  >;
+  form: UseFormReturnType<SettingsExtended>;
 }

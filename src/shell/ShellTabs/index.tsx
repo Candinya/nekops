@@ -490,7 +490,7 @@ const ShellTabs = () => {
           col: classes.gridCol,
         }}
         columns={LayoutColsWeight}
-        gutter={0}
+        gap={0}
         // grow
       >
         <DragDropContext
