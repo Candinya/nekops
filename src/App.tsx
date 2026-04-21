@@ -14,7 +14,6 @@ import AboutModal from "@/components/AboutModal.tsx";
 import { emit, listen } from "@tauri-apps/api/event";
 import {
   EventNameWindowCloseMain,
-  EventNameWindowCloseRescue,
   EventNameWindowCloseShell,
 } from "@/events/name.ts";
 import TerminateAndExitModal from "@/components/TerminateAndExitModal.tsx";
@@ -61,7 +60,6 @@ const App = () => {
   const mainWindowDoClose = () => {
     // Terminate shells window and then main window
     emit(EventNameWindowCloseShell, true);
-    emit(EventNameWindowCloseRescue, true);
     Window.getCurrent().destroy();
   };
 

@@ -37,7 +37,6 @@ export default defineConfig(async () => ({
       input: {
         main: resolve(__dirname, "index.html"),
         shell: resolve(__dirname, "shell.html"),
-        rescue: resolve(__dirname, "rescue.html"),
       },
     },
   },

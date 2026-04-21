@@ -15,7 +15,6 @@ import { useTranslation } from "react-i18next";
 import type { Server } from "@/types/server.ts";
 
 import Copy from "./Copy.tsx";
-import Keyboard from "./Keyboard.tsx";
 
 interface RescueModalProps {
   isOpen: boolean;
@@ -50,7 +49,6 @@ const RescueModal = ({ isOpen, close, server, launch }: RescueModalProps) => {
               }}
             />
             <Copy value={server.access.emergency.root_password} />
-            <Keyboard text={server.access.emergency.root_password} />
           </Group>
         )}
         {server?.access.emergency.address && (

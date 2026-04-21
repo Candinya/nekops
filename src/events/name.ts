@@ -1,7 +1,6 @@
 // Window pre-close event
 export const EventNameWindowCloseMain = "windowCloseMain";
 export const EventNameWindowCloseShell = "windowCloseShell";
-export const EventNameWindowCloseRescue = "windowCloseRescue";
 
 // Window resize (also for grid-system's split event)
 export const EventNameWindowResizeShell = "windowResizeShell";
@@ -29,15 +28,3 @@ export const EventNameShellSTTYFitByNonce = "shellSTTYFitByNonce";
 
 // Shell grid system
 export const EventNameShellGridModify = "shellGridModify"; // Add 1 row
-
-// Create a new rescue session
-export const EventNameRescueNew = "rescueNew";
-
-// Check if rescue is ready
-export const EventNameRescueReadyRequest = "rescueReadyRequest";
-export const EventNameRescueReadyResponse = "rescueReadyResponse";
-
-// Send special command to rescue by nonce
-export const EventNameRescuePowerCycleByNonce = "rescuePowerCycleByNonce";
-export const EventNameRescueSendCtrlAltDelByNonce =
-  "rescueSendCtrlAltDelByNonce";

@@ -1,17 +1,10 @@
-import {
-  ActionIcon,
-  Box,
-  Flex,
-  LoadingOverlay,
-  Text,
-  Tooltip,
-} from "@mantine/core";
+import { Box, Flex, LoadingOverlay, Text } from "@mantine/core";
 import { useSelector } from "react-redux";
 import { useState } from "react";
 import { useDisclosure } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 import { open } from "@tauri-apps/plugin-shell";
-import { IconLock, IconRocket } from "@tabler/icons-react";
+import { IconLock } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 
 import type { RootState } from "@/store.ts";
@@ -22,9 +15,6 @@ import { decryptServer } from "@/slices/encryptionSlice.ts";
 import UnlockModal from "@/components/UnlockModal.tsx";
 import RescueModal from "@/components/rescue/RescueModal";
 import ServerCardsVirtualScroll from "@/components/ServerCardsVirtualScroll";
-import { startVNCSession } from "@/components/rescue/startVNCSession.tsx";
-import { actionIconStyle } from "@/common/actionStyles.ts";
-import RescueTempLaunchModal from "@/components/rescue/RescueTempLaunchModal.tsx";
 
 const RescuePage = () => {
   const { t } = useTranslation("main", { keyPrefix: "rescue" });
@@ -42,11 +32,6 @@ const RescuePage = () => {
     { open: openRescueModal, close: closeRescueModal },
   ] = useDisclosure(false);
 
-  const [
-    isTempLaunchModalOpen,
-    { open: openTempLaunchModal, close: closeTempLaunchModal },
-  ] = useDisclosure(false);
-
   const [activeServer, setActiveServer] = useState<Server | null>(null);
 
   const startRescue = (server: Server) => {
@@ -61,9 +46,6 @@ const RescuePage = () => {
 
   const launchRescuePlatform = async (server: Server) => {
     switch (server.access.emergency.method) {
-      case "VNC":
-        startVNCSession(server);
-        break;
       case "IPMI":
         try {
           await open(server.access.emergency.address);
@@ -105,23 +87,11 @@ const RescuePage = () => {
         }}
       >
         <Box p="md">
-          <Flex direction="row" justify="space-between" gap="lg">
-            <SearchBar
-              placeholder="searchServers"
-              setSearchInput={setSearchInput}
-              isAutoFocus={encryption.isUnlocked} // Only get autofocus when unlocked
-            />
-
-            <Tooltip label={t("tempLaunch")} openDelay={500}>
-              <ActionIcon
-                size="lg"
-                color="orange"
-                onClick={openTempLaunchModal}
-              >
-                <IconRocket style={actionIconStyle} />
-              </ActionIcon>
-            </Tooltip>
-          </Flex>
+          <SearchBar
+            placeholder="searchServers"
+            setSearchInput={setSearchInput}
+            isAutoFocus={encryption.isUnlocked} // Only get autofocus when unlocked
+          />
         </Box>
 
         <Box
@@ -167,12 +137,6 @@ const RescuePage = () => {
         close={closeRescueModal}
         server={activeServer}
         launch={launchActiveServer}
-      />
-
-      <RescueTempLaunchModal
-        isOpen={isTempLaunchModalOpen}
-        close={closeTempLaunchModal}
-        launch={launchRescuePlatform}
       />
     </>
   );
